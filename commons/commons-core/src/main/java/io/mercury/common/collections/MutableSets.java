@@ -6,6 +6,7 @@ import org.eclipse.collections.api.set.primitive.MutableDoubleSet;
 import org.eclipse.collections.api.set.primitive.MutableIntSet;
 import org.eclipse.collections.api.set.primitive.MutableLongSet;
 import org.eclipse.collections.api.set.sorted.MutableSortedSet;
+import org.eclipse.collections.impl.collector.Collectors2;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.eclipse.collections.impl.set.mutable.primitive.DoubleHashSet;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
@@ -18,15 +19,21 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.stream.Collector;
 
 import static io.mercury.common.collections.Capacity.checkAndGet;
 
 public final class MutableSets {
 
     private MutableSets() {
+
     }
 
     // ******************** primitive int set ********************
+
+    public static <T> Collector<T, ?, MutableSet<T>> newCollector() {
+        return Collectors2.toSet();
+    }
 
     /**
      * @return MutableIntSet
