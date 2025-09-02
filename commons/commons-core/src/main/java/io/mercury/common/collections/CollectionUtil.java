@@ -7,7 +7,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 
@@ -123,10 +122,9 @@ public final class CollectionUtil {
                                   @Nonnull final IntFunction<E[]> arrayBuilder) {
         nonNull(collection, STR_COLLECTION);
         E[] values = arrayBuilder.apply(collection.size());
-        Iterator<E> iterator = collection.iterator();
         int i = 0;
-        while (iterator.hasNext()) {
-            values[i] = iterator.next();
+        for (E e : collection) {
+            values[i] = e;
             i++;
         }
         return values;
