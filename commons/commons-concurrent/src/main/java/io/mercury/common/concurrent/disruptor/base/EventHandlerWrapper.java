@@ -1,7 +1,6 @@
 package io.mercury.common.concurrent.disruptor.base;
 
 import com.lmax.disruptor.EventHandler;
-import com.lmax.disruptor.WorkHandler;
 import io.mercury.common.functional.Processor;
 import org.slf4j.Logger;
 
@@ -10,7 +9,7 @@ import org.slf4j.Logger;
  *
  * @author yellow013
  */
-public final class EventHandlerWrapper<E> implements EventHandler<E>, WorkHandler<E> {
+public final class EventHandlerWrapper<E> implements EventHandler<E> {
 
     private final Processor<E> processor;
 
@@ -40,15 +39,4 @@ public final class EventHandlerWrapper<E> implements EventHandler<E>, WorkHandle
         }
     }
 
-    @Override
-    public void onEvent(E event) throws Exception {
-        try {
-            processor.process(event);
-        } catch (Exception e) {
-            log.error("WorkHandler process event -> {}, Throw exception -> [{}]",
-                    event, e.getMessage(), e);
-            if (canCrash)
-                throw e;
-        }
-    }
 }
