@@ -12,7 +12,7 @@
     <name>serialization-sbe</name>
 
     <properties>
-        <sbe-tool.version>1.35.0</sbe-tool.version>
+        <sbe-tool.version>1.35.6</sbe-tool.version>
     </properties>
 
     <build>
@@ -58,7 +58,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.6.0</version>
+                <version>3.6.1</version>
                 <executions>
                     <execution>
                         <id>add-source</id>
@@ -95,7 +95,7 @@
         <dependency>
             <groupId>org.agrona</groupId>
             <artifactId>agrona</artifactId>
-            <version>2.2.0</version>
+            <version>2.2.4</version>
         </dependency>
     </dependencies>
 

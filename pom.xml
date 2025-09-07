@@ -38,7 +38,7 @@
         <slf4j.version>2.0.17</slf4j.version>
         <junit.version>4.13.2</junit.version>
         <jupiter.version>5.13.4</jupiter.version>
-        <netty.version>4.1.123.Final</netty.version>
+        <netty.version>4.1.126.Final</netty.version>
         <jackson.version>2.19.2</jackson.version>
         <guava.version>33.4.8-jre</guava.version>
     </properties>
@@ -49,7 +49,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.13.0</version>
+                    <version>3.14.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>

@@ -12,7 +12,7 @@
     <name>serialization-fury</name>
 
     <properties>
-        <fury.version>0.10.2</fury.version>
+        <fury.version>0.10.3</fury.version>
     </properties>
 
     <dependencies>

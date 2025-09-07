@@ -11,7 +11,7 @@
     <name>library-encryption</name>
 
     <properties>
-        <bouncycastle.version>1.79</bouncycastle.version>
+        <bouncycastle.version>1.81</bouncycastle.version>
     </properties>
 
     <licenses>

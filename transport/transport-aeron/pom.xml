@@ -12,8 +12,8 @@
     <name>transport-aeron</name>
 
     <properties>
-        <aeron.version>1.47.5</aeron.version>
-        <byte-buddy.version>1.17.5</byte-buddy.version>
+        <aeron.version>1.48.6</aeron.version>
+        <byte-buddy.version>1.17.7</byte-buddy.version>
     </properties>
 
     <repositories>
@@ -48,17 +48,17 @@
         <dependency>
             <groupId>io.aeron</groupId>
             <artifactId>aeron-all</artifactId>
-            <version>1.47.4</version>
+            <version>${aeron.version}</version>
         </dependency>
         <dependency>
             <groupId>io.aeron</groupId>
             <artifactId>aeron-agent</artifactId>
-            <version>1.47.4</version>
+            <version>${aeron.version}</version>
         </dependency>
         <dependency>
             <groupId>io.aeron</groupId>
             <artifactId>aeron-cluster</artifactId>
-            <version>1.47.4</version>
+            <version>${aeron.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.agrona</groupId>
