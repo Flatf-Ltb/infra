@@ -12,16 +12,6 @@
     <name>persistence-chronicle</name>
 
     <properties>
-        <!-- v chronicle storage basic v -->
-        <chronicle-core.version>2.23.36</chronicle-core.version>
-        <chronicle-bytes.version>2.23.33</chronicle-bytes.version>
-        <chronicle-threads.version>2.23.25</chronicle-threads.version>
-        <chronicle-values.version>2.23.3</chronicle-values.version>
-        <chronicle-algorithms.version>2.23.4</chronicle-algorithms.version>
-        <!-- ^ chronicle storage basic ^ -->
-        <chronicle-wire.version>2.23.39</chronicle-wire.version>
-        <chronicle-queue.version>5.23.37</chronicle-queue.version>
-        <chronicle-map.version>3.23.5</chronicle-map.version>
     </properties>
 
     <dependencies>
@@ -46,156 +36,13 @@
             </exclusions>
         </dependency>
 
-        <!-- ####### chronicle-core ####### -->
-        <!-- Low-level access to native memory, JVM and OS. -->
-        <dependency>
-            <groupId>net.openhft</groupId>
-            <artifactId>chronicle-core</artifactId>
-            <version>${chronicle-core.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>net.openhft</groupId>
-                    <artifactId>chronicle-analytics</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <!-- ####### chronicle-bytes ####### -->
-        <!-- Chronicle Bytes contains all the low-level memory access wrappers.It
-            is built on Chronicle Core’s direct memory and OS system call access. Chronicle
-            Bytes has a similar purpose to Java NIO ByteBuffer with some extensions. -->
-        <dependency>
-            <groupId>net.openhft</groupId>
-            <artifactId>chronicle-bytes</artifactId>
-            <version>${chronicle-bytes.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>net.openhft</groupId>
-                    <artifactId>chronicle-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <!-- ####### chronicle-threads ####### -->
-        <!-- This library provides a high-performance thread pool. This thread pool
-            is designed to share blocking, monitoring and busy waiting threads. Busy waiting
-            tasks can be prioritized for HIGH, MEDIUM, DAEMON (low priority) as well
-            as TIMER (fixed rate events) tasks in a single thread without creating garbage. -->
-        <dependency>
-            <groupId>net.openhft</groupId>
-            <artifactId>chronicle-threads</artifactId>
-            <version>${chronicle-threads.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>net.openhft</groupId>
-                    <artifactId>chronicle-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <!-- ####### chronicle-wire ####### -->
-        <!-- A Java serialization Library that supports multiple formats. -->
-        <dependency>
-            <groupId>net.openhft</groupId>
-            <artifactId>chronicle-wire</artifactId>
-            <version>${chronicle-wire.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.openhft</groupId>
-                    <artifactId>chronicle-bytes</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.openhft</groupId>
-                    <artifactId>chronicle-core</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <!-- ####### chronicle-values ####### -->
-        <!-- Generation of constantly sized flyweight accessors to Chronicle Bytes
-            and simple bean-style on-heap implementations from interfaces. Interfaces
-            that could be processed by Chronicle-Values generation are called value
-            interfaces. -->
-        <dependency>
-            <groupId>net.openhft</groupId>
-            <artifactId>chronicle-values</artifactId>
-            <version>${chronicle-values.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>net.openhft</groupId>
-                    <artifactId>chronicle-bytes</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.openhft</groupId>
-                    <artifactId>chronicle-core</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <!-- ####### chronicle-algorithms ####### -->
-        <!-- Zero allocation, efficient algorithms for 1)hashing, 2)bit set operations,
-            3)access the raw bytes of a data type, 4)off heap locking -->
-        <dependency>
-            <groupId>net.openhft</groupId>
-            <artifactId>chronicle-algorithms</artifactId>
-            <version>${chronicle-algorithms.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>net.openhft</groupId>
-                    <artifactId>chronicle-bytes</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.openhft</groupId>
-                    <artifactId>chronicle-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
         <!-- ######################################################### -->
         <!-- chronicle-queue Java library for persisted low-latency messaging,
             Microsecond messaging that stores everything to disk -->
         <dependency>
             <groupId>net.openhft</groupId>
             <artifactId>chronicle-queue</artifactId>
-            <version>${chronicle-queue.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>net.openhft</groupId>
-                    <artifactId>chronicle-wire</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.openhft</groupId>
-                    <artifactId>chronicle-bytes</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.openhft</groupId>
-                    <artifactId>chronicle-core</artifactId>
-                </exclusion>
-            </exclusions>
+            <version>5.27ea11</version>
         </dependency>
 
         <!-- ######################################################### -->
@@ -205,61 +52,13 @@
         <dependency>
             <groupId>net.openhft</groupId>
             <artifactId>chronicle-map</artifactId>
-            <version>${chronicle-map.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.intellij</groupId>
-                    <artifactId>annotations</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>jcl-over-slf4j</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.openhft</groupId>
-                    <artifactId>chronicle-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.openhft</groupId>
-                    <artifactId>chronicle-threads</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.openhft</groupId>
-                    <artifactId>chronicle-wire</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-                <!-- java 11 use this exclusion -->
-                <exclusion>
-                    <groupId>com.sun.java</groupId>
-                    <artifactId>tools</artifactId>
-                </exclusion>
-            </exclusions>
+            <version>3.27ea1</version>
         </dependency>
 
         <!-- A set of annotations used for code inspection support and code documentation. -->
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>net.openhft</groupId>
-            <artifactId>jlbh</artifactId>
-            <version>1.19.41</version>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>net.openhft</groupId>
-                    <artifactId>chronicle-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.openhft</groupId>
-                    <artifactId>affinity</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
     </dependencies>

@@ -7,8 +7,8 @@ import io.mercury.common.lang.Asserter;
 import io.mercury.common.log4j2.Log4j2LoggerFactory;
 import io.mercury.common.thread.RuntimeInterruptedException;
 import io.mercury.common.thread.ShutdownHooks;
-import io.mercury.common.thread.SleepSupport;
-import io.mercury.common.thread.ThreadSupport;
+import io.mercury.common.thread.Sleep;
+import io.mercury.common.thread.Threads;
 import io.mercury.common.util.StringSupport;
 import io.mercury.persistence.chronicle.queue.params.ReaderParams;
 import net.openhft.chronicle.queue.impl.RollingChronicleQueue;
@@ -137,18 +137,18 @@ public abstract class AbstractChronicleQueue<
     private void createFileClearThread() {
         if (fileClearCycle > 0) {
             this.lastCycle = new AtomicInteger();
-            this.cycleFileMap = MutableMaps.newConcurrentHashMap();
+            this.cycleFileMap = MutableMaps.newConcurrentMap();
             // 周期文件清理间隔
             long delay = (long) fileCycle.getSeconds() * fileClearCycle;
             // 创建文件清理线程
-            this.fileClearThread = ThreadSupport.startNewThread(queueName + "-FileClearThread", () -> {
+            this.fileClearThread = Threads.startNewThread(queueName + "-FileClearThread", () -> {
                 do {
                     try {
-                        SleepSupport.sleep(TimeUnit.SECONDS, delay);
-                    } catch (RuntimeInterruptedException e) {
+                        TimeUnit.SECONDS.sleep(delay);
+                    } catch (RuntimeInterruptedException | InterruptedException e) {
                         logger.info("Last execution fileClearTask");
                         fileClearTask();
-                        logger.info("Thread -> {} quit now", ThreadSupport.getCurrentThreadName());
+                        logger.info("Thread -> {} quit now", Threads.getCurrentThreadName());
                     }
                     if (isClearRunning.get()) {
                         fileClearTask();
@@ -252,7 +252,7 @@ public abstract class AbstractChronicleQueue<
         if (fileClearThread != null) {
             fileClearThread.interrupt();
             while (fileClearThread.getState() != State.TERMINATED)
-                SleepSupport.sleep(5);
+                Sleep.millis(5);
         }
     }
 
@@ -423,7 +423,7 @@ public abstract class AbstractChronicleQueue<
     /**
      * 已分配的访问器
      */
-    private final ConcurrentMap<Long, CloseableChronicleAccessor> allocatedAccessor = MutableMaps.newConcurrentHashMap();
+    private final ConcurrentMap<Long, CloseableChronicleAccessor> allocatedAccessor = MutableMaps.newConcurrentMap();
 
     /**
      * 添加访问器
