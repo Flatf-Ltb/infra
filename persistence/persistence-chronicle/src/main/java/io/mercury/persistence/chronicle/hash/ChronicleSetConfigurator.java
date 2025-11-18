@@ -154,7 +154,7 @@ public final class ChronicleSetConfigurator<E> implements Configurator {
         }
 
         public Builder<E> entriesOfPow2(Capacity capacity) {
-            this.entries = capacity.value();
+            this.entries = capacity.size();
             return this;
         }
 

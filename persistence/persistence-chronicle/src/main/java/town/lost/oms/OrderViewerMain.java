@@ -17,7 +17,7 @@ public class OrderViewerMain {
     public static void main(String[] args) {
         System.out.println("\nWaiting for messages");
         try (ChronicleQueue q = SingleChronicleQueueBuilder.binary("in")
-                .rollCycle(RollCycles.TEST8_DAILY).build()) {
+                .rollCycle(RollCycles.DEFAULT).build()) {
             OMSIn logging = Mocker.logging(OMSIn.class, "read - ", System.out);
             MethodReader reader = q.createTailer().methodReader(logging);
             while (true) {

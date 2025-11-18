@@ -21,9 +21,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import static io.mercury.common.datetime.DateTimeUtil.fmtDateTime;
-import static io.mercury.common.datetime.pattern.DateTimePattern.YY_MM_DD_HH_MM_SS_SSS;
-import static io.mercury.common.thread.SleepSupport.sleep;
-import static io.mercury.common.thread.ThreadSupport.startNewThread;
+import static io.mercury.common.datetime.pattern.impl.DateTimePattern.YY_MM_DD_HH_MM_SS_SSS;
+import  io.mercury.common.thread.Sleep;
+import static io.mercury.common.thread.Threads.startNewThread;
 
 @Immutable
 @NotThreadSafe
@@ -179,7 +179,7 @@ public abstract class AbstractChronicleReader<OUT> extends CloseableChronicleAcc
     public void run() {
         logger.info("ChronicleReader -> [{}] is running at [{}]", getReaderName(), fmtDateTime(YY_MM_DD_HH_MM_SS_SSS));
         if (params.getDelayReadTime() > 0)
-            sleep(params.getDelayReadUnit(), params.getDelayReadTime());
+            Sleep.time(params.getDelayReadUnit(), params.getDelayReadTime());
         boolean waitingData = params.isWaitingData();
         boolean spinWaiting = params.isSpinWaiting();
         TimeUnit readIntervalUnit = params.getReadIntervalUnit();
@@ -206,7 +206,7 @@ public abstract class AbstractChronicleReader<OUT> extends CloseableChronicleAcc
                 if (waitingData) {
                     // 非自旋等待, 进入休眠
                     if (!spinWaiting) {
-                        sleep(readIntervalUnit, readIntervalTime);
+                        Sleep.time(readIntervalUnit, readIntervalTime);
                     }
                 } else {
                     // 数据读取完毕, 退出线程

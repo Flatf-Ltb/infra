@@ -1,6 +1,7 @@
 package io.mercury.persistence.chronicle.hash;
 
 import io.mercury.common.epoch.EpochRecord;
+import io.mercury.common.epoch.EpochUtil;
 import io.mercury.common.thread.Sleep;
 import io.mercury.common.thread.Threads;
 import io.mercury.persistence.chronicle.exception.ChronicleIOException;
@@ -83,29 +84,25 @@ public class ChronicleMapKeeperOfLRU<K, V> extends ChronicleMapKeeper<K, V> {
         // TODO
         System.out.println("启动清理线程");
         do {
-            try {
-                Sleep.millis(expireMillis);
-                System.out.println("执行清理.......");
-                Set<String> filenames = lastUsedLog.keySet();
-                long now = EpochRecord.nowEpochMillis().epochTime();
-                for (String filename : filenames) {
-                    long lastUsed = lastUsedLog.get(filename);
-                    System.out.println("文件 -> " + filename + "最后使用时间 -> " + lastUsed);
-                    if (now > lastUsed) {
-                        File savedFile = new File(savePath, filename);
-                        System.out.println("删除文件 -> " + filename);
-                        if (savedFile.exists()) {
-                            if (savedFile.delete()) {
-                                System.out.println("删除成功");
-                                lastUsedLog.remove(filename);
-                            } else {
-                                System.out.println("删除失败");
-                            }
+            Sleep.millis(expireMillis);
+            System.out.println("执行清理.......");
+            Set<String> filenames = lastUsedLog.keySet();
+            long now = EpochRecord.nowEpochMillis().epochTime();
+            for (String filename : filenames) {
+                long lastUsed = lastUsedLog.get(filename);
+                System.out.println("文件 -> " + filename + "最后使用时间 -> " + lastUsed);
+                if (now > lastUsed) {
+                    File savedFile = new File(savePath, filename);
+                    System.out.println("删除文件 -> " + filename);
+                    if (savedFile.exists()) {
+                        if (savedFile.delete()) {
+                            System.out.println("删除成功");
+                            lastUsedLog.remove(filename);
+                        } else {
+                            System.out.println("删除失败");
                         }
                     }
                 }
-            } catch (InterruptedException ignored) {
-
             }
         } while (!isClosed);
     }
@@ -127,7 +124,7 @@ public class ChronicleMapKeeperOfLRU<K, V> extends ChronicleMapKeeper<K, V> {
     public ChronicleMap<K, V> acquire(@Nonnull String filename) throws ChronicleIOException {
         ChronicleMap<K, V> acquire = super.acquire(filename);
         // 存储文件名和到期时间
-        long expireEpoch = EpochTime.getEpochMillis() + expireMillis;
+        long expireEpoch = EpochUtil.getEpochMillis() + expireMillis;
         System.out.println("分配新文件 -> " + filename + ", 过期时间为 -> " + expireEpoch);
         lastUsedLog.put(filename, expireEpoch);
         return acquire;

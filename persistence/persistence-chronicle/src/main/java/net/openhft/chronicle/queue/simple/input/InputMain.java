@@ -15,7 +15,7 @@ public class InputMain {
 
         String path = "queue";
         try (RollingChronicleQueue queue = SingleChronicleQueueBuilder.binary(path).build()) {
-            ExcerptAppender appender = queue.acquireAppender();
+            ExcerptAppender appender = queue.createAppender();
             try (Scanner read = new Scanner(System.in)) {
                 while (true) {
                     System.out.println("type something");

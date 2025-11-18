@@ -55,7 +55,7 @@ public abstract class AbstractChronicleAppender<IN> extends CloseableChronicleAc
     @OnlyAllowSingleThreadAccess
     public <T> void append(@Nullable T t, @Nonnull Serializer<T, IN> serializer)
             throws IllegalStateException, ChronicleAppendException {
-        append(serializer.serialization(t));
+        append(serializer.serialize(t));
     }
 
     /**

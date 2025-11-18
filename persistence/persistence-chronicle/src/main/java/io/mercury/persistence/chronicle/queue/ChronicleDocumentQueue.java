@@ -51,7 +51,7 @@ public class ChronicleDocumentQueue<T extends Marshallable>
                                                            @CheckForNull Supplier<T> dataProducer)
             throws IllegalStateException {
         return new ChronicleDocumentAppender<>(EpochSequence.allocate(), appenderName, logger,
-                internalQueue.acquireAppender(), dataProducer);
+                internalQueue.createAppender(), dataProducer);
     }
 
     /**

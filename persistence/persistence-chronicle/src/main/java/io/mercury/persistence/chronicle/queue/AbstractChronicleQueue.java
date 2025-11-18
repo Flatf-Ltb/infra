@@ -456,7 +456,7 @@ public abstract class AbstractChronicleQueue<
         private String folder = "auto-created-" + datetimeOfSecond() + File.separator;
         private boolean readOnly = false;
         private long epoch = 0L;
-        private FileCycle fileCycle = FileCycle.SMALL_DAILY;
+        private FileCycle fileCycle = FileCycle.FAST_DAILY;
         private ObjIntConsumer<File> storeFileListener;
         private int fileClearCycle = 0;
 

@@ -1,15 +1,5 @@
 package io.mercury.persistence.chronicle.queue.multitype;
 
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.Immutable;
-import javax.annotation.concurrent.NotThreadSafe;
-
-import org.slf4j.Logger;
-
 import io.mercury.common.codec.Envelope;
 import io.mercury.common.sequence.EpochSequence;
 import io.mercury.persistence.chronicle.queue.AbstractChronicleReader;
@@ -18,9 +8,17 @@ import io.mercury.persistence.chronicle.queue.multitype.ChronicleMultitypeJsonQu
 import io.mercury.persistence.chronicle.queue.multitype.ChronicleMultitypeJsonQueue.ChronicleMultitypeJsonReader;
 import io.mercury.persistence.chronicle.queue.params.ReaderParams;
 import io.mercury.serialization.json.JsonMsg;
-import io.mercury.serialization.json.JsonParser.JsonParseException;
+import io.mercury.serialization.json.JsonParseException;
 import net.openhft.chronicle.queue.ExcerptAppender;
 import net.openhft.chronicle.queue.ExcerptTailer;
+import org.slf4j.Logger;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
+import javax.annotation.concurrent.NotThreadSafe;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 @Immutable
 public class ChronicleMultitypeJsonQueue<E extends Envelope> extends
@@ -60,7 +58,7 @@ public class ChronicleMultitypeJsonQueue<E extends Envelope> extends
                                                                 @Nullable Supplier<String> dataProducer)
             throws IllegalStateException {
         return new ChronicleMultitypeJsonAppender<>(EpochSequence.allocate(), appenderName, logger,
-                internalQueue.acquireAppender(), dataProducer);
+                internalQueue.createAppender(), dataProducer);
     }
 
     /**

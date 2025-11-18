@@ -25,8 +25,8 @@ public class OrderAdderMain {
     public static void main(String[] args) throws IOException {
         ClassAliasPool.CLASS_ALIASES.addAlias(NewOrderSingle.class);
         try (ChronicleQueue q = SingleChronicleQueueBuilder.binary("in")
-                .rollCycle(RollCycles.TEST8_DAILY).build()) {
-            OMSIn in = q.acquireAppender().methodWriter(OMSIn.class);
+                .rollCycle(RollCycles.DEFAULT).build()) {
+            OMSIn in = q.methodWriter(OMSIn.class);
             OMSIn in2 = Mocker.logging(OMSIn.class, "in - ", System.out);
 
             NewOrderSingle nos = new NewOrderSingle()

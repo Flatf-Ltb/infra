@@ -2,7 +2,7 @@ package io.mercury.persistence.chronicle.queue;
 
 import io.mercury.common.number.Randoms;
 import io.mercury.common.sequence.EpochSequence;
-import io.mercury.common.thread.SleepSupport;
+import io.mercury.common.thread.Sleep;
 import io.mercury.persistence.chronicle.queue.ChronicleStringQueue.ChronicleStringAppender;
 import io.mercury.persistence.chronicle.queue.ChronicleStringQueue.ChronicleStringReader;
 import io.mercury.persistence.chronicle.queue.params.ReaderParams;
@@ -45,7 +45,7 @@ public class ChronicleStringQueue
                                                       @CheckForNull Supplier<String> dataProducer)
             throws IllegalStateException {
         return new ChronicleStringAppender(EpochSequence.allocate(), appenderName, logger,
-                internalQueue.acquireAppender(), dataProducer);
+                internalQueue.createAppender(), dataProducer);
     }
 
     /**
@@ -108,14 +108,14 @@ public class ChronicleStringQueue
     }
 
     public static void main(String[] args) {
-        try (ChronicleStringQueue queue = ChronicleStringQueue.newBuilder().fileCycle(FileCycle.MINUTELY).build()) {
+        try (ChronicleStringQueue queue = ChronicleStringQueue.newBuilder().fileCycle(FileCycle.FAST_DAILY).build()) {
             ChronicleStringAppender appender = queue.acquireAppender();
             ChronicleStringReader reader = queue.createReader(System.out::println);
             new Thread(() -> {
                 for (; ; ) {
                     try {
                         appender.append(String.valueOf(Randoms.nextLong()));
-                        SleepSupport.sleep(100);
+                        Sleep.millis(100);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

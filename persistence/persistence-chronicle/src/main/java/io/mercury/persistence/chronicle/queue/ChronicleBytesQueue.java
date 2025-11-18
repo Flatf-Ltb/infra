@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 
 import io.mercury.common.number.Randoms;
 import io.mercury.common.sequence.EpochSequence;
-import io.mercury.common.thread.SleepSupport;
+import io.mercury.common.thread.Sleep;
 import io.mercury.persistence.chronicle.queue.ChronicleBytesQueue.ChronicleBytesAppender;
 import io.mercury.persistence.chronicle.queue.ChronicleBytesQueue.ChronicleBytesReader;
 import io.mercury.persistence.chronicle.queue.params.ReaderParams;
@@ -58,7 +58,7 @@ public class ChronicleBytesQueue
                                                      @CheckForNull Supplier<ByteBuffer> dataProducer)
             throws IllegalStateException {
         return new ChronicleBytesAppender(EpochSequence.allocate(), appenderName, logger,
-                internalQueue.acquireAppender(), dataProducer);
+                internalQueue.createAppender(), dataProducer);
     }
 
     /**
@@ -166,7 +166,7 @@ public class ChronicleBytesQueue
 
     public static void main(String[] args) {
         ChronicleBytesQueue queue = ChronicleBytesQueue.newBuilder().folder("byte-test").bufferSize(512)
-                .fileCycle(FileCycle.MINUTELY).build();
+                .fileCycle(FileCycle.FAST_DAILY).build();
         ChronicleBytesAppender writer = queue.acquireAppender();
         ChronicleBytesReader reader = queue.createReader(next -> System.out.println(new String(next.array())));
         new Thread(() -> {
@@ -175,7 +175,7 @@ public class ChronicleBytesQueue
                 try {
                     writer.append(buffer.put(String.valueOf(Randoms.nextLong()).getBytes()));
                     buffer.clear();
-                    SleepSupport.sleep(100);
+                    Sleep.millis(100);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

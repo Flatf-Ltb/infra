@@ -19,7 +19,6 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>actors</module>
         <module>commons</module>
         <module>libraries</module>
         <module>persistence</module>

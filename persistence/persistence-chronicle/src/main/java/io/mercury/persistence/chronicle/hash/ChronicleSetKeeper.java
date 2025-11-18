@@ -45,7 +45,7 @@ public class ChronicleSetKeeper<E> extends FilesKeeper<String, ChronicleSet<E>> 
                 } else {
                     // Is recover data
                     if (cfg.isRecover())
-                        return builder.createOrRecoverPersistedTo(mapFile);
+                        return builder.recoverPersistedTo(mapFile, true);
                     else
                         return builder.createPersistedTo(mapFile);
                 }

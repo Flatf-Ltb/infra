@@ -14,7 +14,7 @@ public class TranslatorMain {
         String path_en = "queue-en";
         try (ChronicleQueue queue_fr = SingleChronicleQueueBuilder.binary(path_fr).build();
              ChronicleQueue queue_en = SingleChronicleQueueBuilder.binary(path_en).build()) {
-            MessageConsumer messageConsumer = queue_fr.acquireAppender().methodWriter(MessageConsumer.class);
+            MessageConsumer messageConsumer = queue_fr.methodWriter(MessageConsumer.class);
             MessageConsumer simpleTranslator = new SimpleTranslator(messageConsumer);
             MethodReader methodReader = queue_en.createTailer().methodReader(simpleTranslator);
             while (true)
