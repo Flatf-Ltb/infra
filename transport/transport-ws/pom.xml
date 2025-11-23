@@ -55,7 +55,7 @@
         <dependency>
             <groupId>org.asynchttpclient</groupId>
             <artifactId>async-http-client</artifactId>
-            <version>3.0.2</version>
+            <version>3.0.4</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -93,7 +93,6 @@
                     <groupId>com.sun.activation</groupId>
                     <artifactId>jakarta.activation</artifactId>
                 </exclusion>
-
             </exclusions>
         </dependency>
 

@@ -12,7 +12,7 @@
     <name>serialization-sbe</name>
 
     <properties>
-        <sbe-tool.version>1.35.6</sbe-tool.version>
+        <sbe-tool.version>1.36.2</sbe-tool.version>
     </properties>
 
     <build>
