@@ -24,7 +24,7 @@ import net.openhft.chronicle.queue.ExcerptTailer;
 
 @Immutable
 public class ChronicleBytesQueue
-        extends AbstractChronicleQueue<ByteBuffer, ByteBuffer, ChronicleBytesAppender, ChronicleBytesReader> {
+        extends AbstractChronicleQueue<ByteBuffer, ChronicleBytesAppender, ChronicleBytesReader> {
 
     private final int bufferSize;
     private final boolean useDirectMemory;
@@ -64,7 +64,7 @@ public class ChronicleBytesQueue
     /**
      * @author yellow013
      */
-    public static final class BytesQueueBuilder extends AbstractQueueBuilder<BytesQueueBuilder> {
+    public static final class BytesQueueBuilder extends BaseQueueBuilder<BytesQueueBuilder> {
 
         private int bufferSize = 512;
         private boolean useDirectMemory = false;
@@ -176,8 +176,7 @@ public class ChronicleBytesQueue
                     writer.append(buffer.put(String.valueOf(Randoms.nextLong()).getBytes()));
                     buffer.clear();
                     Sleep.millis(100);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } catch (Exception ignored) {
                 }
             }
         }).start();

@@ -1,15 +1,14 @@
 package io.mercury.persistence.chronicle.queue.multitype;
 
-import javax.annotation.concurrent.Immutable;
-
 import io.mercury.common.codec.Envelope;
 import io.mercury.persistence.chronicle.queue.AbstractChronicleQueue;
 import io.mercury.persistence.chronicle.queue.AbstractChronicleReader;
 
+import javax.annotation.concurrent.Immutable;
+
 /**
  * @param <E>
- * @param <IN>
- * @param <OUT>
+ * @param <T>
  * @param <AT>
  * @param <RT>
  * @author yellow013
@@ -18,17 +17,15 @@ import io.mercury.persistence.chronicle.queue.AbstractChronicleReader;
 public abstract class AbstractChronicleMultitypeQueue<
         // 信封类型
         E extends Envelope,
-        // 写入类型
-        IN,
-        // 读取类型
-        OUT,
+        // 写入读取类型
+        T,
         // 追加器类型
-        AT extends AbstractChronicleMultitypeAppender<E, IN>,
+        AT extends AbstractChronicleMultitypeAppender<E, T>,
         // 读取器类型
-        RT extends AbstractChronicleReader<OUT>>
-        extends AbstractChronicleQueue<IN, OUT, AT, RT> {
+        RT extends AbstractChronicleReader<T>>
+        extends AbstractChronicleQueue<T, AT, RT> {
 
-    protected AbstractChronicleMultitypeQueue(AbstractQueueBuilder<?> builder) {
+    protected AbstractChronicleMultitypeQueue(BaseQueueBuilder<?> builder) {
         super(builder);
     }
 

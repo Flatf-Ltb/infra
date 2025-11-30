@@ -2,6 +2,7 @@ package io.mercury.persistence.chronicle.queue;
 
 import io.mercury.common.annotation.AbstractFunction;
 import io.mercury.common.collections.MutableMaps;
+import io.mercury.common.datetime.TimeZone;
 import io.mercury.common.file.PermissionDeniedException;
 import io.mercury.common.lang.Asserter;
 import io.mercury.common.log4j2.Log4j2LoggerFactory;
@@ -21,6 +22,8 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import java.io.File;
 import java.lang.Thread.State;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
@@ -37,10 +40,9 @@ import static io.mercury.common.sys.SysProperties.USER_HOME;
 
 @Immutable
 public abstract class AbstractChronicleQueue<
-        IN, // 写入类型
-        OUT, // 读取类型
-        AT extends AbstractChronicleAppender<IN>, // 添加器类型
-        RT extends AbstractChronicleReader<OUT>> // 读取器类型
+        T, // 写入和读取类型
+        AT extends AbstractChronicleAppender<T>, // 添加器类型
+        RT extends AbstractChronicleReader<T>> // 读取器类型
         // 实现特定关闭对象
         implements net.openhft.chronicle.core.io.Closeable {
 
@@ -48,6 +50,8 @@ public abstract class AbstractChronicleQueue<
     protected final String folder;
     protected final boolean readOnly;
     protected final long epoch;
+    protected final LocalTime rollTime;
+    protected final ZoneId rollTimeZone;
     protected final FileCycle fileCycle;
 
     // 文件清理周期
@@ -62,11 +66,13 @@ public abstract class AbstractChronicleQueue<
 
     protected Logger logger = Log4j2LoggerFactory.getLogger(getClass());
 
-    protected AbstractChronicleQueue(AbstractQueueBuilder<?> builder) {
+    protected AbstractChronicleQueue(BaseQueueBuilder<?> builder) {
         this.rootPath = builder.rootPath;
         this.folder = builder.folder;
         this.readOnly = builder.readOnly;
         this.epoch = builder.epoch;
+        this.rollTime = builder.rollTime;
+        this.rollTimeZone = builder.rollTimeZone;
         this.fileCycle = builder.fileCycle;
         this.fileClearCycle = builder.fileClearCycle <= 0 ? 0 :
                 Math.max(10, builder.fileClearCycle);
@@ -94,8 +100,10 @@ public abstract class AbstractChronicleQueue<
                 .rollCycle(fileCycle.getRollCycle())
                 // 是否只读
                 .readOnly(readOnly)
-                // 设置时区
-                // .rollTimeZone(rollTimeZone)
+                // 设置滚动时间
+                .rollTime(rollTime)
+                // 设置滚动时区
+                .rollTimeZone(rollTimeZone)
                 // 文件存储回调
                 .storeFileListener(this::storeFileHandle);
         if (epoch > 0L) {
@@ -284,7 +292,7 @@ public abstract class AbstractChronicleQueue<
      * @return RT
      * @throws IllegalStateException ise
      */
-    public RT createReader(@Nonnull Consumer<OUT> dataConsumer)
+    public RT createReader(@Nonnull Consumer<T> dataConsumer)
             throws IllegalStateException {
         return createReader(generateReaderName(), ReaderParams.defaultParams(), dataConsumer);
     }
@@ -296,7 +304,7 @@ public abstract class AbstractChronicleQueue<
      * @throws IllegalStateException ise
      */
     public RT createReader(@Nonnull String readerName,
-                           @Nonnull Consumer<OUT> dataConsumer)
+                           @Nonnull Consumer<T> dataConsumer)
             throws IllegalStateException {
         return createReader(readerName, ReaderParams.defaultParams(), dataConsumer);
     }
@@ -307,7 +315,7 @@ public abstract class AbstractChronicleQueue<
      * @return RT
      * @throws IllegalStateException ise
      */
-    public RT createReader(@Nonnull ReaderParams param, @Nonnull Consumer<OUT> dataConsumer)
+    public RT createReader(@Nonnull ReaderParams param, @Nonnull Consumer<T> dataConsumer)
             throws IllegalStateException {
         return createReader(generateReaderName(), param, dataConsumer);
     }
@@ -319,7 +327,7 @@ public abstract class AbstractChronicleQueue<
      * @return RT
      * @throws IllegalStateException ise
      */
-    public RT createReader(@Nonnull String readerName, @Nonnull ReaderParams param, @Nonnull Consumer<OUT> dataConsumer)
+    public RT createReader(@Nonnull String readerName, @Nonnull ReaderParams param, @Nonnull Consumer<T> dataConsumer)
             throws IllegalStateException {
         if (isClosed()) {
             throw new IllegalStateException("Cannot be create reader, Chronicle queue is closed");
@@ -344,7 +352,7 @@ public abstract class AbstractChronicleQueue<
     protected abstract RT createReader(@Nonnull String readerName,
                                        @Nonnull ReaderParams param,
                                        @Nonnull Logger logger,
-                                       @Nonnull Consumer<OUT> dataConsumer) throws IllegalStateException;
+                                       @Nonnull Consumer<T> dataConsumer) throws IllegalStateException;
 
     /**
      * Appender counter
@@ -385,7 +393,7 @@ public abstract class AbstractChronicleQueue<
      * @return AT
      * @throws IllegalStateException ise
      */
-    public AT acquireAppender(@Nonnull Supplier<IN> dataProducer) throws IllegalStateException {
+    public AT acquireAppender(@Nonnull Supplier<T> dataProducer) throws IllegalStateException {
         Asserter.nonNull(dataProducer, "dataProducer");
         return acquireAppender(generateAppenderName(), dataProducer);
     }
@@ -397,7 +405,7 @@ public abstract class AbstractChronicleQueue<
      * @throws IllegalStateException ise
      */
     public AT acquireAppender(@Nonnull String appenderName,
-                              @CheckForNull Supplier<IN> dataProducer)
+                              @CheckForNull Supplier<T> dataProducer)
             throws IllegalStateException {
         if (isClosed())
             throw new IllegalStateException("Cannot be acquire appender, Chronicle queue is closed");
@@ -417,7 +425,7 @@ public abstract class AbstractChronicleQueue<
     @AbstractFunction
     protected abstract AT acquireAppender(@Nonnull String appenderName,
                                           @Nonnull Logger logger,
-                                          @CheckForNull Supplier<IN> dataProducer)
+                                          @CheckForNull Supplier<T> dataProducer)
             throws IllegalStateException;
 
     /**
@@ -450,12 +458,14 @@ public abstract class AbstractChronicleQueue<
      * @param <B>
      * @author yellow013
      */
-    protected abstract static class AbstractQueueBuilder<B extends AbstractQueueBuilder<B>> {
+    protected abstract static class BaseQueueBuilder<B extends BaseQueueBuilder<B>> {
 
         private String rootPath = JAVA_IO_TMPDIR + File.separator;
         private String folder = "auto-created-" + datetimeOfSecond() + File.separator;
         private boolean readOnly = false;
         private long epoch = 0L;
+        private LocalTime rollTime = LocalTime.MIN;
+        private ZoneId rollTimeZone = TimeZone.UTC;
         private FileCycle fileCycle = FileCycle.FAST_DAILY;
         private ObjIntConsumer<File> storeFileListener;
         private int fileClearCycle = 0;
@@ -496,6 +506,18 @@ public abstract class AbstractChronicleQueue<
 
         public B epoch(long epoch) {
             this.epoch = epoch;
+            return self();
+        }
+
+        public B rollTime(@Nonnull LocalTime rollTime) {
+            Asserter.nonNull(rollTime, "rollTime");
+            this.rollTime = rollTime;
+            return self();
+        }
+
+        public B rollTimeZone(@Nonnull ZoneId rollTimeZone) {
+            Asserter.nonNull(rollTimeZone, "rollTimeZone");
+            this.rollTimeZone = rollTimeZone;
             return self();
         }
 

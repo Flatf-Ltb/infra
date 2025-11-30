@@ -43,6 +43,12 @@
             <groupId>net.openhft</groupId>
             <artifactId>chronicle-queue</artifactId>
             <version>5.27ea11</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- ######################################################### -->
@@ -53,6 +59,12 @@
             <groupId>net.openhft</groupId>
             <artifactId>chronicle-map</artifactId>
             <version>3.27ea1</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- A set of annotations used for code inspection support and code documentation. -->

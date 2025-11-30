@@ -21,7 +21,7 @@ import net.openhft.chronicle.wire.Marshallable;
 
 @Immutable
 public class ChronicleDocumentQueue<T extends Marshallable>
-        extends AbstractChronicleQueue<T, T, ChronicleDocumentAppender<T>, ChronicleDocumentReader<T>> {
+        extends AbstractChronicleQueue<T, ChronicleDocumentAppender<T>, ChronicleDocumentReader<T>> {
 
     private final Supplier<T> marshallableSupplier;
 
@@ -58,7 +58,7 @@ public class ChronicleDocumentQueue<T extends Marshallable>
      * @author yellow013
      */
     public static final class DocumentQueueBuilder<T extends Marshallable>
-            extends AbstractQueueBuilder<DocumentQueueBuilder<T>> {
+            extends BaseQueueBuilder<DocumentQueueBuilder<T>> {
 
         private Supplier<T> marshallableSupplier;
 

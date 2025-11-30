@@ -27,7 +27,7 @@ import static io.mercury.common.thread.Threads.startNewThread;
 
 @Immutable
 @NotThreadSafe
-public abstract class AbstractChronicleReader<OUT> extends CloseableChronicleAccessor implements Runnable {
+public abstract class AbstractChronicleReader<T> extends CloseableChronicleAccessor implements Runnable {
 
     protected final FileCycle fileCycle;
 
@@ -35,7 +35,7 @@ public abstract class AbstractChronicleReader<OUT> extends CloseableChronicleAcc
 
     protected final ExcerptTailer tailer;
 
-    protected final Consumer<OUT> dataConsumer;
+    protected final Consumer<T> dataConsumer;
 
     /**
      * @param allocateSeq  long
@@ -52,7 +52,7 @@ public abstract class AbstractChronicleReader<OUT> extends CloseableChronicleAcc
                                       ReaderParams params,
                                       Logger logger,
                                       ExcerptTailer tailer,
-                                      Consumer<OUT> dataConsumer) {
+                                      Consumer<T> dataConsumer) {
         super(allocateSeq, readerName, logger);
         this.fileCycle = fileCycle;
         this.params = params;
@@ -154,7 +154,7 @@ public abstract class AbstractChronicleReader<OUT> extends CloseableChronicleAcc
      * @return OUT
      */
     @AbstractFunction
-    protected abstract OUT next0();
+    protected abstract T next0();
 
     /**
      * Get next element of current cursor position.
@@ -165,7 +165,7 @@ public abstract class AbstractChronicleReader<OUT> extends CloseableChronicleAcc
      */
     @CheckForNull
     @OnlyAllowSingleThreadAccess
-    public OUT next() throws IllegalStateException, ChronicleReadException {
+    public T next() throws IllegalStateException, ChronicleReadException {
         if (isClose)
             throw new IllegalStateException("Unable to read next, Chronicle queue is closed");
         try {
@@ -191,7 +191,7 @@ public abstract class AbstractChronicleReader<OUT> extends CloseableChronicleAcc
                 exit();
                 break;
             }
-            OUT next = null;
+            T next = null;
             try {
                 next = next();
             } catch (ChronicleReadException e) {

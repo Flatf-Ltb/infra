@@ -8,7 +8,6 @@ import io.mercury.persistence.chronicle.queue.multitype.ChronicleMultitypeJsonQu
 import io.mercury.persistence.chronicle.queue.multitype.ChronicleMultitypeJsonQueue.ChronicleMultitypeJsonReader;
 import io.mercury.persistence.chronicle.queue.params.ReaderParams;
 import io.mercury.serialization.json.JsonMsg;
-import io.mercury.serialization.json.JsonParseException;
 import net.openhft.chronicle.queue.ExcerptAppender;
 import net.openhft.chronicle.queue.ExcerptTailer;
 import org.slf4j.Logger;
@@ -25,10 +24,8 @@ public class ChronicleMultitypeJsonQueue<E extends Envelope> extends
         AbstractChronicleMultitypeQueue<
                 // 信封类型
                 E,
-                // 写入类型
+                // 写入读取类型
                 String,
-                // 读取类型
-                JsonMsg,
                 // 追加器类型
                 ChronicleMultitypeJsonAppender<E>,
                 // 读取器类型
@@ -46,7 +43,7 @@ public class ChronicleMultitypeJsonQueue<E extends Envelope> extends
     protected ChronicleMultitypeJsonReader createReader(@Nonnull String readerName,
                                                         @Nonnull ReaderParams params,
                                                         @Nonnull Logger logger,
-                                                        @Nonnull Consumer<JsonMsg> dataConsumer)
+                                                        @Nonnull Consumer<String> dataConsumer)
             throws IllegalStateException {
         return new ChronicleMultitypeJsonReader(EpochSequence.allocate(), readerName, fileCycle(), params, logger,
                 internalQueue.createTailer(), dataConsumer);
@@ -64,7 +61,7 @@ public class ChronicleMultitypeJsonQueue<E extends Envelope> extends
     /**
      * @author yellow013
      */
-    public static final class MultitypeJsonQueueBuilder<E extends Envelope> extends AbstractQueueBuilder<MultitypeJsonQueueBuilder<E>> {
+    public static final class MultitypeJsonQueueBuilder<E extends Envelope> extends BaseQueueBuilder<MultitypeJsonQueueBuilder<E>> {
 
         private MultitypeJsonQueueBuilder() {
         }
@@ -114,7 +111,7 @@ public class ChronicleMultitypeJsonQueue<E extends Envelope> extends
 
     @Immutable
     @NotThreadSafe
-    public static final class ChronicleMultitypeJsonReader extends AbstractChronicleReader<JsonMsg> {
+    public static final class ChronicleMultitypeJsonReader extends AbstractChronicleReader<String> {
 
         ChronicleMultitypeJsonReader(long allocateSeq,
                                      String readerName,
@@ -122,21 +119,13 @@ public class ChronicleMultitypeJsonQueue<E extends Envelope> extends
                                      ReaderParams params,
                                      Logger logger,
                                      ExcerptTailer tailer,
-                                     Consumer<JsonMsg> dataConsumer) {
+                                     Consumer<String> dataConsumer) {
             super(allocateSeq, readerName, fileCycle, params, logger, tailer, dataConsumer);
         }
 
         @Override
-        protected JsonMsg next0() {
-            String next = tailer.readText();
-            if (next == null)
-                return null;
-            try {
-                return JsonMsg.fromJson(next);
-            } catch (JsonParseException e) {
-                logger.info("Parse error from JSON -> {}", next);
-                return null;
-            }
+        protected String next0() {
+            return tailer.readText();
         }
 
     }

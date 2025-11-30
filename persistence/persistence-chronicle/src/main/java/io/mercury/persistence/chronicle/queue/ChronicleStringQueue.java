@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 
 @Immutable
 public class ChronicleStringQueue
-        extends AbstractChronicleQueue<String, String, ChronicleStringAppender, ChronicleStringReader> {
+        extends AbstractChronicleQueue<String, ChronicleStringAppender, ChronicleStringReader> {
 
     private ChronicleStringQueue(StringQueueBuilder builder) {
         super(builder);
@@ -51,7 +51,7 @@ public class ChronicleStringQueue
     /**
      * @author yellow013
      */
-    public static final class StringQueueBuilder extends AbstractQueueBuilder<StringQueueBuilder> {
+    public static final class StringQueueBuilder extends BaseQueueBuilder<StringQueueBuilder> {
 
         private StringQueueBuilder() {
         }
@@ -108,7 +108,10 @@ public class ChronicleStringQueue
     }
 
     public static void main(String[] args) {
-        try (ChronicleStringQueue queue = ChronicleStringQueue.newBuilder().fileCycle(FileCycle.FAST_DAILY).build()) {
+        try (ChronicleStringQueue queue = ChronicleStringQueue.newBuilder()
+                .rootPath("d:/dump")
+
+                .fileCycle(FileCycle.FAST_DAILY).build()) {
             ChronicleStringAppender appender = queue.acquireAppender();
             ChronicleStringReader reader = queue.createReader(System.out::println);
             new Thread(() -> {
@@ -116,8 +119,7 @@ public class ChronicleStringQueue
                     try {
                         appender.append(String.valueOf(Randoms.nextLong()));
                         Sleep.millis(100);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    } catch (Exception ignored) {
                     }
                 }
             }).start();

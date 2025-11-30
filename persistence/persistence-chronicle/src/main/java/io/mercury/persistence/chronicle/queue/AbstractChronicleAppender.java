@@ -15,16 +15,16 @@ import java.util.function.Supplier;
 
 @Immutable
 @NotThreadSafe
-public abstract class AbstractChronicleAppender<IN> extends CloseableChronicleAccessor
+public abstract class AbstractChronicleAppender<T> extends CloseableChronicleAccessor
         implements Runnable {
 
     protected final ExcerptAppender appender;
 
-    protected final Supplier<IN> dataProducer;
+    protected final Supplier<T> dataProducer;
 
     protected AbstractChronicleAppender(long allocateSeq, String appenderName,
                                         Logger logger, ExcerptAppender appender,
-                                        Supplier<IN> dataProducer) {
+                                        Supplier<T> dataProducer) {
         super(allocateSeq, appenderName, logger);
         this.appender = appender;
         this.dataProducer = dataProducer;
@@ -47,15 +47,15 @@ public abstract class AbstractChronicleAppender<IN> extends CloseableChronicleAc
     }
 
     /**
-     * @param t          T
-     * @param serializer Serializer<T, IN>
+     * @param in          IN
+     * @param serializer Serializer<IN, T>
      * @throws IllegalStateException    ise
      * @throws ChronicleAppendException cae
      */
     @OnlyAllowSingleThreadAccess
-    public <T> void append(@Nullable T t, @Nonnull Serializer<T, IN> serializer)
+    public <IN> void append(@Nullable IN in, @Nonnull Serializer<IN, T> serializer)
             throws IllegalStateException, ChronicleAppendException {
-        append(serializer.serialize(t));
+        append(serializer.serialize(in));
     }
 
     /**
@@ -64,7 +64,7 @@ public abstract class AbstractChronicleAppender<IN> extends CloseableChronicleAc
      * @throws ChronicleAppendException cae
      */
     @OnlyAllowSingleThreadAccess
-    public void append(@Nullable IN in) throws IllegalStateException, ChronicleAppendException {
+    public void append(@Nullable T in) throws IllegalStateException, ChronicleAppendException {
         if (isClose) {
             throw new IllegalStateException("Unable to append data, Chronicle queue is closed");
         }
@@ -80,7 +80,7 @@ public abstract class AbstractChronicleAppender<IN> extends CloseableChronicleAc
     }
 
     @AbstractFunction
-    protected abstract void append0(@Nonnull IN in);
+    protected abstract void append0(@Nonnull T in);
 
     @Override
     public void run() {
@@ -90,7 +90,7 @@ public abstract class AbstractChronicleAppender<IN> extends CloseableChronicleAc
                     logger.info("Chronicle queue is closed, {} Thread exit", getAppenderName());
                     break;
                 } else {
-                    IN in = dataProducer.get();
+                    T in = dataProducer.get();
                     append(in);
                 }
             }

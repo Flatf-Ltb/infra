@@ -28,8 +28,7 @@ public class ChronicleMapTest {
 				System.out.println(acquire.size());
 				Sleep.millis(2000);
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (IOException ignored) {
 		}
 
 	}
