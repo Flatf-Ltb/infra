@@ -57,7 +57,6 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <parameters>true</parameters>
-                    <enablePreview>true</enablePreview>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                     <release>${java.version}</release>
