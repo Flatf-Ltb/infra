@@ -36,7 +36,7 @@
         <slf4j.version>2.0.17</slf4j.version>
         <junit.version>4.13.2</junit.version>
         <jupiter.version>5.14.1</jupiter.version>
-        <netty.version>4.2.7.Final</netty.version>
+        <netty.version>4.2.9.Final</netty.version>
         <jackson.version>2.19.4</jackson.version>
         <guava.version>33.5.0-jre</guava.version>
     </properties>
@@ -116,6 +116,13 @@
                 <groupId>org.jetbrains</groupId>
                 <artifactId>annotations</artifactId>
                 <version>26.0.2</version>
+            </dependency>
+            <!-- Lombok is a Java library that provides annotations to simplify Java development
+                 by automating the generation of boilerplate code. -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.42</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

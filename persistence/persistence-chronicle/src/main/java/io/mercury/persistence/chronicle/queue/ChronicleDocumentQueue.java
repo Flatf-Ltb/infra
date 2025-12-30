@@ -1,16 +1,6 @@
 package io.mercury.persistence.chronicle.queue;
 
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.Immutable;
-import javax.annotation.concurrent.NotThreadSafe;
-
-import org.slf4j.Logger;
-
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 import io.mercury.common.sequence.EpochSequence;
 import io.mercury.persistence.chronicle.queue.ChronicleDocumentQueue.ChronicleDocumentAppender;
 import io.mercury.persistence.chronicle.queue.ChronicleDocumentQueue.ChronicleDocumentReader;
@@ -18,6 +8,14 @@ import io.mercury.persistence.chronicle.queue.params.ReaderParams;
 import net.openhft.chronicle.queue.ExcerptAppender;
 import net.openhft.chronicle.queue.ExcerptTailer;
 import net.openhft.chronicle.wire.Marshallable;
+import org.slf4j.Logger;
+
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+import javax.annotation.concurrent.Immutable;
+import javax.annotation.concurrent.NotThreadSafe;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 @Immutable
 public class ChronicleDocumentQueue<T extends Marshallable>
@@ -27,7 +25,7 @@ public class ChronicleDocumentQueue<T extends Marshallable>
 
     private ChronicleDocumentQueue(DocumentQueueBuilder<T> builder) {
         super(builder);
-        Asserter.nonNull(builder.marshallableSupplier, "builder.marshallableSupplier");
+        Validator.nonNull(builder.marshallableSupplier, "builder.marshallableSupplier");
         this.marshallableSupplier = builder.marshallableSupplier;
     }
 
@@ -36,12 +34,12 @@ public class ChronicleDocumentQueue<T extends Marshallable>
     }
 
     @Override
-    protected ChronicleDocumentReader<T> createReader(@Nonnull String readerName,
-                                                      @Nonnull ReaderParams readerParam,
+    protected ChronicleDocumentReader<T> createReader(@Nonnull String name,
+                                                      @Nonnull ReaderParams param,
                                                       @Nonnull Logger logger,
                                                       @Nonnull Consumer<T> consumer)
             throws IllegalStateException {
-        return new ChronicleDocumentReader<>(EpochSequence.allocate(), readerName, fileCycle(), readerParam, logger,
+        return new ChronicleDocumentReader<>(EpochSequence.allocate(), name, fileCycle(), param, logger,
                 internalQueue.createTailer(), consumer, marshallableSupplier);
     }
 
@@ -86,11 +84,11 @@ public class ChronicleDocumentQueue<T extends Marshallable>
     public static final class ChronicleDocumentAppender<T extends Marshallable> extends AbstractChronicleAppender<T> {
 
         ChronicleDocumentAppender(long allocateSeq,
-                                  String appenderName,
+                                  String name,
                                   Logger logger,
                                   ExcerptAppender appender,
                                   Supplier<T> dataProducer) {
-            super(allocateSeq, appenderName, logger, appender, dataProducer);
+            super(allocateSeq, name, logger, appender, dataProducer);
         }
 
         @Override
@@ -107,14 +105,14 @@ public class ChronicleDocumentQueue<T extends Marshallable>
         private final Supplier<T> marshallableSupplier;
 
         ChronicleDocumentReader(long allocateSeq,
-                                String readerName,
+                                String name,
                                 FileCycle fileCycle,
                                 ReaderParams param,
                                 Logger logger,
                                 ExcerptTailer tailer,
                                 Consumer<T> dataConsumer,
                                 Supplier<T> marshallableSupplier) {
-            super(allocateSeq, readerName, fileCycle, param, logger, tailer, dataConsumer);
+            super(allocateSeq, name, fileCycle, param, logger, tailer, dataConsumer);
             this.marshallableSupplier = marshallableSupplier;
         }
 

@@ -1,6 +1,6 @@
 package io.mercury.common.file;
 
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 import io.mercury.common.log4j2.Log4j2LoggerFactory;
 import io.mercury.common.serialization.specific.BytesSerializer;
 import org.apache.commons.collections4.CollectionUtils;
@@ -90,7 +90,7 @@ public final class FileChannelWriter {
     public static <T> File write(Collection<T> data, @Nonnull BytesSerializer<T> serializer,
                                  File target, int capacity, boolean append)
             throws NullPointerException, IOException {
-        Asserter.nonNull(target, "target");
+        Validator.nonNull(target, "target");
         if (capacity < 128)
             capacity = 4096;
         File parentFile = target.getParentFile();

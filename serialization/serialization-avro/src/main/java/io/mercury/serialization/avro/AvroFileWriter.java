@@ -1,6 +1,6 @@
 package io.mercury.serialization.avro;
 
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 import io.mercury.common.log4j2.Log4j2LoggerFactory;
 import org.apache.avro.Schema;
 import org.apache.avro.file.CodecFactory;
@@ -56,7 +56,7 @@ public final class AvroFileWriter<T extends SpecificRecord> implements Closeable
      */
     public void append(@Nullable CodecFactory codec, final File saveFile, final Collection<T> records)
             throws IOException {
-        Asserter.nonNull(saveFile, "saveFile");
+        Validator.nonNull(saveFile, "saveFile");
         File dir = saveFile.getParentFile();
         if (!dir.exists()) {
             boolean mkdirs = dir.mkdirs();

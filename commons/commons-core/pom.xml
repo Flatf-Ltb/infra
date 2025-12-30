@@ -12,7 +12,7 @@
     <name>commons-core</name>
 
     <properties>
-        <log4j2.version>2.25.2</log4j2.version>
+        <log4j2.version>2.25.3</log4j2.version>
     </properties>
 
     <build>
@@ -42,7 +42,7 @@
         </dependency>
 
         <!-- #################### Log dependency #################### -->
-        <!-- ### Use slf4j API + log4j2 Implement + slf4j Adaptor ### -->
+        <!-- ### Use slf4j API + log4j2 Implement + slf4j Adapter ### -->
         <!-- The SLF4j API -->
         <dependency>
             <groupId>org.slf4j</groupId>

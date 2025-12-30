@@ -1,7 +1,7 @@
 package io.mercury.common.sequence;
 
 import io.mercury.common.epoch.EpochUtil;
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 
 import java.time.ZonedDateTime;
 
@@ -40,7 +40,7 @@ public class TimePoint implements OrderedObject<TimePoint> {
      * @return TimePoint
      */
     public static TimePoint with(ZonedDateTime datetime) {
-        Asserter.nonNull(datetime, "datetime");
+        Validator.nonNull(datetime, "datetime");
         return new TimePoint(datetime, 0);
     }
 
@@ -51,7 +51,7 @@ public class TimePoint implements OrderedObject<TimePoint> {
      * @return TimePoint
      */
     public static TimePoint with(TimePoint previous) {
-        Asserter.nonNull(previous, "previous");
+        Validator.nonNull(previous, "previous");
         return new TimePoint(previous.datetime, previous.repeat + 1);
     }
 

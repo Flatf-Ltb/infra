@@ -1,6 +1,6 @@
 package io.mercury.common.util;
 
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 
 import javax.annotation.Nonnull;
 
@@ -18,7 +18,7 @@ public final class BitOperator {
      * @throws ArrayIndexOutOfBoundsException exception
      */
     public static char bytesToChar(byte[] bytes) throws ArrayIndexOutOfBoundsException {
-        Asserter.requiredLength(bytes, 2, "bytes array");
+        Validator.requiredLength(bytes, 2, "bytes array");
         return (char) (((bytes[0] & 0xFF) << 8) | (bytes[1] & 0xFF));
     }
 
@@ -42,7 +42,7 @@ public final class BitOperator {
      * @throws ArrayIndexOutOfBoundsException exception
      */
     public static int bytesToInt(@Nonnull byte[] bytes) throws ArrayIndexOutOfBoundsException {
-        Asserter.requiredLength(bytes, 4, "bytes array");
+        Validator.requiredLength(bytes, 4, "bytes array");
         return ((bytes[0] & 0xFF) << 24) | ((bytes[1] & 0xFF) << 16) | ((bytes[2] & 0xFF) << 8) | (bytes[3] & 0xFF);
     }
 

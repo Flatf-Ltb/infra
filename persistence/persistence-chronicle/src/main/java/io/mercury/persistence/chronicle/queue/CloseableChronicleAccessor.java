@@ -1,6 +1,7 @@
 package io.mercury.persistence.chronicle.queue;
 
 import io.mercury.common.annotation.AbstractFunction;
+import lombok.Getter;
 import org.slf4j.Logger;
 
 /**
@@ -12,14 +13,15 @@ public abstract class CloseableChronicleAccessor implements net.openhft.chronicl
 
     protected volatile boolean isClose = false;
 
+    @Getter
     private final long allocateSeq;
 
-    protected final String accessorName;
+    protected final String name;
     protected final Logger logger;
 
-    protected CloseableChronicleAccessor(long allocateSeq, String accessorName, Logger logger) {
+    protected CloseableChronicleAccessor(long allocateSeq, String name, Logger logger) {
         this.allocateSeq = allocateSeq;
-        this.accessorName = accessorName;
+        this.name = name;
         this.logger = logger;
     }
 
@@ -27,10 +29,6 @@ public abstract class CloseableChronicleAccessor implements net.openhft.chronicl
     public void close() {
         this.isClose = true;
         close0();
-    }
-
-    public long getAllocateSeq() {
-        return allocateSeq;
     }
 
     @Override

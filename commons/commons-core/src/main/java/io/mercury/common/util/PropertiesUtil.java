@@ -1,7 +1,7 @@
 package io.mercury.common.util;
 
 import io.mercury.common.character.Charsets;
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 import io.mercury.common.sys.LibraryPathManager;
 import org.slf4j.Logger;
 
@@ -30,7 +30,7 @@ public final class PropertiesUtil {
      * @throws IOException ioe
      */
     public static Properties load(final URL url) throws IOException {
-        Asserter.nonNull(url, "url");
+        Validator.nonNull(url, "url");
         return load(url.openStream());
     }
 
@@ -40,7 +40,7 @@ public final class PropertiesUtil {
      * @throws IOException ioe
      */
     public static Properties load(@Nonnull final File file) throws IOException {
-        Asserter.nonNull(file, "file");
+        Validator.nonNull(file, "file");
         return load(new FileInputStream(file));
     }
 
@@ -60,8 +60,8 @@ public final class PropertiesUtil {
      * @throws IOException ioe
      */
     public static Properties load(@Nonnull final String text, @Nonnull final Charset charset) throws IOException {
-        Asserter.nonNull(text, "text");
-        Asserter.nonNull(charset, "charset");
+        Validator.nonNull(text, "text");
+        Validator.nonNull(charset, "charset");
         if (StringSupport.nonEmpty(text))
             return load(new ByteArrayInputStream(text.getBytes(charset)));
         return new Properties();
@@ -73,7 +73,7 @@ public final class PropertiesUtil {
      * @throws IOException ioe
      */
     public static Properties load(@Nonnull final InputStream stream) throws IOException {
-        Asserter.nonNull(stream, "stream");
+        Validator.nonNull(stream, "stream");
         Properties props = new Properties();
         try (final InputStream in = stream) {
             props.load(in);

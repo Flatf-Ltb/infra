@@ -13,7 +13,7 @@ import javax.annotation.Nonnull;
 import java.io.Closeable;
 import java.util.Random;
 
-import static io.mercury.common.lang.Asserter.nonNull;
+import static io.mercury.common.lang.Validator.nonNull;
 import static io.mercury.common.log4j2.Log4j2LoggerFactory.getLogger;
 
 public final class ZmqPublisher<T> extends ZmqComponent implements Publisher<byte[], T>, Closeable {

@@ -4,7 +4,7 @@ import io.mercury.common.annotation.AbstractFunction;
 import io.mercury.common.collections.MutableMaps;
 import io.mercury.common.datetime.TimeZone;
 import io.mercury.common.file.PermissionDeniedException;
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 import io.mercury.common.log4j2.Log4j2LoggerFactory;
 import io.mercury.common.thread.RuntimeInterruptedException;
 import io.mercury.common.thread.ShutdownHooks;
@@ -12,6 +12,8 @@ import io.mercury.common.thread.Sleep;
 import io.mercury.common.thread.Threads;
 import io.mercury.common.util.StringSupport;
 import io.mercury.persistence.chronicle.queue.params.ReaderParams;
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import net.openhft.chronicle.queue.impl.RollingChronicleQueue;
 import net.openhft.chronicle.queue.impl.single.SingleChronicleQueueBuilder;
 import org.slf4j.Logger;
@@ -39,6 +41,7 @@ import static io.mercury.common.sys.SysProperties.JAVA_IO_TMPDIR;
 import static io.mercury.common.sys.SysProperties.USER_HOME;
 
 @Immutable
+@Accessors(fluent = true)
 public abstract class AbstractChronicleQueue<
         T, // 写入和读取类型
         AT extends AbstractChronicleAppender<T>, // 添加器类型
@@ -46,8 +49,11 @@ public abstract class AbstractChronicleQueue<
         // 实现特定关闭对象
         implements net.openhft.chronicle.core.io.Closeable {
 
+    @Getter
     protected final String rootPath;
+    @Getter
     protected final String folder;
+
     protected final boolean readOnly;
     protected final long epoch;
     protected final LocalTime rollTime;
@@ -59,9 +65,11 @@ public abstract class AbstractChronicleQueue<
     // 存储文件释放回调
     private final ObjIntConsumer<File> storeFileListener;
 
+    @Getter
     protected final File savePath;
+    @Getter
     protected final String queueName;
-
+    @Getter
     protected final RollingChronicleQueue internalQueue;
 
     protected Logger logger = Log4j2LoggerFactory.getLogger(getClass());
@@ -74,8 +82,8 @@ public abstract class AbstractChronicleQueue<
         this.rollTime = builder.rollTime;
         this.rollTimeZone = builder.rollTimeZone;
         this.fileCycle = builder.fileCycle;
-        this.fileClearCycle = builder.fileClearCycle <= 0 ? 0 :
-                Math.max(10, builder.fileClearCycle);
+        this.fileClearCycle = builder.fileClearCycle <= 0
+                ? 0 : Math.max(10, builder.fileClearCycle);
         this.storeFileListener = builder.storeFileListener;
         if (builder.logger != null) {
             this.logger = builder.logger;
@@ -218,28 +226,11 @@ public abstract class AbstractChronicleQueue<
         }
     }
 
-    public String getQueueName() {
-        return queueName;
-    }
 
-    public String getRootPath() {
-        return rootPath;
-    }
 
-    public String getFolder() {
-        return folder;
-    }
-
-    public File getSavePath() {
-        return savePath;
-    }
 
     public FileCycle fileCycle() {
         return fileCycle;
-    }
-
-    public RollingChronicleQueue getInternalQueue() {
-        return internalQueue;
     }
 
     public boolean isClosed() {
@@ -332,9 +323,9 @@ public abstract class AbstractChronicleQueue<
         if (isClosed()) {
             throw new IllegalStateException("Cannot be create reader, Chronicle queue is closed");
         }
-        Asserter.nonNull(readerName, "readerName");
-        Asserter.nonNull(param, "param");
-        Asserter.nonNull(dataConsumer, "dataConsumer");
+        Validator.nonNull(readerName, "readerName");
+        Validator.nonNull(param, "param");
+        Validator.nonNull(dataConsumer, "dataConsumer");
         RT reader = createReader(readerName, param, logger, dataConsumer);
         addAccessor(reader);
         return reader;
@@ -384,7 +375,7 @@ public abstract class AbstractChronicleQueue<
      * @throws IllegalStateException ise
      */
     public AT acquireAppender(@Nonnull String appenderName) throws IllegalStateException {
-        Asserter.nonNull(appenderName, "appenderName");
+        Validator.nonNull(appenderName, "appenderName");
         return acquireAppender(appenderName, null);
     }
 
@@ -394,7 +385,7 @@ public abstract class AbstractChronicleQueue<
      * @throws IllegalStateException ise
      */
     public AT acquireAppender(@Nonnull Supplier<T> dataProducer) throws IllegalStateException {
-        Asserter.nonNull(dataProducer, "dataProducer");
+        Validator.nonNull(dataProducer, "dataProducer");
         return acquireAppender(generateAppenderName(), dataProducer);
     }
 
@@ -409,7 +400,7 @@ public abstract class AbstractChronicleQueue<
             throws IllegalStateException {
         if (isClosed())
             throw new IllegalStateException("Cannot be acquire appender, Chronicle queue is closed");
-        Asserter.nonNull(appenderName, "appenderName");
+        Validator.nonNull(appenderName, "appenderName");
         AT appender = acquireAppender(appenderName, logger, dataProducer);
         addAccessor(appender);
         return appender;
@@ -510,19 +501,19 @@ public abstract class AbstractChronicleQueue<
         }
 
         public B rollTime(@Nonnull LocalTime rollTime) {
-            Asserter.nonNull(rollTime, "rollTime");
+            Validator.nonNull(rollTime, "rollTime");
             this.rollTime = rollTime;
             return self();
         }
 
         public B rollTimeZone(@Nonnull ZoneId rollTimeZone) {
-            Asserter.nonNull(rollTimeZone, "rollTimeZone");
+            Validator.nonNull(rollTimeZone, "rollTimeZone");
             this.rollTimeZone = rollTimeZone;
             return self();
         }
 
         public B fileCycle(@Nonnull FileCycle fileCycle) {
-            Asserter.nonNull(fileCycle, "fileCycle");
+            Validator.nonNull(fileCycle, "fileCycle");
             this.fileCycle = fileCycle;
             return self();
         }
@@ -533,13 +524,13 @@ public abstract class AbstractChronicleQueue<
         }
 
         public B storeFileListener(@Nonnull ObjIntConsumer<File> storeFileListener) {
-            Asserter.nonNull(storeFileListener, "storeFileListener");
+            Validator.nonNull(storeFileListener, "storeFileListener");
             this.storeFileListener = storeFileListener;
             return self();
         }
 
         public B logger(@Nonnull Logger logger) {
-            Asserter.nonNull(logger, "logger");
+            Validator.nonNull(logger, "logger");
             this.logger = logger;
             return self();
         }

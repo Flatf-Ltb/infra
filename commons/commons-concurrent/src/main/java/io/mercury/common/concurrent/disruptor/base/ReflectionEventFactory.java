@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 
 import javax.annotation.Nonnull;
 
-import static io.mercury.common.lang.Asserter.nonNull;
+import static io.mercury.common.lang.Validator.nonNull;
 import static io.mercury.common.log4j2.Log4j2LoggerFactory.getLogger;
 
 /**

@@ -1,6 +1,6 @@
 package io.mercury.persistence.chronicle.queue;
 
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 import net.openhft.chronicle.queue.RollCycle;
 import net.openhft.chronicle.queue.RollCycles;
 
@@ -101,7 +101,7 @@ public enum FileCycle {
      * @return long
      */
     public long toIndex(long epochSecond) throws IllegalArgumentException {
-        Asserter.greaterOrEqualThan(epochSecond, 0, "epochSecond");
+        Validator.greaterOrEqualThan(epochSecond, 0, "epochSecond");
         return rollCycle.toIndex((int) (epochSecond / seconds), 0);
     }
 

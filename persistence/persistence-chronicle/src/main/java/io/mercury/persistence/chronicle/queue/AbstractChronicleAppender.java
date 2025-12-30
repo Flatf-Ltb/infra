@@ -22,10 +22,10 @@ public abstract class AbstractChronicleAppender<T> extends CloseableChronicleAcc
 
     protected final Supplier<T> dataProducer;
 
-    protected AbstractChronicleAppender(long allocateSeq, String appenderName,
+    protected AbstractChronicleAppender(long allocateSeq, String name,
                                         Logger logger, ExcerptAppender appender,
                                         Supplier<T> dataProducer) {
-        super(allocateSeq, appenderName, logger);
+        super(allocateSeq, name, logger);
         this.appender = appender;
         this.dataProducer = dataProducer;
     }
@@ -43,7 +43,7 @@ public abstract class AbstractChronicleAppender<T> extends CloseableChronicleAcc
     }
 
     public String getAppenderName() {
-        return accessorName;
+        return name;
     }
 
     /**

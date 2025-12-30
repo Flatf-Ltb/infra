@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.FileFilter;
 
-import static io.mercury.common.lang.Asserter.requiredLength;
+import static io.mercury.common.lang.Validator.requiredLength;
 
 /**
  * GroupFileFilter

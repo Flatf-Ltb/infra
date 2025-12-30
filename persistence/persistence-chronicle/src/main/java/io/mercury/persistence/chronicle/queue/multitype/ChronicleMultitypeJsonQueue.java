@@ -45,8 +45,9 @@ public class ChronicleMultitypeJsonQueue<E extends Envelope> extends
                                                         @Nonnull Logger logger,
                                                         @Nonnull Consumer<String> dataConsumer)
             throws IllegalStateException {
-        return new ChronicleMultitypeJsonReader(EpochSequence.allocate(), readerName, fileCycle(), params, logger,
-                internalQueue.createTailer(), dataConsumer);
+        return new ChronicleMultitypeJsonReader(EpochSequence.allocate(), readerName,
+                fileCycle(), params, logger, internalQueue.createTailer(),
+                dataConsumer);
     }
 
     @Override
@@ -83,11 +84,11 @@ public class ChronicleMultitypeJsonQueue<E extends Envelope> extends
             extends AbstractChronicleMultitypeAppender<E, String> {
 
         ChronicleMultitypeJsonAppender(long allocateSeq,
-                                       String appenderName,
+                                       String name,
                                        Logger logger,
                                        ExcerptAppender appender,
                                        Supplier<String> dataProducer) {
-            super(allocateSeq, appenderName, logger, appender, dataProducer);
+            super(allocateSeq, name, logger, appender, dataProducer);
         }
 
         // 內建JsonMsg对象
@@ -114,13 +115,13 @@ public class ChronicleMultitypeJsonQueue<E extends Envelope> extends
     public static final class ChronicleMultitypeJsonReader extends AbstractChronicleReader<String> {
 
         ChronicleMultitypeJsonReader(long allocateSeq,
-                                     String readerName,
+                                     String name,
                                      FileCycle fileCycle,
                                      ReaderParams params,
                                      Logger logger,
                                      ExcerptTailer tailer,
                                      Consumer<String> dataConsumer) {
-            super(allocateSeq, readerName, fileCycle, params, logger, tailer, dataConsumer);
+            super(allocateSeq, name, fileCycle, params, logger, tailer, dataConsumer);
         }
 
         @Override

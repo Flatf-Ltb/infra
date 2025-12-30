@@ -18,7 +18,6 @@ import static io.mercury.common.util.StringSupport.fixPath;
 
 public class ChronicleHashStorage {
 
-
     public static <K, V> MapBuilder<K, V> newMap(@Nonnull Class<K> keyType,
                                                  @Nonnull Class<V> valueType) {
         return newMap(keyType, valueType, "auto-create-map-" + DateTimeUtil.datetimeOfSecond());

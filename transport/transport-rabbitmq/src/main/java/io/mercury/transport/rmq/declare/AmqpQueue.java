@@ -1,7 +1,7 @@
 package io.mercury.transport.rmq.declare;
 
 import io.mercury.common.collections.MapUtil;
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 import io.mercury.serialization.json.JsonWriter;
 
 import javax.annotation.Nonnull;
@@ -35,7 +35,7 @@ public final class AmqpQueue {
      * @return AmqpQueue
      */
     public static AmqpQueue named(@Nonnull String name) {
-        Asserter.nonEmpty(name, "name");
+        Validator.nonEmpty(name, "name");
         return new AmqpQueue(name);
     }
 

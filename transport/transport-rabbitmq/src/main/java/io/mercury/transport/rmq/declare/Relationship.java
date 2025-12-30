@@ -2,7 +2,7 @@ package io.mercury.transport.rmq.declare;
 
 import io.mercury.common.annotation.AbstractFunction;
 import io.mercury.common.collections.MutableLists;
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 import io.mercury.common.log4j2.Log4j2LoggerFactory;
 import io.mercury.transport.rmq.RmqOperator;
 import io.mercury.transport.rmq.exception.DeclareException;
@@ -22,7 +22,7 @@ public abstract class Relationship {
      * @throws DeclareException e
      */
     public void declare(@Nonnull RmqOperator operator) throws DeclareException {
-        Asserter.nonNull(operator, "operator");
+        Validator.nonNull(operator, "operator");
         declare0(operator);
         for (Binding binding : bindings) {
             declareBinding(operator, binding);

@@ -3,7 +3,7 @@ package io.mercury.persistence.chronicle.hash;
 import io.mercury.common.collections.Capacity;
 import io.mercury.common.config.Configurator;
 import io.mercury.common.datetime.DateTimeUtil;
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 import io.mercury.common.sys.SysProperties;
 
 import javax.annotation.Nonnull;
@@ -93,9 +93,9 @@ public final class ChronicleSetConfigurator<E> implements Configurator {
     public static <E> Builder<E> newBuilder(@Nonnull Class<E> elementClass,
                                          @Nonnull String rootPath,
                                          @Nonnull String folder) {
-        Asserter.nonNull(elementClass, "elementClass");
-        Asserter.nonNull(rootPath, "rootPath");
-        Asserter.nonNull(folder, "folder");
+        Validator.nonNull(elementClass, "elementClass");
+        Validator.nonNull(rootPath, "rootPath");
+        Validator.nonNull(folder, "folder");
         return new Builder<>(elementClass, rootPath, folder);
     }
 

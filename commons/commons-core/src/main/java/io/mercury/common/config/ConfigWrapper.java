@@ -13,7 +13,7 @@ import java.util.function.Predicate;
 
 import static io.mercury.common.functional.Functions.getOrDefault;
 import static io.mercury.common.functional.Functions.getOrThrows;
-import static io.mercury.common.lang.Asserter.nonNull;
+import static io.mercury.common.lang.Validator.nonNull;
 import static io.mercury.common.util.StringSupport.nonEmpty;
 
 public final class ConfigWrapper<O extends ConfigOption> {

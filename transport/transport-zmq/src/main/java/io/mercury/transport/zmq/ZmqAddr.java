@@ -4,8 +4,8 @@ import io.mercury.common.net.IpAddressValidator;
 
 import javax.annotation.Nonnull;
 
-import static io.mercury.common.lang.Asserter.atWithinRange;
-import static io.mercury.common.lang.Asserter.nonEmpty;
+import static io.mercury.common.lang.Validator.atWithinRange;
+import static io.mercury.common.lang.Validator.nonEmpty;
 
 /**
  * @author yellow013

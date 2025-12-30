@@ -1,7 +1,7 @@
 package io.mercury.transport.rmq.declare;
 
 import io.mercury.common.collections.MutableLists;
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 import io.mercury.serialization.json.JsonWriter;
 import io.mercury.transport.rmq.RmqOperator;
 import io.mercury.transport.rmq.exception.DeclareException;
@@ -35,7 +35,7 @@ public final class QueueRelationship extends Relationship {
      * @return QueueRelationship
      */
     public static QueueRelationship withQueue(AmqpQueue queue) {
-        Asserter.nonNull(queue, "queue");
+        Validator.nonNull(queue, "queue");
         return new QueueRelationship(queue);
     }
 

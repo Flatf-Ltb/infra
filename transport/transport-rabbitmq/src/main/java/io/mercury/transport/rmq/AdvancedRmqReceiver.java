@@ -5,7 +5,7 @@ import com.rabbitmq.client.CancelCallback;
 import com.rabbitmq.client.ConsumerShutdownSignalCallback;
 import com.rabbitmq.client.Envelope;
 import io.mercury.common.codec.DecodeException;
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 import io.mercury.common.log4j2.Log4j2LoggerFactory;
 import io.mercury.common.serialization.specific.BytesDeserializer;
 import io.mercury.common.util.StringSupport;
@@ -137,9 +137,9 @@ public class AdvancedRmqReceiver<T> extends RmqTransport implements Subscriber, 
                                                     @Nonnull RmqReceiverConfig config,
                                                     @Nonnull BytesDeserializer<T> deserializer,
                                                     @Nonnull Consumer<T> consumer) {
-        Asserter.nonNull(config, "config");
-        Asserter.nonNull(deserializer, "deserializer");
-        Asserter.nonNull(consumer, "consumer");
+        Validator.nonNull(config, "config");
+        Validator.nonNull(deserializer, "deserializer");
+        Validator.nonNull(consumer, "consumer");
         return new AdvancedRmqReceiver<>(tag, config, deserializer, consumer,
                 null);
     }
@@ -151,8 +151,8 @@ public class AdvancedRmqReceiver<T> extends RmqTransport implements Subscriber, 
      */
     public static AdvancedRmqReceiver<byte[]> createWithSelfAck(@Nonnull RmqReceiverConfig config,
                                                                 @Nonnull SelfAckConsumer<byte[]> ackConsumer) {
-        Asserter.nonNull(config, "config");
-        Asserter.nonNull(ackConsumer, "ackConsumer");
+        Validator.nonNull(config, "config");
+        Validator.nonNull(ackConsumer, "ackConsumer");
         return new AdvancedRmqReceiver<>(null, config, (msg, reuse) -> msg,
                 null, ackConsumer);
     }
@@ -166,8 +166,8 @@ public class AdvancedRmqReceiver<T> extends RmqTransport implements Subscriber, 
     public static AdvancedRmqReceiver<byte[]> createWithSelfAck(String tag,
                                                                 @Nonnull RmqReceiverConfig config,
                                                                 @Nonnull SelfAckConsumer<byte[]> ackConsumer) {
-        Asserter.nonNull(config, "config");
-        Asserter.nonNull(ackConsumer, "ackConsumer");
+        Validator.nonNull(config, "config");
+        Validator.nonNull(ackConsumer, "ackConsumer");
         return new AdvancedRmqReceiver<>(tag, config, (msg, reuse) -> msg,
                 null, ackConsumer);
     }
@@ -184,9 +184,9 @@ public class AdvancedRmqReceiver<T> extends RmqTransport implements Subscriber, 
                                                                @Nonnull RmqReceiverConfig config,
                                                                @Nonnull BytesDeserializer<T> deserializer,
                                                                @Nonnull SelfAckConsumer<T> ackConsumer) {
-        Asserter.nonNull(config, "config");
-        Asserter.nonNull(deserializer, "deserializer");
-        Asserter.nonNull(ackConsumer, "ackConsumer");
+        Validator.nonNull(config, "config");
+        Validator.nonNull(deserializer, "deserializer");
+        Validator.nonNull(ackConsumer, "ackConsumer");
         return new AdvancedRmqReceiver<>(tag, config, deserializer,
                 null, ackConsumer);
     }
@@ -315,7 +315,7 @@ public class AdvancedRmqReceiver<T> extends RmqTransport implements Subscriber, 
 
     @Override
     public void receive() throws ReceiverStartException {
-        Asserter.nonNull(deserializer, "deserializer");
+        Validator.nonNull(deserializer, "deserializer");
         // 检测Consumer或SelfAckConsumer, 必须有一个不为null
         if (consumer == null && selfAckConsumer == null) {
             throw new NullPointerException("[Consumer] or [SelfAckConsumer] cannot be all null");

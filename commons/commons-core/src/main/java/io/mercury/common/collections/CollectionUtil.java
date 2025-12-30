@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 
-import static io.mercury.common.lang.Asserter.nonNull;
+import static io.mercury.common.lang.Validator.nonNull;
 
 public final class CollectionUtil {
 

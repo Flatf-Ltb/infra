@@ -4,7 +4,7 @@ import com.rabbitmq.client.AMQP.Queue.DeleteOk;
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
 import io.mercury.common.datetime.DateTimeUtil;
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 import io.mercury.transport.rmq.config.RmqConnection;
 import io.mercury.transport.rmq.declare.AmqpExchange;
 import io.mercury.transport.rmq.declare.AmqpQueue;
@@ -88,7 +88,7 @@ public final class RmqOperator extends RmqTransport {
      */
     public boolean declareQueue(@Nonnull AmqpQueue queue) throws DeclareException {
         try {
-            Asserter.nonNull(queue, "queue");
+            Validator.nonNull(queue, "queue");
         } catch (Exception e) {
             throw DeclareException.becauseOf(e);
         }
@@ -107,7 +107,7 @@ public final class RmqOperator extends RmqTransport {
     public boolean declareQueue(@Nonnull String queue, boolean durable, boolean exclusive, boolean autoDelete,
                                 Map<String, Object> args) throws DeclareException {
         try {
-            Asserter.nonEmpty(queue, "queue");
+            Validator.nonEmpty(queue, "queue");
         } catch (Exception e) {
             throw DeclareException.becauseOf(e);
         }
@@ -126,7 +126,7 @@ public final class RmqOperator extends RmqTransport {
      */
     public boolean declareExchange(@Nonnull AmqpExchange exchange) throws DeclareException {
         try {
-            Asserter.nonNull(exchange, "exchange");
+            Validator.nonNull(exchange, "exchange");
         } catch (Exception e) {
             throw DeclareException.becauseOf(e);
         }
@@ -213,7 +213,7 @@ public final class RmqOperator extends RmqTransport {
     private boolean declareExchange(String exchange, BuiltinExchangeType type, boolean durable, boolean autoDelete,
                                     boolean internal, Map<String, Object> arg) throws DeclareException {
         try {
-            Asserter.nonEmpty(exchange, "exchange");
+            Validator.nonEmpty(exchange, "exchange");
         } catch (Exception e) {
             throw DeclareException.becauseOf(e);
         }
@@ -255,8 +255,8 @@ public final class RmqOperator extends RmqTransport {
      */
     public boolean bindQueue(String queue, String exchange, String routingKey) throws DeclareException {
         try {
-            Asserter.nonEmpty(queue, "queue");
-            Asserter.nonEmpty(exchange, "exchange");
+            Validator.nonEmpty(queue, "queue");
+            Validator.nonEmpty(exchange, "exchange");
         } catch (Exception e) {
             throw DeclareException.becauseOf(e);
         }
@@ -293,8 +293,8 @@ public final class RmqOperator extends RmqTransport {
     public boolean bindExchange(String destExchange, String sourceExchange, String routingKey)
             throws DeclareException {
         try {
-            Asserter.nonEmpty(destExchange, "destExchange");
-            Asserter.nonEmpty(sourceExchange, "sourceExchange");
+            Validator.nonEmpty(destExchange, "destExchange");
+            Validator.nonEmpty(sourceExchange, "sourceExchange");
         } catch (Exception e) {
             throw DeclareException.becauseOf(e);
         }

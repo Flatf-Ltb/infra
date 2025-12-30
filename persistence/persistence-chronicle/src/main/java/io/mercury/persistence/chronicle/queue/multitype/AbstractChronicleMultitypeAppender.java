@@ -23,11 +23,11 @@ public abstract class AbstractChronicleMultitypeAppender<E extends Envelope, IN>
         extends AbstractChronicleAppender<IN> implements Runnable {
 
     protected AbstractChronicleMultitypeAppender(long allocateSeq,
-                                                 String appenderName,
+                                                 String name,
                                                  Logger logger,
                                                  ExcerptAppender appender,
                                                  Supplier<IN> dataProducer) {
-        super(allocateSeq, appenderName, logger, appender, dataProducer);
+        super(allocateSeq, name, logger, appender, dataProducer);
     }
 
     /**

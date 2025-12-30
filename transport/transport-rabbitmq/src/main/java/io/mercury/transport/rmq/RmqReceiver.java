@@ -4,7 +4,7 @@ import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 import io.mercury.common.codec.DecodeException;
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 import io.mercury.common.log4j2.Log4j2LoggerFactory;
 import io.mercury.common.util.StringSupport;
 import io.mercury.transport.api.Receiver;
@@ -231,8 +231,8 @@ public class RmqReceiver<T> extends RmqTransport implements Receiver, Subscriber
 
     @Override
     public void receive() throws ReceiverStartException {
-        Asserter.nonNull(deserializer, "deserializer");
-        Asserter.nonNull(consumer, "consumer");
+        Validator.nonNull(deserializer, "deserializer");
+        Validator.nonNull(consumer, "consumer");
         // # Set QOS parameter start *****
         if (!autoAck) {
             try {

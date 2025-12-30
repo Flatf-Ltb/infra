@@ -9,7 +9,7 @@ import org.zeromq.ZMQ;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static io.mercury.common.lang.Asserter.nonNull;
+import static io.mercury.common.lang.Validator.nonNull;
 
 public final class ZmqProxy extends TransportComponent {
 

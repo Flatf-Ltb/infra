@@ -28,7 +28,7 @@ import static io.mercury.common.concurrent.disruptor.base.CommonStrategy.Sleepin
 import static io.mercury.common.concurrent.disruptor.base.CommonStrategy.Yielding;
 import static io.mercury.common.concurrent.disruptor.base.ReflectionEventFactory.newFactory;
 import static io.mercury.common.datetime.pattern.impl.DateTimePattern.YYYYMMDD_L_HHMMSSSSS;
-import static io.mercury.common.lang.Asserter.nonNull;
+import static io.mercury.common.lang.Validator.nonNull;
 import static io.mercury.common.sys.CurrentRuntime.availableProcessors;
 
 /**

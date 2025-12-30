@@ -1,6 +1,6 @@
 package io.mercury.common.collections;
 
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 import io.mercury.common.util.ArrayUtil;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.primitive.ImmutableIntObjectMap;
@@ -32,8 +32,8 @@ public final class ImmutableMaps {
      */
     @SafeVarargs
     public static <V> ImmutableIntObjectMap<V> newImmutableIntMap(ToIntFunction<V> keyFunc, V... values) {
-        Asserter.nonNull(keyFunc, "keyFunc");
-        Asserter.nonNull(values, "values");
+        Validator.nonNull(keyFunc, "keyFunc");
+        Validator.nonNull(values, "values");
         return newImmutableIntMap(keyFunc, Arrays.asList(values));
     }
 
@@ -45,8 +45,8 @@ public final class ImmutableMaps {
      */
     public static <V> ImmutableIntObjectMap<V> newImmutableIntMap(ToIntFunction<V> keyFunc,
                                                                   Iterable<V> iterable) {
-        Asserter.nonNull(keyFunc, "keyFunc");
-        Asserter.nonNull(iterable, "iterable");
+        Validator.nonNull(keyFunc, "keyFunc");
+        Validator.nonNull(iterable, "iterable");
         return ImmutableIntObjectMapFactoryImpl.INSTANCE.from(iterable, keyFunc::applyAsInt, v -> v);
     }
 

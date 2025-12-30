@@ -1,7 +1,7 @@
 package io.mercury.persistence.chronicle.hash;
 
 import io.mercury.common.collections.keeper.FilesKeeper;
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 import io.mercury.persistence.chronicle.exception.ChronicleIOException;
 import net.openhft.chronicle.map.ChronicleMap;
 
@@ -16,7 +16,7 @@ public class ChronicleMapKeeper<K, V> extends FilesKeeper<String, ChronicleMap<K
     private final ChronicleMapConfigurator<K, V> cfg;
 
     public ChronicleMapKeeper(@Nonnull ChronicleMapConfigurator<K, V> cfg) {
-        Asserter.nonNull(cfg, "cfg");
+        Validator.nonNull(cfg, "cfg");
         this.cfg = cfg;
     }
 
@@ -32,7 +32,7 @@ public class ChronicleMapKeeper<K, V> extends FilesKeeper<String, ChronicleMap<K
     @Nonnull
     @Override
     public ChronicleMap<K, V> acquire(@Nonnull String filename) throws ChronicleIOException {
-        Asserter.nonEmpty(filename, "filename");
+        Validator.nonEmpty(filename, "filename");
         synchronized (lock) {
             if (isClosed) {
                 throw new IllegalStateException(

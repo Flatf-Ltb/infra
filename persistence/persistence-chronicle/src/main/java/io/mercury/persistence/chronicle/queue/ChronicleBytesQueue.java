@@ -1,16 +1,5 @@
 package io.mercury.persistence.chronicle.queue;
 
-import java.nio.ByteBuffer;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.Immutable;
-import javax.annotation.concurrent.NotThreadSafe;
-
-import org.slf4j.Logger;
-
 import io.mercury.common.number.Randoms;
 import io.mercury.common.sequence.EpochSequence;
 import io.mercury.common.thread.Sleep;
@@ -21,6 +10,15 @@ import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.queue.ExcerptAppender;
 import net.openhft.chronicle.queue.ExcerptTailer;
+import org.slf4j.Logger;
+
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+import javax.annotation.concurrent.Immutable;
+import javax.annotation.concurrent.NotThreadSafe;
+import java.nio.ByteBuffer;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 @Immutable
 public class ChronicleBytesQueue
@@ -106,12 +104,10 @@ public class ChronicleBytesQueue
     @NotThreadSafe
     public static final class ChronicleBytesAppender extends AbstractChronicleAppender<ByteBuffer> {
 
-        ChronicleBytesAppender(long allocateSeq,
-                               String appenderName,
-                               Logger logger,
-                               ExcerptAppender appender,
+        ChronicleBytesAppender(long allocateSeq, String name,
+                               Logger logger, ExcerptAppender appender,
                                Supplier<ByteBuffer> dataProducer) {
-            super(allocateSeq, appenderName, logger, appender, dataProducer);
+            super(allocateSeq, name, logger, appender, dataProducer);
         }
 
         @Override
@@ -132,16 +128,12 @@ public class ChronicleBytesQueue
         private final int bufferSize;
         private final boolean useDirectMemory;
 
-        ChronicleBytesReader(long allocateSeq,
-                             String readerName,
-                             FileCycle fileCycle,
-                             ReaderParams params,
-                             Logger logger,
-                             int bufferSize,
-                             boolean useDirectMemory,
-                             ExcerptTailer tailer,
+        ChronicleBytesReader(long allocateSeq, String name,
+                             FileCycle fileCycle, ReaderParams params,
+                             Logger logger, int bufferSize,
+                             boolean useDirectMemory, ExcerptTailer tailer,
                              Consumer<ByteBuffer> dataConsumer) {
-            super(allocateSeq, readerName, fileCycle, params, logger, tailer, dataConsumer);
+            super(allocateSeq, name, fileCycle, params, logger, tailer, dataConsumer);
             this.bufferSize = bufferSize;
             this.useDirectMemory = useDirectMemory;
         }

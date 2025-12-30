@@ -15,7 +15,7 @@
 
     <modules>
         <module>serialization-avro</module>
-        <module>serialization-fury</module>
+        <module>serialization-fory</module>
         <module>serialization-json</module>
         <module>serialization-kryo</module>
         <module>serialization-protobuf</module>
@@ -44,6 +44,11 @@
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>

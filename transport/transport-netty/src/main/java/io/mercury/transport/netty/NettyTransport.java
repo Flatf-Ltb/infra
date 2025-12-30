@@ -1,7 +1,7 @@
 package io.mercury.transport.netty;
 
 import io.mercury.common.annotation.AbstractFunction;
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 import io.mercury.transport.TransportComponent;
 import io.mercury.transport.api.Transport;
 import io.mercury.transport.netty.configurator.NettyConfigurator;
@@ -25,8 +25,8 @@ public abstract class NettyTransport extends TransportComponent implements Trans
      * @param handlers     ChannelHandler[]
      */
     protected NettyTransport(String tag, NettyConfigurator configurator, ChannelHandler... handlers) {
-        Asserter.nonNull(configurator, "configurator");
-        Asserter.requiredLength(handlers, 1, "handlers");
+        Validator.nonNull(configurator, "configurator");
+        Validator.requiredLength(handlers, 1, "handlers");
         this.tag = tag;
         this.configurator = configurator;
         this.handlers = handlers;

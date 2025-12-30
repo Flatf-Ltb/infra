@@ -1,7 +1,7 @@
 package io.mercury.common.sequence;
 
 import io.mercury.common.collections.MutableLists;
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 import org.eclipse.collections.api.list.ImmutableList;
 
 import javax.annotation.Nonnull;
@@ -33,9 +33,9 @@ public class TimeWindow implements OrderedObject<TimeWindow> {
 
     protected TimeWindow(@Nonnull LocalDateTime start, @Nonnull LocalDateTime end,
                          @Nonnull ZoneOffset offset) {
-        Asserter.nonNull(start, "start");
-        Asserter.nonNull(end, "end");
-        Asserter.nonNull(offset, "offset");
+        Validator.nonNull(start, "start");
+        Validator.nonNull(end, "end");
+        Validator.nonNull(offset, "offset");
         this.start = start;
         this.end = end;
         this.offset = offset;
