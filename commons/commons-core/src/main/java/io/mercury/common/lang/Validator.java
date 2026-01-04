@@ -106,7 +106,7 @@ public final class Validator {
     }
 
     /**
-     * @param value       long
+     * @param value   long
      * @param max     long
      * @param objName String
      * @throws IllegalArgumentException exception
@@ -215,11 +215,36 @@ public final class Validator {
      */
     public static void nonEmpty(String str, String objName)
             throws NullPointerException, IllegalArgumentException {
-        if (str == null)
-            throw new NullPointerException("Param: [" + objName + "] can not be null");
-        if (str.isEmpty())
-            throw new IllegalArgumentException("Param: [" + objName + "] can not be empty");
+        nonEmpty(str, objName, null);
     }
+
+    /**
+     * @param str     String
+     * @param objName String
+     * @param logger  Logger
+     * @throws NullPointerException     exception
+     * @throws IllegalArgumentException exception
+     *
+     */
+    public static void nonEmpty(String str, String objName, Logger logger)
+            throws NullPointerException, IllegalArgumentException {
+        if (logger == null) {
+            if (str == null)
+                throw new NullPointerException("Param: [" + objName + "] can not be null");
+            if (str.isEmpty())
+                throw new IllegalArgumentException("Param: [" + objName + "] can not be empty");
+        } else {
+            if (str == null) {
+                logger.error("Param: [{}] can not be null", objName);
+                throw new NullPointerException("Param: [" + objName + "] can not be null");
+            }
+            if (str.isEmpty()) {
+                logger.error("Param: [{}] can not be empty", objName);
+                throw new IllegalArgumentException("Param: [" + objName + "] can not be empty");
+            }
+        }
+    }
+
 
     /**
      * @param <C>        C
