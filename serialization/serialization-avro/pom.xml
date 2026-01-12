@@ -12,16 +12,8 @@
     <name>serialization-avro</name>
 
     <properties>
-        <avro.version>1.12.0</avro.version>
+        <avro.version>1.12.1</avro.version>
     </properties>
-
-    <repositories>
-        <repository>
-            <id>avro-util</id>
-            <name>avro-util</name>
-            <url>https://linkedin.jfrog.io/artifactory/avro-util/</url>
-        </repository>
-    </repositories>
 
     <build>
         <plugins>
@@ -63,24 +55,6 @@
             <artifactId>commons-concurrent</artifactId>
         </dependency>
 
-        <!-- avro-fastserde enables faster Avro de/serialization by doing runtime code-generation
-            to provide a faster decoder/encoder implementation. -->
-        <dependency>
-            <groupId>com.linkedin.avroutil1</groupId>
-            <artifactId>avro-fastserde</artifactId>
-            <version>0.4.24</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>slf4j-api</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>commons-lang3</artifactId>
-                    <groupId>org.apache.commons</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
         <!-- Avro core components -->
         <dependency>
             <groupId>org.apache.avro</groupId>
@@ -113,58 +87,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
-        <!-- Avro inter-process communication components -->
-        <!--        <dependency>-->
-        <!--            <groupId>org.apache.avro</groupId>-->
-        <!--            <artifactId>avro-ipc</artifactId>-->
-        <!--            <version>${avro.version}</version>-->
-        <!--            <exclusions>-->
-        <!--                <exclusion>-->
-        <!--                    <artifactId>slf4j-api</artifactId>-->
-        <!--                    <groupId>org.slf4j</groupId>-->
-        <!--                </exclusion>-->
-        <!--                <exclusion>-->
-        <!--                    <groupId>org.apache.commons</groupId>-->
-        <!--                    <artifactId>commons-lang3</artifactId>-->
-        <!--                </exclusion>-->
-        <!--                <exclusion>-->
-        <!--                    <groupId>com.fasterxml.jackson.core</groupId>-->
-        <!--                    <artifactId>jackson-core</artifactId>-->
-        <!--                </exclusion>-->
-        <!--                <exclusion>-->
-        <!--                    <groupId>com.fasterxml.jackson.core</groupId>-->
-        <!--                    <artifactId>jackson-databind</artifactId>-->
-        <!--                </exclusion>-->
-        <!--            </exclusions>-->
-        <!--        </dependency>-->
-
-        <!-- Compilers for Avro IDL and Avro Specific Java API -->
-        <!--        <dependency>-->
-        <!--            <groupId>org.apache.avro</groupId>-->
-        <!--            <artifactId>avro-compiler</artifactId>-->
-        <!--            <version>${avro.version}</version>-->
-        <!--            <exclusions>-->
-        <!--                <exclusion>-->
-        <!--                    <artifactId>slf4j-api</artifactId>-->
-        <!--                    <groupId>org.slf4j</groupId>-->
-        <!--                </exclusion>-->
-        <!--                <exclusion>-->
-        <!--                    <artifactId>commons-lang3</artifactId>-->
-        <!--                    <groupId>org.apache.commons</groupId>-->
-        <!--                </exclusion>-->
-        <!--                <exclusion>-->
-        <!--                    <artifactId>commons-text</artifactId>-->
-        <!--                    <groupId>org.apache.commons</groupId>-->
-        <!--                </exclusion>-->
-        <!--            </exclusions>-->
-        <!--        </dependency>-->
-
-        <!--        <dependency>-->
-        <!--            <groupId>org.apache.commons</groupId>-->
-        <!--            <artifactId>commons-text</artifactId>-->
-        <!--            <version>1.12.0</version>-->
-        <!--        </dependency>-->
 
     </dependencies>
 

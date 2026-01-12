@@ -9,7 +9,7 @@ public class RuntimeIOException extends RuntimeException {
     }
 
     public RuntimeIOException(final IOException ioe) {
-        super(ioe);
+        super(ioe.getMessage(), ioe);
     }
 
     public RuntimeIOException(final String msg, final IOException ioe) {

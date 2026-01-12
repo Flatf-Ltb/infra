@@ -2,9 +2,7 @@ package io.mercury.common.concurrent.disruptor.base;
 
 import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.ExceptionHandler;
-import com.lmax.disruptor.WorkHandler;
 import com.lmax.disruptor.dsl.Disruptor;
-import com.lmax.disruptor.dsl.EventHandlerGroup;
 import io.mercury.common.log4j2.Log4j2LoggerFactory;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
@@ -16,12 +14,11 @@ import java.util.List;
 
 import static io.mercury.common.collections.CollectionUtil.toArray;
 import static io.mercury.common.collections.MutableLists.newFastList;
-import static io.mercury.common.collections.MutableMaps.newIntObjectMap;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNullElse;
 
 /**
- * [事情处理器] 管理器
+ * [事件处理器] 管理器
  *
  * @param <E> 事件类型
  */
@@ -35,24 +32,16 @@ public final class HandlerManager<E> {
 
     private final List<EventHandler<E>> eventHandlers;
 
-    private final List<WorkHandler<E>> workHandlers;
-
     private final MutableIntObjectMap<List<EventHandler<E>>> sortedEventHandlers;
-
-    private final MutableIntObjectMap<List<WorkHandler<E>>> sortedWorkHandlers;
 
     private HandlerManager(@Nonnull HandleType type,
                            @Nullable ExceptionHandler<E> exceptionHandler,
                            @Nullable List<EventHandler<E>> eventHandlers,
-                           @Nullable List<WorkHandler<E>> workHandlers,
-                           @Nullable MutableIntObjectMap<List<EventHandler<E>>> sortedEventHandlers,
-                           @Nullable MutableIntObjectMap<List<WorkHandler<E>>> sortedWorkHandlers) {
+                           @Nullable MutableIntObjectMap<List<EventHandler<E>>> sortedEventHandlers) {
         this.type = type;
         this.exceptionHandler = exceptionHandler;
         this.eventHandlers = eventHandlers;
-        this.workHandlers = workHandlers;
         this.sortedEventHandlers = sortedEventHandlers;
-        this.sortedWorkHandlers = sortedWorkHandlers;
     }
 
     private static class ExceptionLogger<E> implements ExceptionHandler<E> {
@@ -79,8 +68,6 @@ public final class HandlerManager<E> {
         switch (type) {
             case SINGLE, PIPELINE -> setPipelineMode(disruptor);
             case BROADCAST -> setBroadcastMode(disruptor);
-            case DISTRIBUTION -> setDistributionMode(disruptor);
-            case COMPLEX -> setComplexMode(disruptor);
         }
     }
 
@@ -119,48 +106,6 @@ public final class HandlerManager<E> {
 
     }
 
-    /**
-     * 设置分发模式
-     *
-     * @param disruptor Disruptor<E>
-     */
-    @SuppressWarnings("unchecked")
-    private void setDistributionMode(Disruptor<E> disruptor) {
-        if (workHandlers != null)
-            disruptor.handleEventsWithWorkerPool(toArray(workHandlers, WorkHandler[]::new));
-        else
-            throw new IllegalStateException("List<WorkHandler> is null");
-    }
-
-    /**
-     * 设置分发模式
-     *
-     * @param disruptor Disruptor<E>
-     */
-    @SuppressWarnings("unchecked")
-    private void setComplexMode(Disruptor<E> disruptor) {
-        if (sortedEventHandlers != null && sortedWorkHandlers != null) {
-            var keys = sortedEventHandlers.keySet().union(sortedWorkHandlers.keySet()).toList();
-            int firstKey = keys.getFirst();
-            EventHandlerGroup<E> handlerGroup;
-            if (sortedEventHandlers.containsKey(firstKey))
-                handlerGroup = disruptor
-                        .handleEventsWith(toArray(sortedEventHandlers.get(firstKey), EventHandler[]::new));
-            else
-                handlerGroup = disruptor
-                        .handleEventsWithWorkerPool(toArray(sortedWorkHandlers.get(firstKey), WorkHandler[]::new));
-            for (int i = 1; i < keys.size(); i++) {
-                int key = keys.get(i);
-                if (sortedEventHandlers.containsKey(key))
-                    handlerGroup.then(toArray(sortedEventHandlers.get(key), EventHandler[]::new));
-                else
-                    handlerGroup.thenHandleEventsWithWorkerPool(toArray(sortedWorkHandlers.get(key), WorkHandler[]::new));
-            }
-        } else {
-            throw new IllegalStateException("SortedEventHandlerList OR SortedWorkHandlerList is null");
-        }
-    }
-
 
     public static <E> HandlerManager<E> single(@Nonnull EventHandler<E> handler) {
         return new EventHandlerWizard<E>(HandleType.SINGLE)
@@ -194,33 +139,6 @@ public final class HandlerManager<E> {
     public static <E> EventHandlerWizard<E> broadcastTo(@Nonnull EventHandler<E>... handlers) {
         return new EventHandlerWizard<E>(HandleType.BROADCAST)
                 .add(handlers);
-    }
-
-    public static <E> WorkHandlerWizard<E> distribution() {
-        return new WorkHandlerWizard<>();
-    }
-
-    @SafeVarargs
-    public static <E> WorkHandlerWizard<E> distributionTo(@Nonnull WorkHandler<E>... handlers) {
-        return new WorkHandlerWizard<E>()
-                .add(handlers);
-    }
-
-
-    public static <E> ComplexHandlerWizard<E> complex() {
-        return new ComplexHandlerWizard<>();
-    }
-
-    @SafeVarargs
-    public static <E> ComplexHandlerWizard<E> complexWithFirst(EventHandler<E>... handlers) {
-        return new ComplexHandlerWizard<E>()
-                .first(handlers);
-    }
-
-    @SafeVarargs
-    public static <E> ComplexHandlerWizard<E> complexWithFirst(WorkHandler<E>... handlers) {
-        return new ComplexHandlerWizard<E>()
-                .first(handlers);
     }
 
     private abstract static class Wizard<E, W extends Wizard<E, W>> {
@@ -265,100 +183,7 @@ public final class HandlerManager<E> {
 
         @Override
         public HandlerManager<E> build() {
-            return new HandlerManager<>(type, exceptionHandler, eventHandlers,
-                    null, null, null);
-        }
-
-    }
-
-    public static class WorkHandlerWizard<E> extends Wizard<E, WorkHandlerWizard<E>> {
-
-        private final MutableList<WorkHandler<E>> workHandlers = newFastList();
-
-        private WorkHandlerWizard() {
-            super(HandleType.DISTRIBUTION);
-        }
-
-        @SafeVarargs
-        public final WorkHandlerWizard<E> add(WorkHandler<E>... handlers) {
-            this.workHandlers.addAll(asList(handlers));
-            return this;
-        }
-
-        @Override
-        public WorkHandlerWizard<E> returnThis() {
-            return this;
-        }
-
-        @Override
-        public HandlerManager<E> build() {
-            return new HandlerManager<>(type, exceptionHandler,
-                    null, workHandlers,
-                    null, null);
-        }
-
-    }
-
-    public static class ComplexHandlerWizard<E> extends Wizard<E, ComplexHandlerWizard<E>> {
-
-        private final MutableIntObjectMap<List<EventHandler<E>>> sortedEventHandlers = newIntObjectMap();
-
-        private final MutableIntObjectMap<List<WorkHandler<E>>> sortedWorkHandlers = newIntObjectMap();
-
-        private int index = 0;
-
-        private ComplexHandlerWizard() {
-            super(HandleType.COMPLEX);
-        }
-
-        @SafeVarargs
-        public final ComplexHandlerWizard<E> first(EventHandler<E>... handlers) {
-            sortedEventHandlers.put(Integer.MIN_VALUE, asList(handlers));
-            return this;
-        }
-
-        @SafeVarargs
-        public final ComplexHandlerWizard<E> first(WorkHandler<E>... handlers) {
-            sortedWorkHandlers.put(Integer.MIN_VALUE, asList(handlers));
-            return this;
-        }
-
-        @SafeVarargs
-        public final ComplexHandlerWizard<E> then(EventHandler<E>... handlers) {
-            sortedEventHandlers.put(index, asList(handlers));
-            index++;
-            return this;
-        }
-
-        @SafeVarargs
-        public final ComplexHandlerWizard<E> then(WorkHandler<E>... handlers) {
-            sortedWorkHandlers.put(index, asList(handlers));
-            index++;
-            return this;
-        }
-
-        @SafeVarargs
-        public final ComplexHandlerWizard<E> last(EventHandler<E>... handlers) {
-            sortedEventHandlers.put(Integer.MAX_VALUE, asList(handlers));
-            return this;
-        }
-
-        @SafeVarargs
-        public final ComplexHandlerWizard<E> last(WorkHandler<E>... handlers) {
-            sortedWorkHandlers.put(Integer.MAX_VALUE, asList(handlers));
-            return this;
-        }
-
-        @Override
-        public ComplexHandlerWizard<E> returnThis() {
-            return this;
-        }
-
-        @Override
-        public HandlerManager<E> build() {
-            return new HandlerManager<>(type, exceptionHandler,
-                    null, null,
-                    sortedEventHandlers, sortedWorkHandlers);
+            return new HandlerManager<>(type, exceptionHandler, eventHandlers, null);
         }
 
     }
@@ -366,9 +191,7 @@ public final class HandlerManager<E> {
     private enum HandleType {
         SINGLE,
         PIPELINE,
-        BROADCAST,
-        DISTRIBUTION,
-        COMPLEX
+        BROADCAST
     }
 
 }

@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 
 import static com.lmax.disruptor.dsl.ProducerType.MULTI;
 import static io.mercury.common.datetime.pattern.impl.DateTimePattern.YYYYMMDD_L_HHMMSSSSS;
-import static io.mercury.common.lang.Asserter.nonNull;
+import static io.mercury.common.lang.Validator.nonNull;
 import static io.mercury.common.log4j2.Log4j2LoggerFactory.getLogger;
 import static io.mercury.common.thread.ThreadFactoryImpl.ofPlatform;
 import static io.mercury.common.thread.ThreadPriority.MAX;

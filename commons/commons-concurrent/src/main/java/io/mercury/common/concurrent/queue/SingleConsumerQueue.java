@@ -2,7 +2,7 @@ package io.mercury.common.concurrent.queue;
 
 import io.mercury.common.collections.queue.Queue;
 import io.mercury.common.functional.Processor;
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 import io.mercury.common.thread.RunnableComponent;
 
 import java.time.LocalDateTime;
@@ -21,7 +21,7 @@ public abstract class SingleConsumerQueue<E> extends RunnableComponent implement
     protected final Processor<E> processor;
 
     protected SingleConsumerQueue(Processor<E> processor) {
-        Asserter.nonNull(processor, "processor");
+        Validator.nonNull(processor, "processor");
         this.processor = processor;
         this.name = "queue-" + "[" + YYYYMMDD_L_HHMMSSSSS.fmt(LocalDateTime.now()) + "]";
     }

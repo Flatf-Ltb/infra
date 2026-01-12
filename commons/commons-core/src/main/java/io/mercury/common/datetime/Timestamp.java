@@ -1,6 +1,6 @@
 package io.mercury.common.datetime;
 
-import io.mercury.common.epoch.EpochTimeUtil;
+import io.mercury.common.epoch.EpochUtil;
 import io.mercury.common.epoch.EpochUnit;
 import io.mercury.common.epoch.HighResolutionEpoch;
 import io.mercury.common.serialization.specific.JsonSerializable;
@@ -57,7 +57,7 @@ public final class Timestamp implements Comparable<Timestamp>, JsonSerializable 
     }
 
     public static Timestamp nowWithSecond() {
-        return new Timestamp(EpochTimeUtil.getEpochSeconds(), SECOND);
+        return new Timestamp(EpochUtil.getEpochSeconds(), SECOND);
     }
 
     public static Timestamp nowWithMillis() {
@@ -188,7 +188,7 @@ public final class Timestamp implements Comparable<Timestamp>, JsonSerializable 
         System.out.println(timestamp);
 
         for (int i = 0; i < 100000; i++) {
-            EpochTimeUtil.getEpochMillis();
+            EpochUtil.getEpochMillis();
             Timestamp.nowWithMillis();
             Instant.now();
             i++;

@@ -12,7 +12,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 import static io.mercury.common.datetime.TimeZone.UTC;
-import static io.mercury.common.epoch.EpochTimeUtil.EPOCH_ZERO;
+import static io.mercury.common.epoch.EpochUtil.EPOCH_ZERO;
 import static io.mercury.common.util.BitOperator.maxValueOfBit;
 import static java.lang.System.currentTimeMillis;
 import static java.time.LocalTime.MIN;

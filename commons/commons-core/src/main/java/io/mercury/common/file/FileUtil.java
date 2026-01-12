@@ -2,7 +2,7 @@ package io.mercury.common.file;
 
 import io.mercury.common.datetime.pattern.TemporalPattern;
 import io.mercury.common.datetime.pattern.impl.DatePattern;
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.collections.impl.list.mutable.FastList;
 
@@ -42,7 +42,7 @@ public final class FileUtil {
     }
 
     public static boolean mkdir(File file) throws PermissionDeniedException {
-        Asserter.nonNull(file, "file");
+        Validator.nonNull(file, "file");
         try {
             if (file.isDirectory())
                 return file.mkdirs();
@@ -58,7 +58,7 @@ public final class FileUtil {
      * @return File
      */
     public static File mkdirInTmp(@Nonnull File file) throws NullPointerException {
-        Asserter.nonNull(file, "file");
+        Validator.nonNull(file, "file");
         return mkdirInTmp(file.getPath());
     }
 
@@ -67,7 +67,7 @@ public final class FileUtil {
      * @return File
      */
     public static File mkdirInTmp(@Nonnull String path) throws NullPointerException, IllegalArgumentException {
-        Asserter.nonEmpty(path, "path");
+        Validator.nonEmpty(path, "path");
         File file = new File(JAVA_IO_TMPDIR, path);
         if (file.mkdirs())
             return file;
@@ -81,7 +81,7 @@ public final class FileUtil {
      * @return File
      */
     public static File mkdirInHome(@Nonnull File file) {
-        Asserter.nonNull(file, "file");
+        Validator.nonNull(file, "file");
         return mkdirInHome(file.getPath());
     }
 
@@ -90,7 +90,7 @@ public final class FileUtil {
      * @return File
      */
     public static File mkdirInHome(@Nonnull String path) throws RuntimeException {
-        Asserter.nonEmpty(path, "path");
+        Validator.nonEmpty(path, "path");
         File file = new File(USER_HOME, path);
         if (file.mkdirs() || file.exists())
             return file;
@@ -371,7 +371,7 @@ public final class FileUtil {
      * @throws IOException ioe
      */
     public static void copy(@Nonnull Set<File> sources, File dir) throws IOException {
-        Asserter.nonNull(sources, "sources");
+        Validator.nonNull(sources, "sources");
         for (File source : sources) {
             File target = new File(dir, source.getName());
             copy(source, target);

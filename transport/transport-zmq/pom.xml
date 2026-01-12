@@ -20,7 +20,6 @@
                 <configuration>
                     <source>21</source>
                     <target>21</target>
-                    <enablePreview>true</enablePreview>
                 </configuration>
             </plugin>
         </plugins>

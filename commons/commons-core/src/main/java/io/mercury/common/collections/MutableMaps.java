@@ -1,6 +1,6 @@
 package io.mercury.common.collections;
 
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 import io.mercury.common.util.ArrayUtil;
 import org.eclipse.collections.api.bimap.MutableBiMap;
 import org.eclipse.collections.api.map.ConcurrentMutableMap;
@@ -151,7 +151,7 @@ public final class MutableMaps {
     @SafeVarargs
     public static <V> MutableIntObjectMap<V> newIntObjectMap(@Nonnull ToIntFunction<V> keyFunc,
                                                              @Nullable V... values) {
-        Asserter.nonNull(keyFunc, "keyFunc");
+        Validator.nonNull(keyFunc, "keyFunc");
         if (ArrayUtil.isNullOrEmpty(values))
             return newIntObjectMap();
         MutableIntObjectMap<V> map = newIntObjectMap(values.length * 2);

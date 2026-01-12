@@ -1,6 +1,6 @@
 package io.mercury.transport.socket;
 
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 import io.mercury.transport.socket.configurator.SocketConfigurator;
 
 import java.util.Map;
@@ -23,7 +23,7 @@ public class LocalSocketManager {
         if (ServerSocketMap.containsKey(socketName))
             return ServerSocketMap.get(socketName);
         else {
-            Asserter.atWithinRange(port, 7000, 8000, "port");
+            Validator.atWithinRange(port, 7000, 8000, "port");
             SocketTransceiver transceiver = new SocketTransceiver(SocketConfigurator.builder().port(port).build(),
                     callback);
             ServerSocketMap.put(socketName, transceiver);

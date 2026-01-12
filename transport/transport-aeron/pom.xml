@@ -12,21 +12,16 @@
     <name>transport-aeron</name>
 
     <properties>
-        <aeron.version>1.47.5</aeron.version>
-        <byte-buddy.version>1.17.5</byte-buddy.version>
+        <aeron.version>1.49.1</aeron.version>
+        <byte-buddy.version>1.17.7</byte-buddy.version>
     </properties>
 
     <repositories>
-        <repository>
-            <id>aeronic</id>
-            <name>aeronic</name>
-            <url>https://dl.cloudsmith.io/public/lob-software/aeronic/maven/</url>
-        </repository>
-        <repository>
-            <id>central_repository</id>
-            <name>CentralRepository</name>
-            <url>https://repo1.maven.org/maven2/</url>
-        </repository>
+<!--        <repository>-->
+<!--            <id>aeronic</id>-->
+<!--            <name>aeronic</name>-->
+<!--            <url>https://dl.cloudsmith.io/public/lob-software/aeronic/maven/</url>-->
+<!--        </repository>-->
     </repositories>
 
     <dependencies>
@@ -37,28 +32,28 @@
 
         <!-- Aeronic allows for flexible usage of Aeron by way of
              proxy generation for subscriptions and publications. -->
-        <dependency>
-            <groupId>io.aeronic</groupId>
-            <artifactId>aeronic</artifactId>
-            <version>0.0.18</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>io.aeronic</groupId>-->
+<!--            <artifactId>aeronic</artifactId>-->
+<!--            <version>0.0.18</version>-->
+<!--        </dependency>-->
 
         <!-- Aeron: Efficient reliable UDP unicast, UDP multicast,
              and IPC transport protocol. -->
         <dependency>
             <groupId>io.aeron</groupId>
             <artifactId>aeron-all</artifactId>
-            <version>1.47.4</version>
+            <version>${aeron.version}</version>
         </dependency>
         <dependency>
             <groupId>io.aeron</groupId>
             <artifactId>aeron-agent</artifactId>
-            <version>1.47.4</version>
+            <version>${aeron.version}</version>
         </dependency>
         <dependency>
             <groupId>io.aeron</groupId>
             <artifactId>aeron-cluster</artifactId>
-            <version>1.47.4</version>
+            <version>${aeron.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.agrona</groupId>

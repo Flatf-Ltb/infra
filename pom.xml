@@ -19,12 +19,10 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>actors</module>
         <module>commons</module>
         <module>libraries</module>
         <module>persistence</module>
         <module>serialization</module>
-        <module>storage</module>
         <module>transport</module>
     </modules>
 
@@ -37,10 +35,10 @@
         <!-- Common library version -->
         <slf4j.version>2.0.17</slf4j.version>
         <junit.version>4.13.2</junit.version>
-        <jupiter.version>5.12.2</jupiter.version>
-        <netty.version>4.1.121.Final</netty.version>
-        <jackson.version>2.18.4</jackson.version>
-        <guava.version>33.4.8-jre</guava.version>
+        <jupiter.version>5.14.1</jupiter.version>
+        <netty.version>4.2.9.Final</netty.version>
+        <jackson.version>2.19.4</jackson.version>
+        <guava.version>33.5.0-jre</guava.version>
     </properties>
 
     <build>
@@ -49,7 +47,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.13.0</version>
+                    <version>3.14.1</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -59,7 +57,6 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <parameters>true</parameters>
-                    <enablePreview>true</enablePreview>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                     <release>${java.version}</release>
@@ -90,7 +87,7 @@
         <dependency>
             <groupId>com.google.errorprone</groupId>
             <artifactId>error_prone_annotations</artifactId>
-            <version>2.36.0</version>
+            <version>2.41.0</version>
         </dependency>
     </dependencies>
 
@@ -119,6 +116,13 @@
                 <groupId>org.jetbrains</groupId>
                 <artifactId>annotations</artifactId>
                 <version>26.0.2</version>
+            </dependency>
+            <!-- Lombok is a Java library that provides annotations to simplify Java development
+                 by automating the generation of boilerplate code. -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.42</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

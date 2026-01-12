@@ -17,7 +17,7 @@
 
 package io.mercury.common.util;
 
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 
 import javax.annotation.Nonnull;
 
@@ -68,7 +68,7 @@ public final class HexUtil {
      * @param length  int
      */
     public static void appendHex(@Nonnull StringBuilder builder, byte[] bytes, int offset, int length) {
-        Asserter.nonNull(builder, BUILDER_VARIABLE_NAME);
+        Validator.nonNull(builder, BUILDER_VARIABLE_NAME);
         if (bytes == null)
             return;
         assertOffsetAndLength(offset, length, bytes.length);
@@ -83,7 +83,7 @@ public final class HexUtil {
      * @param bytes   byte[]
      */
     public static void appendHex(@Nonnull StringBuilder builder, byte[] bytes) {
-        Asserter.nonNull(builder, BUILDER_VARIABLE_NAME);
+        Validator.nonNull(builder, BUILDER_VARIABLE_NAME);
         if (bytes == null)
             return;
         appendHex(builder, bytes, 0, bytes.length);
@@ -104,7 +104,7 @@ public final class HexUtil {
      * @param value   byte
      */
     public static void appendHex(@Nonnull StringBuilder builder, byte value) {
-        Asserter.nonNull(builder, BUILDER_VARIABLE_NAME);
+        Validator.nonNull(builder, BUILDER_VARIABLE_NAME);
         builder.append(HEX_TABLE[(value & 0xF0) >>> 4]).append(HEX_TABLE[(value & 0x0F)]);
     }
 
@@ -123,7 +123,7 @@ public final class HexUtil {
      * @param value   short
      */
     public static void appendHex(@Nonnull StringBuilder builder, short value) {
-        Asserter.nonNull(builder, BUILDER_VARIABLE_NAME);
+        Validator.nonNull(builder, BUILDER_VARIABLE_NAME);
         builder.append(HEX_TABLE[(value & 0xF000) >>> 12]).append(HEX_TABLE[(value & 0x0F00) >>> 8])
                 .append(HEX_TABLE[(value & 0x00F0) >>> 4]).append(HEX_TABLE[(value & 0x000F)]);
     }
@@ -143,7 +143,7 @@ public final class HexUtil {
      * @param value   int
      */
     public static void appendHex(@Nonnull StringBuilder builder, int value) {
-        Asserter.nonNull(builder, BUILDER_VARIABLE_NAME);
+        Validator.nonNull(builder, BUILDER_VARIABLE_NAME);
         builder.append(HEX_TABLE[(value & 0xF000_0000) >>> 28])
                 .append(HEX_TABLE[(value & 0x0F00_0000) >>> 24])
                 .append(HEX_TABLE[(value & 0x00F0_0000) >>> 20])

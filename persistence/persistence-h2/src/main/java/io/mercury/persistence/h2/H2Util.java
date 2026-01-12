@@ -1,6 +1,6 @@
 package io.mercury.persistence.h2;
 
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 import io.mercury.common.log4j2.Log4j2LoggerFactory;
 import io.mercury.common.sys.SysProperties;
 import io.mercury.common.util.StringSupport;
@@ -48,7 +48,7 @@ public final class H2Util {
                                     @Nonnull String sql,
                                     @Nonnull ResultSetProcessor processor,
                                     @Nonnull Class<T> type) throws SQLException {
-        Asserter.nonNull(connection, "connection");
+        Validator.nonNull(connection, "connection");
         try (// create a database connection
              Statement st = connection.createStatement();
              ResultSet rs = st.executeQuery(sql)) {

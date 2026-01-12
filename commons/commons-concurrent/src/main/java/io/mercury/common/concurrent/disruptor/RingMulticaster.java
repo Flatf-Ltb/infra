@@ -17,13 +17,12 @@ import org.slf4j.Logger;
 
 import javax.annotation.Nonnull;
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
 
 import static io.mercury.common.collections.CollectionUtil.toArray;
 import static io.mercury.common.datetime.pattern.impl.DateTimePattern.YYYYMMDD_L_HHMMSSSSS;
-import static io.mercury.common.lang.Asserter.nonNull;
-import static io.mercury.common.lang.Asserter.requiredLength;
+import static io.mercury.common.lang.Validator.nonNull;
+import static io.mercury.common.lang.Validator.requiredLength;
 import static io.mercury.common.lang.Throws.illegalArgument;
 import static io.mercury.common.sys.CurrentRuntime.availableProcessors;
 
@@ -44,16 +43,16 @@ public final class RingMulticaster<E, I> extends RingComponent<E, I> {
      * @param strategy   WaitStrategy
      * @param factory    EventFactory<E>
      * @param translator EventTranslatorOneArg<E, I>
-     * @param handlers   Collection<EventHandler<E>>
+     * @param handlers   List<EventHandler<E>>
      */
+    @SuppressWarnings("unchecked")
     private RingMulticaster(String name, int size, StartMode mode, ProducerType type,
                             WaitStrategy strategy, EventFactory<E> factory,
                             EventTranslatorOneArg<E, I> translator,
-                            Collection<EventHandler<E>> handlers) {
+                            List<EventHandler<E>> handlers) {
         super(name, size, type, strategy, factory, translator);
         requiredLength(handlers, 1, "handlers");
         // 将处理器添加进Disruptor中, 各个处理器进行并行处理
-        // noinspection unchecked
         disruptor.handleEventsWith(toArray(handlers, EventHandler[]::new));
         log.info("Initialized RingMulticaster -> {}, size -> {}, ProducerType -> {}, " +
                         "WaitStrategy -> {}, StartMode -> {}, EventHandler count -> {}",

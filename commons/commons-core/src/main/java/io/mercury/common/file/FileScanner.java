@@ -1,7 +1,7 @@
 package io.mercury.common.file;
 
 import io.mercury.common.collections.MutableSets;
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 import org.eclipse.collections.api.set.MutableSet;
 
 import javax.annotation.Nonnull;
@@ -22,7 +22,7 @@ public final class FileScanner {
      */
     @Nonnull
     public static MutableSet<File> depthFirst(@Nonnull File path) {
-        Asserter.nonNull(path, "path");
+        Validator.nonNull(path, "path");
         return depthFirst(path, null);
     }
 
@@ -35,7 +35,7 @@ public final class FileScanner {
      */
     @Nonnull
     public static MutableSet<File> depthFirst(@Nonnull File path, @Nullable FileFilter filter) {
-        Asserter.nonNull(path, "path");
+        Validator.nonNull(path, "path");
         if (filter == null)
             filter = any -> true;
         MutableSet<File> files = MutableSets.newUnifiedSet();

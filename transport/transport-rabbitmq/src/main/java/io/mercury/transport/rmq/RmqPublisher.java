@@ -2,7 +2,7 @@ package io.mercury.transport.rmq;
 
 import com.rabbitmq.client.AMQP.BasicProperties;
 import io.mercury.common.character.Charsets;
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 import io.mercury.common.log4j2.Log4j2LoggerFactory;
 import io.mercury.common.thread.Sleep;
 import io.mercury.common.thread.Threads;
@@ -66,7 +66,7 @@ public class RmqPublisher extends RmqTransport implements Publisher<String, byte
      */
     public RmqPublisher(@Nullable String tag, @Nonnull RmqPublisherConfig cfg) {
         super(nonEmpty(tag) ? tag : "publisher-" + datetimeOfMillisecond(), cfg.getConnection());
-        Asserter.nonNull(cfg.getPublishExchange(), "exchangeRelation");
+        Validator.nonNull(cfg.getPublishExchange(), "exchangeRelation");
         this.publishExchange = cfg.getPublishExchange();
         this.exchangeName = publishExchange.getExchangeName();
         this.defaultRoutingKey = cfg.getDefaultRoutingKey();

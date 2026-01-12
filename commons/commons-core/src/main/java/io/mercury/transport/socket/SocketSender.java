@@ -1,7 +1,7 @@
 package io.mercury.transport.socket;
 
 import io.mercury.common.collections.queue.Queue;
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 import io.mercury.common.log4j2.Log4j2LoggerFactory;
 import io.mercury.transport.TransportComponent;
 import io.mercury.transport.api.Sender;
@@ -27,7 +27,7 @@ public final class SocketSender extends TransportComponent implements Sender<byt
 
 
     public SocketSender(SocketConfigurator configurator, Queue<byte[]> queue) {
-        Asserter.nonNull(configurator, "configurator");
+        Validator.nonNull(configurator, "configurator");
         this.configurator = configurator;
         this.innerQueue = queue;
         init();

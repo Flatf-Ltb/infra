@@ -1,6 +1,6 @@
 package io.mercury.common.collections;
 
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 import io.mercury.common.util.ArrayUtil;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.primitive.ImmutableIntObjectMap;
@@ -12,6 +12,7 @@ import org.eclipse.collections.impl.map.sorted.immutable.ImmutableSortedMapFacto
 import org.eclipse.collections.impl.map.sorted.mutable.TreeSortedMap;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
@@ -24,15 +25,28 @@ public final class ImmutableMaps {
     }
 
     /**
+     * @param <V>     Value type
+     * @param keyFunc IntFunction<V>
+     * @param values  RichIterable<V>
+     * @return ImmutableIntObjectMap<V>
+     */
+    @SafeVarargs
+    public static <V> ImmutableIntObjectMap<V> newImmutableIntMap(ToIntFunction<V> keyFunc, V... values) {
+        Validator.nonNull(keyFunc, "keyFunc");
+        Validator.nonNull(values, "values");
+        return newImmutableIntMap(keyFunc, Arrays.asList(values));
+    }
+
+    /**
      * @param <V>      Value type
      * @param keyFunc  IntFunction<V>
      * @param iterable RichIterable<V>
      * @return ImmutableIntObjectMap<V>
      */
-    public static <V> ImmutableIntObjectMap<V> newImmutableIntMap(Iterable<V> iterable,
-                                                                  ToIntFunction<V> keyFunc) {
-        Asserter.nonNull(iterable, "iterable");
-        Asserter.nonNull(keyFunc, "keyFunc");
+    public static <V> ImmutableIntObjectMap<V> newImmutableIntMap(ToIntFunction<V> keyFunc,
+                                                                  Iterable<V> iterable) {
+        Validator.nonNull(keyFunc, "keyFunc");
+        Validator.nonNull(iterable, "iterable");
         return ImmutableIntObjectMapFactoryImpl.INSTANCE.from(iterable, keyFunc::applyAsInt, v -> v);
     }
 

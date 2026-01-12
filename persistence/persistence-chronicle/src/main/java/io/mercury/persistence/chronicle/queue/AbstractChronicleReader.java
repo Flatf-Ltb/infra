@@ -3,6 +3,7 @@ package io.mercury.persistence.chronicle.queue;
 import io.mercury.common.annotation.AbstractFunction;
 import io.mercury.common.annotation.thread.OnlyAllowSingleThreadAccess;
 import io.mercury.common.datetime.TimeConst;
+import io.mercury.common.thread.Sleep;
 import io.mercury.persistence.chronicle.exception.ChronicleReadException;
 import io.mercury.persistence.chronicle.queue.params.ReaderParams;
 import net.openhft.chronicle.queue.ExcerptTailer;
@@ -13,21 +14,20 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 import javax.annotation.concurrent.NotThreadSafe;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import static io.mercury.common.datetime.DateTimeUtil.fmtDateTime;
-import static io.mercury.common.datetime.pattern.DateTimePattern.YY_MM_DD_HH_MM_SS_SSS;
-import static io.mercury.common.thread.SleepSupport.sleep;
-import static io.mercury.common.thread.ThreadSupport.startNewThread;
+import static io.mercury.common.datetime.pattern.impl.DateTimePattern.YY_MM_DD_HH_MM_SS_SSS;
+import static io.mercury.common.thread.Threads.startNewThread;
 
 @Immutable
 @NotThreadSafe
-public abstract class AbstractChronicleReader<OUT> extends CloseableChronicleAccessor implements Runnable {
+public abstract class AbstractChronicleReader<T> extends CloseableChronicleAccessor implements Runnable {
 
     protected final FileCycle fileCycle;
 
@@ -35,11 +35,11 @@ public abstract class AbstractChronicleReader<OUT> extends CloseableChronicleAcc
 
     protected final ExcerptTailer tailer;
 
-    protected final Consumer<OUT> dataConsumer;
+    protected final Consumer<T> dataConsumer;
 
     /**
      * @param allocateSeq  long
-     * @param readerName   String
+     * @param name         String
      * @param fileCycle    FileCycle
      * @param params       ReaderParams
      * @param logger       Logger
@@ -47,13 +47,13 @@ public abstract class AbstractChronicleReader<OUT> extends CloseableChronicleAcc
      * @param dataConsumer Consumer<OUT>
      */
     protected AbstractChronicleReader(long allocateSeq,
-                                      String readerName,
+                                      String name,
                                       FileCycle fileCycle,
                                       ReaderParams params,
                                       Logger logger,
                                       ExcerptTailer tailer,
-                                      Consumer<OUT> dataConsumer) {
-        super(allocateSeq, readerName, logger);
+                                      Consumer<T> dataConsumer) {
+        super(allocateSeq, name, logger);
         this.fileCycle = fileCycle;
         this.params = params;
         this.tailer = tailer;
@@ -132,14 +132,14 @@ public abstract class AbstractChronicleReader<OUT> extends CloseableChronicleAcc
      * @return String
      */
     public String getReaderName() {
-        return accessorName;
+        return name;
     }
 
     /**
      * @return Thread
      */
     public Thread runWithNewThread() {
-        return runWithNewThread(accessorName);
+        return runWithNewThread(name);
     }
 
     /**
@@ -154,7 +154,7 @@ public abstract class AbstractChronicleReader<OUT> extends CloseableChronicleAcc
      * @return OUT
      */
     @AbstractFunction
-    protected abstract OUT next0();
+    protected abstract T next0();
 
     /**
      * Get next element of current cursor position.
@@ -165,7 +165,7 @@ public abstract class AbstractChronicleReader<OUT> extends CloseableChronicleAcc
      */
     @CheckForNull
     @OnlyAllowSingleThreadAccess
-    public OUT next() throws IllegalStateException, ChronicleReadException {
+    public T next() throws IllegalStateException, ChronicleReadException {
         if (isClose)
             throw new IllegalStateException("Unable to read next, Chronicle queue is closed");
         try {
@@ -178,12 +178,11 @@ public abstract class AbstractChronicleReader<OUT> extends CloseableChronicleAcc
     @Override
     public void run() {
         logger.info("ChronicleReader -> [{}] is running at [{}]", getReaderName(), fmtDateTime(YY_MM_DD_HH_MM_SS_SSS));
-        if (params.getDelayReadTime() > 0)
-            sleep(params.getDelayReadUnit(), params.getDelayReadTime());
+        if (params.getDelayReadTime().toNanos() > 0)
+            Sleep.time(params.getDelayReadTime());
         boolean waitingData = params.isWaitingData();
         boolean spinWaiting = params.isSpinWaiting();
-        TimeUnit readIntervalUnit = params.getReadIntervalUnit();
-        long readIntervalTime = params.getReadIntervalTime();
+        Duration intervalTime = params.getIntervalTime();
         for (; ; ) {
             if (isClose) {
                 logger.info("ChronicleReader -> [{}] is closed, execute exit function at [{}]", getReaderName(),
@@ -191,14 +190,14 @@ public abstract class AbstractChronicleReader<OUT> extends CloseableChronicleAcc
                 exit();
                 break;
             }
-            OUT next = null;
+            T next = null;
             try {
                 next = next();
             } catch (ChronicleReadException e) {
-                if (params.isReadFailLogging())
+                if (params.isFailLogging())
                     logger.error("ChronicleReader -> [{}] call next throw exception: [{}] at [{}]", getReaderName(),
                             e.getMessage(), fmtDateTime(YY_MM_DD_HH_MM_SS_SSS), e);
-                if (params.isReadFailCrash())
+                if (params.isFailCrash())
                     throw e;
             }
             if (next == null) {
@@ -206,7 +205,7 @@ public abstract class AbstractChronicleReader<OUT> extends CloseableChronicleAcc
                 if (waitingData) {
                     // 非自旋等待, 进入休眠
                     if (!spinWaiting) {
-                        sleep(readIntervalUnit, readIntervalTime);
+                        Sleep.time(intervalTime);
                     }
                 } else {
                     // 数据读取完毕, 退出线程

@@ -2,7 +2,7 @@ package io.mercury.persistence.chronicle.hash;
 
 import io.mercury.common.collections.keeper.FilesKeeper;
 import io.mercury.common.file.PermissionDeniedException;
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 import io.mercury.persistence.chronicle.exception.ChronicleIOException;
 import net.openhft.chronicle.set.ChronicleSet;
 import net.openhft.chronicle.set.ChronicleSetBuilder;
@@ -18,7 +18,7 @@ public class ChronicleSetKeeper<E> extends FilesKeeper<String, ChronicleSet<E>> 
     private final ChronicleSetConfigurator<E> cfg;
 
     public ChronicleSetKeeper(@Nonnull ChronicleSetConfigurator<E> cfg) {
-        Asserter.nonNull(cfg, "cfg");
+        Validator.nonNull(cfg, "cfg");
         this.cfg = cfg;
     }
 
@@ -45,7 +45,7 @@ public class ChronicleSetKeeper<E> extends FilesKeeper<String, ChronicleSet<E>> 
                 } else {
                     // Is recover data
                     if (cfg.isRecover())
-                        return builder.createOrRecoverPersistedTo(mapFile);
+                        return builder.recoverPersistedTo(mapFile, true);
                     else
                         return builder.createPersistedTo(mapFile);
                 }

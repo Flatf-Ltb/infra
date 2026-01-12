@@ -6,7 +6,7 @@ import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 import io.mercury.common.collections.MutableLists;
 import io.mercury.common.datetime.DateTimeUtil;
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 import io.mercury.common.log4j2.Log4j2LoggerFactory;
 import io.mercury.common.serialization.specific.BytesDeserializer;
 import io.mercury.transport.api.Receiver;
@@ -199,8 +199,8 @@ public class RmqBatchReceiver<T> extends RmqTransport implements Receiver, Runna
             this.channel = channel;
             this.refreshNowEvent = refreshNowEvent;
             this.filter = filter;
-            this.batchHandler = Asserter.nonNull(batchHandler, "batchHandler");
-            this.deserializer = Asserter.nonNull(deserializer, "deserializer");
+            this.batchHandler = Validator.nonNull(batchHandler, "batchHandler");
+            this.deserializer = Validator.nonNull(deserializer, "deserializer");
             this.prefetchCount = prefetchCount;
             if (millisecond > 0) {
                 this.millisecond = millisecond;
@@ -212,8 +212,8 @@ public class RmqBatchReceiver<T> extends RmqTransport implements Receiver, Runna
 
         public BatchProcessConsumer(Channel channel, BytesDeserializer<T> serializable, BatchHandler<T> batchHandler) {
             super(channel);
-            Asserter.nonNull(batchHandler, "qosBatchHandler");
-            Asserter.nonNull(serializable, "deserializer");
+            Validator.nonNull(batchHandler, "qosBatchHandler");
+            Validator.nonNull(serializable, "deserializer");
             this.channel = channel;
             this.batchHandler = batchHandler;
             this.deserializer = serializable;

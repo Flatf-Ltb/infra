@@ -35,12 +35,6 @@
             <groupId>org.jgrapht</groupId>
             <artifactId>jgrapht-core</artifactId>
             <version>1.5.2</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.jheaps</groupId>
-                    <artifactId>jheaps</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <!-- JGraphT Ext -->
@@ -50,20 +44,12 @@
             <version>1.5.2</version>
         </dependency>
 
-        <!-- A free, production-ready, efficient Java library containing
-             a collection of heap data-structures. -->
-        <dependency>
-            <groupId>org.jheaps</groupId>
-            <artifactId>jheaps</artifactId>
-            <version>0.14</version>
-        </dependency>
-
         <!-- Jimfs is an in-memory implementation of Java 7's
             java.nio.file abstract file system API. -->
         <dependency>
             <groupId>com.google.jimfs</groupId>
             <artifactId>jimfs</artifactId>
-            <version>1.3.0</version>
+            <version>1.3.1</version>
             <exclusions>
                 <exclusion>
                     <artifactId>guava</artifactId>

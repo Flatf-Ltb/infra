@@ -1,19 +1,8 @@
 package io.mercury.persistence.chronicle.queue;
 
-import java.nio.ByteBuffer;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.Immutable;
-import javax.annotation.concurrent.NotThreadSafe;
-
-import org.slf4j.Logger;
-
 import io.mercury.common.number.Randoms;
 import io.mercury.common.sequence.EpochSequence;
-import io.mercury.common.thread.SleepSupport;
+import io.mercury.common.thread.Sleep;
 import io.mercury.persistence.chronicle.queue.ChronicleBytesQueue.ChronicleBytesAppender;
 import io.mercury.persistence.chronicle.queue.ChronicleBytesQueue.ChronicleBytesReader;
 import io.mercury.persistence.chronicle.queue.params.ReaderParams;
@@ -21,10 +10,19 @@ import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.bytes.BytesStore;
 import net.openhft.chronicle.queue.ExcerptAppender;
 import net.openhft.chronicle.queue.ExcerptTailer;
+import org.slf4j.Logger;
+
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+import javax.annotation.concurrent.Immutable;
+import javax.annotation.concurrent.NotThreadSafe;
+import java.nio.ByteBuffer;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 @Immutable
 public class ChronicleBytesQueue
-        extends AbstractChronicleQueue<ByteBuffer, ByteBuffer, ChronicleBytesAppender, ChronicleBytesReader> {
+        extends AbstractChronicleQueue<ByteBuffer, ChronicleBytesAppender, ChronicleBytesReader> {
 
     private final int bufferSize;
     private final boolean useDirectMemory;
@@ -58,13 +56,13 @@ public class ChronicleBytesQueue
                                                      @CheckForNull Supplier<ByteBuffer> dataProducer)
             throws IllegalStateException {
         return new ChronicleBytesAppender(EpochSequence.allocate(), appenderName, logger,
-                internalQueue.acquireAppender(), dataProducer);
+                internalQueue.createAppender(), dataProducer);
     }
 
     /**
      * @author yellow013
      */
-    public static final class BytesQueueBuilder extends AbstractQueueBuilder<BytesQueueBuilder> {
+    public static final class BytesQueueBuilder extends BaseQueueBuilder<BytesQueueBuilder> {
 
         private int bufferSize = 512;
         private boolean useDirectMemory = false;
@@ -106,12 +104,10 @@ public class ChronicleBytesQueue
     @NotThreadSafe
     public static final class ChronicleBytesAppender extends AbstractChronicleAppender<ByteBuffer> {
 
-        ChronicleBytesAppender(long allocateSeq,
-                               String appenderName,
-                               Logger logger,
-                               ExcerptAppender appender,
+        ChronicleBytesAppender(long allocateSeq, String name,
+                               Logger logger, ExcerptAppender appender,
                                Supplier<ByteBuffer> dataProducer) {
-            super(allocateSeq, appenderName, logger, appender, dataProducer);
+            super(allocateSeq, name, logger, appender, dataProducer);
         }
 
         @Override
@@ -132,16 +128,12 @@ public class ChronicleBytesQueue
         private final int bufferSize;
         private final boolean useDirectMemory;
 
-        ChronicleBytesReader(long allocateSeq,
-                             String readerName,
-                             FileCycle fileCycle,
-                             ReaderParams params,
-                             Logger logger,
-                             int bufferSize,
-                             boolean useDirectMemory,
-                             ExcerptTailer tailer,
+        ChronicleBytesReader(long allocateSeq, String name,
+                             FileCycle fileCycle, ReaderParams params,
+                             Logger logger, int bufferSize,
+                             boolean useDirectMemory, ExcerptTailer tailer,
                              Consumer<ByteBuffer> dataConsumer) {
-            super(allocateSeq, readerName, fileCycle, params, logger, tailer, dataConsumer);
+            super(allocateSeq, name, fileCycle, params, logger, tailer, dataConsumer);
             this.bufferSize = bufferSize;
             this.useDirectMemory = useDirectMemory;
         }
@@ -166,7 +158,7 @@ public class ChronicleBytesQueue
 
     public static void main(String[] args) {
         ChronicleBytesQueue queue = ChronicleBytesQueue.newBuilder().folder("byte-test").bufferSize(512)
-                .fileCycle(FileCycle.MINUTELY).build();
+                .fileCycle(FileCycle.FAST_DAILY).build();
         ChronicleBytesAppender writer = queue.acquireAppender();
         ChronicleBytesReader reader = queue.createReader(next -> System.out.println(new String(next.array())));
         new Thread(() -> {
@@ -175,9 +167,8 @@ public class ChronicleBytesQueue
                 try {
                     writer.append(buffer.put(String.valueOf(Randoms.nextLong()).getBytes()));
                     buffer.clear();
-                    SleepSupport.sleep(100);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    Sleep.millis(100);
+                } catch (Exception ignored) {
                 }
             }
         }).start();

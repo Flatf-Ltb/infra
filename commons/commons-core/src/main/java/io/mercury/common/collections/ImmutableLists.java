@@ -15,6 +15,7 @@ public final class ImmutableLists {
     private ImmutableLists() {
     }
 
+
     /**
      * @param values int...
      * @return ImmutableIntList
@@ -36,14 +37,10 @@ public final class ImmutableLists {
     }
 
     /**
-     * @param <E>      E
-     * @param iterable Iterable<E>
      * @return ImmutableList<E>
      */
-    public static <E> ImmutableList<E> newImmutableList(@Nullable Iterable<E> iterable) {
-        if (iterable == null)
-            return ImmutableListFactoryImpl.INSTANCE.empty();
-        return ImmutableListFactoryImpl.INSTANCE.withAll(iterable);
+    public static <E> ImmutableList<E> newImmutableList() {
+        return ImmutableListFactoryImpl.INSTANCE.empty();
     }
 
     /**
@@ -67,6 +64,17 @@ public final class ImmutableLists {
         if (ArrayUtil.isNullOrEmpty(values))
             return ImmutableListFactoryImpl.INSTANCE.empty();
         return ImmutableListFactoryImpl.INSTANCE.with(values);
+    }
+
+    /**
+     * @param <E>      E
+     * @param iterable Iterable<E>
+     * @return ImmutableList<E>
+     */
+    public static <E> ImmutableList<E> newImmutableList(@Nullable Iterable<E> iterable) {
+        if (iterable == null)
+            return ImmutableListFactoryImpl.INSTANCE.empty();
+        return ImmutableListFactoryImpl.INSTANCE.withAll(iterable);
     }
 
 }

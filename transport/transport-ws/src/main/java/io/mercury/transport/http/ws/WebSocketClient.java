@@ -74,7 +74,7 @@ public final class WebSocketClient {
             BinaryFrameHandler binaryFrameHandler,
             TextFrameHandler textFrameHandler,
             // 异常处理函数
-            ThrowableHandler throwableHandler) implements WebSocketListener {
+            ThrowableHandler<Throwable> throwableHandler) implements WebSocketListener {
 
         @Override
         public void onOpen(WebSocket webSocket) {

@@ -7,7 +7,7 @@ import io.mercury.transport.rmq.declare.QueueRelationship;
 import javax.annotation.Nonnull;
 import java.util.Map;
 
-import static io.mercury.common.lang.Asserter.nonNull;
+import static io.mercury.common.lang.Validator.nonNull;
 
 /**
  * @author yellow013

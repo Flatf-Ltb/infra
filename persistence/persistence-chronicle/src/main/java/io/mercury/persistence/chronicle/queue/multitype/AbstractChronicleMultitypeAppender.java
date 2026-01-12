@@ -1,23 +1,21 @@
 package io.mercury.persistence.chronicle.queue.multitype;
 
-import static io.mercury.common.datetime.DateTimeUtil.fmtDateTime;
-import static io.mercury.common.datetime.pattern.DateTimePattern.YY_MM_DD_HH_MM_SS_SSS;
-
-import java.util.function.Supplier;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.Immutable;
-import javax.annotation.concurrent.NotThreadSafe;
-
-import org.slf4j.Logger;
-
 import io.mercury.common.annotation.AbstractFunction;
 import io.mercury.common.codec.Envelope;
 import io.mercury.common.serialization.api.Serializer;
 import io.mercury.persistence.chronicle.exception.ChronicleAppendException;
 import io.mercury.persistence.chronicle.queue.AbstractChronicleAppender;
 import net.openhft.chronicle.queue.ExcerptAppender;
+import org.slf4j.Logger;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
+import javax.annotation.concurrent.NotThreadSafe;
+import java.util.function.Supplier;
+
+import static io.mercury.common.datetime.DateTimeUtil.fmtDateTime;
+import static io.mercury.common.datetime.pattern.impl.DateTimePattern.YY_MM_DD_HH_MM_SS_SSS;
 
 @Immutable
 @NotThreadSafe
@@ -25,11 +23,11 @@ public abstract class AbstractChronicleMultitypeAppender<E extends Envelope, IN>
         extends AbstractChronicleAppender<IN> implements Runnable {
 
     protected AbstractChronicleMultitypeAppender(long allocateSeq,
-                                                 String appenderName,
+                                                 String name,
                                                  Logger logger,
                                                  ExcerptAppender appender,
                                                  Supplier<IN> dataProducer) {
-        super(allocateSeq, appenderName, logger, appender, dataProducer);
+        super(allocateSeq, name, logger, appender, dataProducer);
     }
 
     /**
@@ -63,7 +61,7 @@ public abstract class AbstractChronicleMultitypeAppender<E extends Envelope, IN>
                        @Nonnull Object obj,
                        Serializer<Object, IN> serializer)
             throws IllegalStateException, ChronicleAppendException {
-        append(envelope, serializer.serialization(obj));
+        append(envelope, serializer.serialize(obj));
     }
 
     @AbstractFunction

@@ -7,7 +7,7 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.Method;
 import com.rabbitmq.client.ShutdownSignalException;
 import io.mercury.common.functional.ThrowableHandler;
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 import io.mercury.common.log4j2.Log4j2LoggerFactory;
 import io.mercury.common.thread.Sleep;
 import io.mercury.common.util.StringSupport;
@@ -55,7 +55,7 @@ public abstract class RmqTransport extends TransportComponent implements Transpo
      * @param rmqConnection RmqConnection
      */
     protected RmqTransport(@Nonnull String tag, @Nonnull RmqConnection rmqConnection) {
-        Asserter.nonNull(rmqConnection, "rabbitConnection");
+        Validator.nonNull(rmqConnection, "rabbitConnection");
         this.tag = tag;
         this.rmqConnection = rmqConnection;
         this.shutdownSignalHandler = rmqConnection.getShutdownSignalHandler();

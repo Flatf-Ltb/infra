@@ -1,6 +1,6 @@
 package io.mercury.transport.socket;
 
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 import io.mercury.common.log4j2.Log4j2LoggerFactory;
 import io.mercury.common.thread.Sleep;
 import io.mercury.common.thread.Threads;
@@ -34,8 +34,8 @@ public class SocketReceiver extends TransportComponent implements Receiver {
      * @param callback     Consumer<byte[]>
      */
     public SocketReceiver(SocketConfigurator configurator, Consumer<byte[]> callback) {
-        Asserter.nonNull(configurator, "configurator");
-        Asserter.nonNull(callback, "callback");
+        Validator.nonNull(configurator, "configurator");
+        Validator.nonNull(callback, "callback");
         this.configurator = configurator;
         this.callback = callback;
         init();

@@ -6,6 +6,9 @@ public final class StaticLogger {
 
     private static final Logger LOG = Log4j2LoggerFactory.getLogger(StaticLogger.class);
 
+    private StaticLogger() {
+    }
+
     /**
      * @param msg  String
      * @param args Object[]

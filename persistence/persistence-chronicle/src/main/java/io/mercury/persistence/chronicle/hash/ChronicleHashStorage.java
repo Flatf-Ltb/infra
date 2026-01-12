@@ -18,7 +18,6 @@ import static io.mercury.common.util.StringSupport.fixPath;
 
 public class ChronicleHashStorage {
 
-
     public static <K, V> MapBuilder<K, V> newMap(@Nonnull Class<K> keyType,
                                                  @Nonnull Class<V> valueType) {
         return newMap(keyType, valueType, "auto-create-map-" + DateTimeUtil.datetimeOfSecond());
@@ -54,7 +53,7 @@ public class ChronicleHashStorage {
     }
 
 
-    private static abstract class HashBuilder<B extends HashBuilder<B>> {
+    private abstract static class HashBuilder<B extends HashBuilder<B>> {
 
         protected final File saveFile;
 
@@ -205,7 +204,7 @@ public class ChronicleHashStorage {
                 checkSaveFile();
                 try {
                     // Is recover data
-                    return isRecover ? mapBuilder.createOrRecoverPersistedTo(saveFile)
+                    return isRecover ? mapBuilder.recoverPersistedTo(saveFile, true)
                             : mapBuilder.createPersistedTo(saveFile);
                 } catch (IOException e) {
                     throw new ChronicleIOException(e);
@@ -272,7 +271,7 @@ public class ChronicleHashStorage {
                 checkSaveFile();
                 try {
                     // Is recover data
-                    return isRecover ? setBuilder.createOrRecoverPersistedTo(saveFile)
+                    return isRecover ? setBuilder.recoverPersistedTo(saveFile, true)
                             : setBuilder.createPersistedTo(saveFile);
                 } catch (IOException e) {
                     throw new ChronicleIOException(e);

@@ -15,12 +15,11 @@
 
     <modules>
         <module>serialization-avro</module>
-        <module>serialization-fury</module>
+        <module>serialization-fory</module>
         <module>serialization-json</module>
         <module>serialization-kryo</module>
         <module>serialization-protobuf</module>
         <module>serialization-sbe</module>
-        <!--<module>serialization-wire</module>-->
     </modules>
 
     <properties>
@@ -45,6 +44,11 @@
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>

@@ -24,7 +24,7 @@
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
-            <version>1.20.1</version>
+            <version>1.21.2</version>
         </dependency>
 
         <!-- Netty Component -->
@@ -55,7 +55,7 @@
         <dependency>
             <groupId>org.asynchttpclient</groupId>
             <artifactId>async-http-client</artifactId>
-            <version>3.0.2</version>
+            <version>3.0.4</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -93,7 +93,6 @@
                     <groupId>com.sun.activation</groupId>
                     <artifactId>jakarta.activation</artifactId>
                 </exclusion>
-
             </exclusions>
         </dependency>
 
@@ -101,19 +100,6 @@
             <groupId>io.netty</groupId>
             <artifactId>netty-codec-dns</artifactId>
             <version>${netty.version}</version>
-        </dependency>
-
-        <!-- A WebSocket client and server implementation written 100% in Java -->
-        <dependency>
-            <groupId>org.java-websocket</groupId>
-            <artifactId>Java-WebSocket</artifactId>
-            <version>1.6.0</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
     </dependencies>

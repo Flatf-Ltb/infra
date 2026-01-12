@@ -3,7 +3,7 @@ package io.mercury.persistence.chronicle.hash;
 import io.mercury.common.collections.Capacity;
 import io.mercury.common.config.Configurator;
 import io.mercury.common.datetime.DateTimeUtil;
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 import io.mercury.common.sys.SysProperties;
 
 import javax.annotation.Nonnull;
@@ -157,10 +157,10 @@ public final class ChronicleMapConfigurator<K, V> implements Configurator {
                                                   @Nonnull String rootPath,
                                                   @Nonnull String folder)
             throws NullPointerException {
-        Asserter.nonNull(keyClass, "keyClass");
-        Asserter.nonNull(valueClass, "valueClass");
-        Asserter.nonNull(rootPath, "rootPath");
-        Asserter.nonNull(folder, "folder");
+        Validator.nonNull(keyClass, "keyClass");
+        Validator.nonNull(valueClass, "valueClass");
+        Validator.nonNull(rootPath, "rootPath");
+        Validator.nonNull(folder, "folder");
         return new Builder<>(keyClass, valueClass, rootPath, folder);
     }
 
@@ -173,7 +173,7 @@ public final class ChronicleMapConfigurator<K, V> implements Configurator {
      */
     public static <K, V> Builder<K, V> reset(@Nonnull ChronicleMapConfigurator<K, V> original)
             throws NullPointerException {
-        Asserter.nonNull(original, "original");
+        Validator.nonNull(original, "original");
         return original.builder;
     }
 
@@ -289,7 +289,7 @@ public final class ChronicleMapConfigurator<K, V> implements Configurator {
          * @return Builder<K, V>
          */
         public Builder<K, V> entries(Capacity capacity) {
-            this.entries = capacity.value();
+            this.entries = capacity.size();
             return this;
         }
 

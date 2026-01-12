@@ -13,10 +13,83 @@ public final class Predicates {
     /**
      * @param value int
      * @param min   int
+     * @return boolean
+     */
+    public static boolean isGreaterThan(int value, int min) {
+        return value > min;
+    }
+
+    /**
+     * @param value long
+     * @param min   long
+     * @return boolean
+     */
+    public static boolean isGreaterThan(long value, long min) {
+        return value > min;
+    }
+
+
+    /**
+     * @param value int
+     * @param min   int
+     * @return boolean
+     */
+    public static boolean isGreaterOrEqualThan(int value, int min) {
+        return value >= min;
+    }
+
+    /**
+     * @param value long
+     * @param min   long
+     * @return boolean
+     */
+    public static boolean isGreaterOrEqualThan(long value, long min) {
+        return value >= min;
+    }
+
+    /**
+     * @param value int
      * @param max   int
      * @return boolean
      */
-    public static boolean atWithinRange(int value, int min, int max) {
+    public static boolean isLessThan(int value, int max) {
+        return value < max;
+    }
+
+    /**
+     * @param value long
+     * @param max   long
+     * @return boolean
+     */
+    public static boolean isLessThan(long value, long max) {
+        return value < max;
+    }
+
+    /**
+     * @param value int
+     * @param max   int
+     * @return boolean
+     */
+    public static boolean isLessOrEqualThan(int value, int max) {
+        return value <= max;
+    }
+
+    /**
+     * @param value long
+     * @param max   long
+     * @return boolean
+     */
+    public static boolean isLessOrEqualThan(long value, long max) {
+        return value <= max;
+    }
+
+    /**
+     * @param value int
+     * @param min   int
+     * @param max   int
+     * @return boolean
+     */
+    public static boolean isAtWithinRange(int value, int min, int max) {
         return value >= min && value <= max;
     }
 
@@ -26,7 +99,7 @@ public final class Predicates {
      * @param max long
      * @return boolean
      */
-    public static boolean atWithinRange(long l, long min, long max) {
+    public static boolean isAtWithinRange(long l, long min, long max) {
         return (l >= min && l <= max);
     }
 
@@ -36,7 +109,7 @@ public final class Predicates {
      * @param requiredLength int
      * @return boolean
      */
-    public static <E> boolean requiredLength(Collection<E> collection, int requiredLength) {
+    public static <E> boolean isRequiredLength(Collection<E> collection, int requiredLength) {
         return collection != null && collection.size() >= requiredLength;
     }
 
@@ -46,7 +119,7 @@ public final class Predicates {
      * @param requiredLength int
      * @return boolean
      */
-    public static <E> boolean requiredLength(List<E> list, int requiredLength) {
+    public static <E> boolean isRequiredLength(List<E> list, int requiredLength) {
         return list != null && list.size() >= requiredLength;
     }
 
@@ -58,7 +131,7 @@ public final class Predicates {
      * @param requiredLength int
      * @return boolean
      */
-    public static <K, V> boolean requiredLength(Map<K, V> map, int requiredLength) {
+    public static <K, V> boolean isRequiredLength(Map<K, V> map, int requiredLength) {
         return map != null && map.size() >= requiredLength;
     }
 
@@ -68,7 +141,7 @@ public final class Predicates {
      * @param requiredLength int
      * @return boolean
      */
-    public static <T> boolean requiredLength(T[] array, int requiredLength) {
+    public static <T> boolean isRequiredLength(T[] array, int requiredLength) {
         return array != null && array.length >= requiredLength;
     }
 
@@ -77,7 +150,7 @@ public final class Predicates {
      * @param requiredLength int
      * @return boolean
      */
-    public static boolean requiredLength(boolean[] array, int requiredLength) {
+    public static boolean isRequiredLength(boolean[] array, int requiredLength) {
         return array != null && array.length >= requiredLength;
     }
 
@@ -86,7 +159,7 @@ public final class Predicates {
      * @param requiredLength int
      * @return boolean
      */
-    public static boolean requiredLength(byte[] array, int requiredLength) {
+    public static boolean isRequiredLength(byte[] array, int requiredLength) {
         return array != null && array.length >= requiredLength;
     }
 
@@ -95,7 +168,7 @@ public final class Predicates {
      * @param requiredLength int
      * @return boolean
      */
-    public static boolean requiredLength(char[] array, int requiredLength) {
+    public static boolean isRequiredLength(char[] array, int requiredLength) {
         return array != null && array.length >= requiredLength;
     }
 
@@ -104,7 +177,7 @@ public final class Predicates {
      * @param requiredLength int
      * @return boolean
      */
-    public static boolean requiredLength(int[] array, int requiredLength) {
+    public static boolean isRequiredLength(int[] array, int requiredLength) {
         return array != null && array.length >= requiredLength;
     }
 
@@ -113,7 +186,7 @@ public final class Predicates {
      * @param requiredLength int
      * @return boolean
      */
-    public static boolean requiredLength(long[] array, int requiredLength) {
+    public static boolean isRequiredLength(long[] array, int requiredLength) {
         return array != null && array.length >= requiredLength;
     }
 
@@ -122,7 +195,7 @@ public final class Predicates {
      * @param requiredLength int
      * @return boolean
      */
-    public static boolean requiredLength(float[] array, int requiredLength) {
+    public static boolean isRequiredLength(float[] array, int requiredLength) {
         return array != null && array.length >= requiredLength;
     }
 
@@ -131,7 +204,7 @@ public final class Predicates {
      * @param requiredLength int
      * @return boolean
      */
-    public static boolean requiredLength(double[] array, int requiredLength) {
+    public static boolean isRequiredLength(double[] array, int requiredLength) {
         return array != null && array.length >= requiredLength;
     }
 

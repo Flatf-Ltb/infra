@@ -11,7 +11,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 import java.io.Closeable;
 import java.io.IOException;
 
-import static io.mercury.common.lang.Asserter.nonNull;
+import static io.mercury.common.lang.Validator.nonNull;
 import static io.mercury.common.log4j2.Log4j2LoggerFactory.getLogger;
 
 @NotThreadSafe

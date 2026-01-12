@@ -14,7 +14,7 @@ public class InputMain {
         String path = "queue-en";
         try (RollingChronicleQueue queue = SingleChronicleQueueBuilder
                 .binary(path).build()) {
-            MessageConsumer messageConsumer = queue.acquireAppender().methodWriter(MessageConsumer.class);
+            MessageConsumer messageConsumer = queue.methodWriter(MessageConsumer.class);
             try (Scanner read = new Scanner(System.in)) {
                 while (true) {
                     System.out.println("type something");

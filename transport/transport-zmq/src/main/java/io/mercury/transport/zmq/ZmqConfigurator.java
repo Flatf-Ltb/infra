@@ -3,7 +3,7 @@ package io.mercury.transport.zmq;
 import com.typesafe.config.Config;
 import io.mercury.common.annotation.OnlyOverrideEquals;
 import io.mercury.common.config.ConfigWrapper;
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 import io.mercury.common.net.IpAddressIllegalException;
 import io.mercury.common.net.IpAddressValidator;
 import io.mercury.common.serialization.specific.BytesSerializer;
@@ -25,8 +25,8 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import static io.mercury.common.lang.Asserter.greaterThan;
-import static io.mercury.common.lang.Asserter.nonNull;
+import static io.mercury.common.lang.Validator.greaterThan;
+import static io.mercury.common.lang.Validator.nonNull;
 import static io.mercury.common.log4j2.Log4j2LoggerFactory.getLogger;
 import static io.mercury.common.sys.CurrentRuntime.availableProcessors;
 import static io.mercury.transport.zmq.ZmqConfigOption.ADDR;
@@ -64,7 +64,7 @@ public final class ZmqConfigurator implements TransportConfigurator,
                 int port = wrapper.getIntOrThrows(PORT);
                 if (wrapper.hasOption(ADDR)) {
                     var tcpAddr = wrapper.getStringOrThrows(ADDR);
-                    Asserter.isValid(tcpAddr, IpAddressValidator::isIpAddress,
+                    Validator.isValid(tcpAddr, IpAddressValidator::isIpAddress,
                             new IpAddressIllegalException(tcpAddr));
                     conf = new ZmqConfigurator(ZmqAddr.tcp(tcpAddr, port));
                 } else {
@@ -208,7 +208,7 @@ public final class ZmqConfigurator implements TransportConfigurator,
     }
 
     /**
-     * @return ZmqSender<byte [ ]>
+     * @return ZmqSender<byte []>
      */
     public ZmqSender<byte[]> createSender() {
         return createSender(bytes -> bytes);

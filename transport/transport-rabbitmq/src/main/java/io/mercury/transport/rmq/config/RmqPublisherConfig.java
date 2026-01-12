@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 import static com.rabbitmq.client.MessageProperties.PERSISTENT_BASIC;
-import static io.mercury.common.lang.Asserter.nonNull;
+import static io.mercury.common.lang.Validator.nonNull;
 
 /**
  * @author yellow013

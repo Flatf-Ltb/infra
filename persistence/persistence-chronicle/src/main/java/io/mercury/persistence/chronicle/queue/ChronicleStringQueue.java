@@ -2,7 +2,7 @@ package io.mercury.persistence.chronicle.queue;
 
 import io.mercury.common.number.Randoms;
 import io.mercury.common.sequence.EpochSequence;
-import io.mercury.common.thread.SleepSupport;
+import io.mercury.common.thread.Sleep;
 import io.mercury.persistence.chronicle.queue.ChronicleStringQueue.ChronicleStringAppender;
 import io.mercury.persistence.chronicle.queue.ChronicleStringQueue.ChronicleStringReader;
 import io.mercury.persistence.chronicle.queue.params.ReaderParams;
@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 
 @Immutable
 public class ChronicleStringQueue
-        extends AbstractChronicleQueue<String, String, ChronicleStringAppender, ChronicleStringReader> {
+        extends AbstractChronicleQueue<String, ChronicleStringAppender, ChronicleStringReader> {
 
     private ChronicleStringQueue(StringQueueBuilder builder) {
         super(builder);
@@ -30,28 +30,28 @@ public class ChronicleStringQueue
     }
 
     @Override
-    protected ChronicleStringReader createReader(@Nonnull String readerName,
-                                                 @Nonnull ReaderParams readerParam,
+    protected ChronicleStringReader createReader(@Nonnull String name,
+                                                 @Nonnull ReaderParams param,
                                                  @Nonnull Logger logger,
                                                  @Nonnull Consumer<String> dataConsumer)
             throws IllegalStateException {
-        return new ChronicleStringReader(EpochSequence.allocate(), readerName, fileCycle(), readerParam, logger,
+        return new ChronicleStringReader(EpochSequence.allocate(), name, fileCycle(), param, logger,
                 internalQueue.createTailer(), dataConsumer);
     }
 
     @Override
-    protected ChronicleStringAppender acquireAppender(@Nonnull String appenderName,
+    protected ChronicleStringAppender acquireAppender(@Nonnull String name,
                                                       @Nonnull Logger logger,
                                                       @CheckForNull Supplier<String> dataProducer)
             throws IllegalStateException {
-        return new ChronicleStringAppender(EpochSequence.allocate(), appenderName, logger,
-                internalQueue.acquireAppender(), dataProducer);
+        return new ChronicleStringAppender(EpochSequence.allocate(), name, logger,
+                internalQueue.createAppender(), dataProducer);
     }
 
     /**
      * @author yellow013
      */
-    public static final class StringQueueBuilder extends AbstractQueueBuilder<StringQueueBuilder> {
+    public static final class StringQueueBuilder extends BaseQueueBuilder<StringQueueBuilder> {
 
         private StringQueueBuilder() {
         }
@@ -72,11 +72,11 @@ public class ChronicleStringQueue
     public static final class ChronicleStringAppender extends AbstractChronicleAppender<String> {
 
         ChronicleStringAppender(long allocateSeq,
-                                String appenderName,
+                                String name,
                                 Logger logger,
                                 ExcerptAppender appender,
                                 Supplier<String> dataProducer) {
-            super(allocateSeq, appenderName, logger, appender, dataProducer);
+            super(allocateSeq, name, logger, appender, dataProducer);
         }
 
         @Override
@@ -90,14 +90,11 @@ public class ChronicleStringQueue
     @NotThreadSafe
     public static final class ChronicleStringReader extends AbstractChronicleReader<String> {
 
-        ChronicleStringReader(long allocateSeq,
-                              String readerName,
-                              FileCycle fileCycle,
-                              ReaderParams params,
-                              Logger logger,
-                              ExcerptTailer tailer,
+        ChronicleStringReader(long allocateSeq, String name,
+                              FileCycle fileCycle, ReaderParams params,
+                              Logger logger, ExcerptTailer tailer,
                               Consumer<String> dataConsumer) {
-            super(allocateSeq, readerName, fileCycle, params, logger, tailer, dataConsumer);
+            super(allocateSeq, name, fileCycle, params, logger, tailer, dataConsumer);
         }
 
         @Override
@@ -108,16 +105,17 @@ public class ChronicleStringQueue
     }
 
     public static void main(String[] args) {
-        try (ChronicleStringQueue queue = ChronicleStringQueue.newBuilder().fileCycle(FileCycle.MINUTELY).build()) {
+        try (ChronicleStringQueue queue = ChronicleStringQueue.newBuilder()
+                .rootPath("d:/dump")
+                .fileCycle(FileCycle.FAST_DAILY).build()) {
             ChronicleStringAppender appender = queue.acquireAppender();
             ChronicleStringReader reader = queue.createReader(System.out::println);
             new Thread(() -> {
                 for (; ; ) {
                     try {
                         appender.append(String.valueOf(Randoms.nextLong()));
-                        SleepSupport.sleep(100);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                        Sleep.millis(100);
+                    } catch (Exception ignored) {
                     }
                 }
             }).start();

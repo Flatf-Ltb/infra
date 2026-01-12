@@ -1,6 +1,6 @@
 package io.mercury.common.epoch;
 
-import static io.mercury.common.epoch.EpochTimeUtil.getEpochTime;
+import static io.mercury.common.epoch.EpochUtil.getEpochTime;
 import static io.mercury.common.epoch.EpochUnit.MICROS;
 import static io.mercury.common.epoch.EpochUnit.MILLIS;
 import static io.mercury.common.epoch.EpochUnit.NANOS;

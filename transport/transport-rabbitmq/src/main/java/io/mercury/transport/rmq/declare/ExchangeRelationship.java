@@ -1,6 +1,6 @@
 package io.mercury.transport.rmq.declare;
 
-import io.mercury.common.lang.Asserter;
+import io.mercury.common.lang.Validator;
 import io.mercury.serialization.json.JsonWriter;
 import io.mercury.transport.rmq.RmqOperator;
 import io.mercury.transport.rmq.exception.DeclareException;
@@ -62,7 +62,7 @@ public final class ExchangeRelationship extends Relationship {
      * @return ExchangeRelationship
      */
     public static ExchangeRelationship withExchange(@Nonnull AmqpExchange exchange) {
-        Asserter.nonNull(exchange, "exchange");
+        Validator.nonNull(exchange, "exchange");
         return new ExchangeRelationship(exchange);
     }
 

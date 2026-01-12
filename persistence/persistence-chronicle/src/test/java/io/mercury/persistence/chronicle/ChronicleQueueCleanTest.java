@@ -5,7 +5,7 @@ import java.time.ZonedDateTime;
 import org.junit.Test;
 
 import io.mercury.common.datetime.TimeZone;
-import io.mercury.common.thread.SleepSupport;
+import io.mercury.common.thread.Sleep;
 import io.mercury.persistence.chronicle.queue.ChronicleStringQueue;
 import io.mercury.persistence.chronicle.queue.ChronicleStringQueue.ChronicleStringAppender;
 import io.mercury.persistence.chronicle.queue.ChronicleStringQueue.ChronicleStringReader;
@@ -18,7 +18,7 @@ public class ChronicleQueueCleanTest {
 	public void test0() {
 
 		ChronicleStringQueue persistence = ChronicleStringQueue.newBuilder().folder("test").fileClearCycle(5)
-				.fileCycle(FileCycle.MINUTELY).build();
+				.fileCycle(FileCycle.FIVE_MINUTELY).build();
 
 		ChronicleStringAppender appender = persistence.acquireAppender();
 		ChronicleStringReader reader = persistence.createReader(System.out::println);
@@ -43,7 +43,7 @@ public class ChronicleQueueCleanTest {
 		}
 
 		persistence.close();
-		SleepSupport.sleep(2000);
+		Sleep.millis(2000);
 		System.out.println(appender.isClosed());
 		System.out.println(reader.isClosed());
 

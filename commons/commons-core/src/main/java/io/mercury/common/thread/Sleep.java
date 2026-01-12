@@ -4,6 +4,7 @@ import io.mercury.common.log4j2.Log4j2LoggerFactory;
 import org.slf4j.Logger;
 
 import javax.annotation.Nonnull;
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
 
@@ -105,6 +106,14 @@ public final class Sleep {
     }
 
     /**
+     * @param duration     Duration
+     * @throws RuntimeInterruptedException e
+     */
+    public static void time(@Nonnull Duration duration) throws RuntimeInterruptedException {
+        time(TimeUnit.NANOSECONDS, duration.toNanos());
+    }
+
+    /**
      * @param timeUnit TimeUnit
      * @param time     long
      * @throws RuntimeInterruptedException e
@@ -118,5 +127,6 @@ public final class Sleep {
             throw new RuntimeInterruptedException(e);
         }
     }
+
 
 }
