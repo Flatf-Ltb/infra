@@ -11,7 +11,7 @@ public abstract class RingEventHandler<E> implements EventHandler<E> {
     protected final RingEventbus<E> eventbus;
 
     protected RingEventHandler(Builder builder, EventFactory<E> factory) {
-        if (builder.singleProducer) {
+        if (builder.isSingleProducer) {
             this.eventbus = RingEventbus.singleProducer(factory)
                     .size(builder.size)
                     .name(builder.name)
@@ -36,13 +36,13 @@ public abstract class RingEventHandler<E> implements EventHandler<E> {
 
     public static class Builder {
 
-        private final boolean singleProducer;
+        private final boolean isSingleProducer;
         private String name = "eventbus";
         private int size = 64;
         private WaitStrategy waitStrategy = Yielding.get();
 
-        private Builder(boolean singleProducer) {
-            this.singleProducer = singleProducer;
+        private Builder(boolean isSingleProducer) {
+            this.isSingleProducer = isSingleProducer;
         }
 
         public Builder size(int size) {

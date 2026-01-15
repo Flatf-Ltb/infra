@@ -6,8 +6,8 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 
-import static io.mercury.common.datetime.TimeZone.SYS_DEFAULT;
-import static io.mercury.common.datetime.TimeZone.UTC;
+import static io.mercury.common.constant.TimeZoneConst.SYS_DEFAULT;
+import static io.mercury.common.constant.TimeZoneConst.UTC;
 
 public interface TemporalPattern<T extends Temporal> {
 

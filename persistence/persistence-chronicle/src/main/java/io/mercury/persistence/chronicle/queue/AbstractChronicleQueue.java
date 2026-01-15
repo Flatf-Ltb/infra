@@ -2,7 +2,7 @@ package io.mercury.persistence.chronicle.queue;
 
 import io.mercury.common.annotation.AbstractFunction;
 import io.mercury.common.collections.MutableMaps;
-import io.mercury.common.datetime.TimeZone;
+import io.mercury.common.constant.TimeZoneConst;
 import io.mercury.common.file.PermissionDeniedException;
 import io.mercury.common.lang.Validator;
 import io.mercury.common.log4j2.Log4j2LoggerFactory;
@@ -456,7 +456,7 @@ public abstract class AbstractChronicleQueue<
         private boolean readOnly = false;
         private long epoch = 0L;
         private LocalTime rollTime = LocalTime.MIN;
-        private ZoneId rollTimeZone = TimeZone.UTC;
+        private ZoneId rollTimeZone = TimeZoneConst.UTC;
         private FileCycle fileCycle = FileCycle.FAST_DAILY;
         private ObjIntConsumer<File> storeFileListener;
         private int fileClearCycle = 0;

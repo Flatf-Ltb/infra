@@ -3,7 +3,7 @@ package io.mercury.transport.socket;
 import io.mercury.common.collections.queue.Queue;
 import io.mercury.common.thread.Sleep;
 import io.mercury.common.thread.Threads;
-import io.mercury.transport.socket.configurator.SocketConfigurator;
+import io.mercury.transport.socket.configurator.SocketCfg;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 
 public final class SocketTransceiver extends BaseTransceiver<String> {
 
-    private final SocketConfigurator configurator;
+    private final SocketCfg configurator;
     private final Consumer<byte[]> callback;
 
     private Socket socket;
@@ -29,7 +29,7 @@ public final class SocketTransceiver extends BaseTransceiver<String> {
      * @param configurator SocketConfigurator
      * @param callback     Consumer<byte[]>
      */
-    public SocketTransceiver(SocketConfigurator configurator, Consumer<byte[]> callback) {
+    public SocketTransceiver(SocketCfg configurator, Consumer<byte[]> callback) {
         super();
         if (configurator == null || callback == null)
             throw new IllegalArgumentException("configurator or callback is null for init ");

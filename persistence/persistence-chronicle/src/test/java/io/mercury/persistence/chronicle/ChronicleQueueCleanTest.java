@@ -4,7 +4,7 @@ import java.time.ZonedDateTime;
 
 import org.junit.Test;
 
-import io.mercury.common.datetime.TimeZone;
+import io.mercury.common.constant.TimeZoneConst;
 import io.mercury.common.thread.Sleep;
 import io.mercury.persistence.chronicle.queue.ChronicleStringQueue;
 import io.mercury.persistence.chronicle.queue.ChronicleStringQueue.ChronicleStringAppender;
@@ -31,7 +31,7 @@ public class ChronicleQueueCleanTest {
 		int i = 0;
 		while (true) {
 			try {
-				appender.append(ZonedDateTime.now(TimeZone.UTC).toString());
+				appender.append(ZonedDateTime.now(TimeZoneConst.UTC).toString());
 				Thread.sleep(2000);
 				i++;
 				if (i == 20) {

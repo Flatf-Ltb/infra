@@ -6,7 +6,7 @@ import io.mercury.common.thread.Sleep;
 import io.mercury.common.thread.Threads;
 import io.mercury.transport.TransportComponent;
 import io.mercury.transport.api.Receiver;
-import io.mercury.transport.socket.configurator.SocketConfigurator;
+import io.mercury.transport.socket.configurator.SocketCfg;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 
@@ -18,7 +18,7 @@ import java.util.function.Consumer;
 
 public class SocketReceiver extends TransportComponent implements Receiver {
 
-    private final SocketConfigurator configurator;
+    private final SocketCfg configurator;
 
     private final Consumer<byte[]> callback;
 
@@ -33,7 +33,7 @@ public class SocketReceiver extends TransportComponent implements Receiver {
      * @param configurator SocketConfigurator
      * @param callback     Consumer<byte[]>
      */
-    public SocketReceiver(SocketConfigurator configurator, Consumer<byte[]> callback) {
+    public SocketReceiver(SocketCfg configurator, Consumer<byte[]> callback) {
         Validator.nonNull(configurator, "configurator");
         Validator.nonNull(callback, "callback");
         this.configurator = configurator;
@@ -122,7 +122,7 @@ public class SocketReceiver extends TransportComponent implements Receiver {
 
     public static void main(String[] args) {
 
-        SocketConfigurator configurator = SocketConfigurator.builder().host("192.168.1.138").port(7901).build();
+        SocketCfg configurator = SocketCfg.builder().host("192.168.1.138").port(7901).build();
 
         SocketReceiver receiver = new SocketReceiver(configurator, bytes -> System.out.println(new String(bytes)));
 

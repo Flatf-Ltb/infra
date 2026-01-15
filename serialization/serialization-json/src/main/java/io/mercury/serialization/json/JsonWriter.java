@@ -5,7 +5,7 @@ import javax.annotation.Nullable;
 import static com.alibaba.fastjson2.JSON.toJSONString;
 import static com.alibaba.fastjson2.JSONWriter.Feature.PrettyFormat;
 import static com.alibaba.fastjson2.JSONWriter.Feature.WriteNulls;
-import static io.mercury.common.lang.StringConstant.EMPTY_STRING;
+import static io.mercury.common.constant.StringConst.EMPTY_STRING;
 
 /**
  * @author yellow013

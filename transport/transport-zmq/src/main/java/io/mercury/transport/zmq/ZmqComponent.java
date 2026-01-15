@@ -31,7 +31,7 @@ abstract class ZmqComponent extends TransportComponent implements Transport, Clo
     private static final Logger log = getLogger(ZmqComponent.class);
 
     // ZMQ配置器
-    protected final ZmqConfigurator configurator;
+    protected final ZmqCfg configurator;
 
     // 组件运行状态, 初始为已开始运行
     protected final AtomicBoolean isRunning = new AtomicBoolean(true);
@@ -45,7 +45,7 @@ abstract class ZmqComponent extends TransportComponent implements Transport, Clo
     // 组件名称
     protected String name;
 
-    ZmqComponent(ZmqConfigurator configurator) {
+    ZmqComponent(ZmqCfg configurator) {
         nonNull(configurator, "configurator");
         this.configurator = configurator;
         this.context = new ZContext(configurator.getIoThreads());
@@ -95,7 +95,7 @@ abstract class ZmqComponent extends TransportComponent implements Transport, Clo
         }
     }
 
-    public ZmqConfigurator getConfigurator() {
+    public ZmqCfg getConfigurator() {
         return configurator;
     }
 

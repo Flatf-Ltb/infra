@@ -1,6 +1,6 @@
 package io.mercury.common.sequence;
 
-import io.mercury.common.datetime.TimeZone;
+import io.mercury.common.constant.TimeZoneConst;
 import io.mercury.common.util.BitFormatter;
 import io.mercury.common.util.HexUtil;
 
@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-import static io.mercury.common.datetime.TimeZone.UTC;
+import static io.mercury.common.constant.TimeZoneConst.UTC;
 import static io.mercury.common.epoch.EpochUtil.EPOCH_ZERO;
 import static io.mercury.common.util.BitOperator.maxValueOfBit;
 import static java.lang.System.currentTimeMillis;
@@ -229,7 +229,7 @@ public final class SnowflakeAlgo {
         System.out.println(BitFormatter.longBinaryFormat(time));
         System.out.println(SnowflakeAlgo.parseOwnerId(next));
 
-        System.out.println(ZonedDateTime.ofInstant(Instant.ofEpochMilli(time), TimeZone.UTC));
+        System.out.println(ZonedDateTime.ofInstant(Instant.ofEpochMilli(time), TimeZoneConst.UTC));
 
         long maxSequence = maxValueOfBit(SEQUENCE_BITS);
         System.out.println(maxSequence);

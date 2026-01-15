@@ -411,7 +411,7 @@ public class AdvancedRmqReceiver<T> extends RmqTransport implements Subscriber, 
             try {
                 channel.basicConsume(
                         /*
-                         *queue : the name of the queue
+                         * queue : the name of the queue
                          */
                         queueName,
                         /*
@@ -508,7 +508,7 @@ public class AdvancedRmqReceiver<T> extends RmqTransport implements Subscriber, 
             log.error("RabbitMqReceiver: [{}] already closed", receiverName);
             throw new MsgHandleException(
                     "The message could not handle, and could not delivered to the error dump address."
-                            + "\n The connection was closed.",
+                    + "\n The connection was closed.",
                     cause);
         }
     }
@@ -601,30 +601,11 @@ public class AdvancedRmqReceiver<T> extends RmqTransport implements Subscriber, 
 
     }
 
-    public static class Message<T> {
-
-        private final Envelope envelope;
-        private final BasicProperties properties;
-        private final T body;
-
-        private Message(Envelope envelope, BasicProperties properties, T body) {
-            this.envelope = envelope;
-            this.properties = properties;
-            this.body = body;
-        }
-
-        public Envelope getEnvelope() {
-            return envelope;
-        }
-
-        public BasicProperties getProperties() {
-            return properties;
-        }
-
-        public T getBody() {
-            return body;
-        }
-
+    public record Message<T>(
+            Envelope envelope,
+            BasicProperties properties,
+            T body
+    ) {
     }
 
     public static void main(String[] args) {

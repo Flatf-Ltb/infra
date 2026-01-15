@@ -17,11 +17,11 @@
     </properties>
 
     <repositories>
-<!--        <repository>-->
-<!--            <id>aeronic</id>-->
-<!--            <name>aeronic</name>-->
-<!--            <url>https://dl.cloudsmith.io/public/lob-software/aeronic/maven/</url>-->
-<!--        </repository>-->
+        <repository>
+            <id>aeronic</id>
+            <name>aeronic</name>
+            <url>https://dl.cloudsmith.io/public/lob-software/aeronic/maven/</url>
+        </repository>
     </repositories>
 
     <dependencies>

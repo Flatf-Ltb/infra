@@ -135,6 +135,7 @@ public final class Validator {
      * @param max     int
      * @param objName String
      * @param logger  Logger
+     * @throws IllegalArgumentException exception
      */
     public static void atWithinRange(int value, int min, int max, String objName, Logger logger) {
         if (!isAtWithinRange(value, min, max)) {
@@ -163,6 +164,7 @@ public final class Validator {
      * @param max     long
      * @param objName String
      * @param logger  Logger
+     * @throws IllegalArgumentException exception
      */
     public static void atWithinRange(long value, long min, long max, String objName, Logger logger) {
         if (!isAtWithinRange(value, min, max)) {

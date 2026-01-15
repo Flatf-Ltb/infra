@@ -1,5 +1,6 @@
 package io.mercury.common.http;
 
+import io.mercury.common.constant.MimeTypeConst;
 import io.mercury.common.log4j2.Log4j2LoggerFactory;
 import org.slf4j.Logger;
 
@@ -38,7 +39,7 @@ public abstract class JreHttpClient {
     public static HttpResponse<String> doGet(@Nonnull URI uri)
             throws IOException, InterruptedException {
         return doGet(HttpRequest.newBuilder().uri(uri).GET()
-                .headers(HttpHeaderName.CONTENT_TYPE.value(), MimeType.APPLICATION_JSON_UTF8)
+                .headers(HttpHeaderName.CONTENT_TYPE.value(), MimeTypeConst.APPLICATION_JSON_UTF8)
                 .build());
     }
 
@@ -55,7 +56,7 @@ public abstract class JreHttpClient {
                 // POST request
                 HttpRequest.newBuilder().uri(uri)
                         .POST(HttpRequest.BodyPublishers.ofString(body))
-                        .header(HttpHeaderName.CONTENT_TYPE.value(), MimeType.APPLICATION_JSON_UTF8)
+                        .header(HttpHeaderName.CONTENT_TYPE.value(), MimeTypeConst.APPLICATION_JSON_UTF8)
                         .build(),
                 BodyHandlers.ofString());
     }
@@ -67,7 +68,7 @@ public abstract class JreHttpClient {
                 // PUT request
                 HttpRequest.newBuilder().uri(uri)
                         .PUT(HttpRequest.BodyPublishers.ofString(body))
-                        .header(HttpHeaderName.CONTENT_TYPE.value(), MimeType.APPLICATION_JSON_UTF8)
+                        .header(HttpHeaderName.CONTENT_TYPE.value(), MimeTypeConst.APPLICATION_JSON_UTF8)
                         .build(),
                 BodyHandlers.ofString());
     }

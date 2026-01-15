@@ -16,7 +16,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
 
-import static io.mercury.common.datetime.TimeZone.SYS_DEFAULT;
+import static io.mercury.common.constant.TimeZoneConst.SYS_DEFAULT;
 
 @ThreadSafe
 public final class DateTimeUtil {

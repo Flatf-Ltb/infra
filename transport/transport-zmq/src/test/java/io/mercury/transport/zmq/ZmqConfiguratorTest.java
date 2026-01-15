@@ -21,7 +21,7 @@ public class ZmqConfiguratorTest {
 
 		Config config = ConfigFactory.parseURL(url);
 
-		ZmqConfigurator configurator = ZmqConfigurator.config(config);
+		ZmqCfg configurator = ZmqCfg.config(config);
 
 		System.out.println(configurator);
 

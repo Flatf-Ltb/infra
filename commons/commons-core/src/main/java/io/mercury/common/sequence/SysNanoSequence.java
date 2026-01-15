@@ -2,8 +2,8 @@ package io.mercury.common.sequence;
 
 import javax.annotation.concurrent.ThreadSafe;
 
-import static io.mercury.common.datetime.TimeConst.NANOS_PER_MICROS;
-import static io.mercury.common.datetime.TimeConst.NANOS_PER_MILLIS;
+import static io.mercury.common.constant.TimeConst.NANOS_PER_MICROS;
+import static io.mercury.common.constant.TimeConst.NANOS_PER_MILLIS;
 import static java.lang.System.nanoTime;
 
 /**

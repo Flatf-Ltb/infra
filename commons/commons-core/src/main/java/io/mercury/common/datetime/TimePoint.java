@@ -7,7 +7,7 @@ import java.time.ZoneOffset;
 
 import static io.mercury.common.datetime.DateTimeUtil.date;
 import static io.mercury.common.datetime.DateTimeUtil.timeOfSecond;
-import static io.mercury.common.datetime.TimeZone.SYS_DEFAULT;
+import static io.mercury.common.constant.TimeZoneConst.SYS_DEFAULT;
 
 public final class TimePoint implements Comparable<TimePoint> {
 

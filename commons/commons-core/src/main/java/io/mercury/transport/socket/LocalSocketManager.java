@@ -1,7 +1,7 @@
 package io.mercury.transport.socket;
 
 import io.mercury.common.lang.Validator;
-import io.mercury.transport.socket.configurator.SocketConfigurator;
+import io.mercury.transport.socket.configurator.SocketCfg;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,7 +24,7 @@ public class LocalSocketManager {
             return ServerSocketMap.get(socketName);
         else {
             Validator.atWithinRange(port, 7000, 8000, "port");
-            SocketTransceiver transceiver = new SocketTransceiver(SocketConfigurator.builder().port(port).build(),
+            SocketTransceiver transceiver = new SocketTransceiver(SocketCfg.builder().port(port).build(),
                     callback);
             ServerSocketMap.put(socketName, transceiver);
             return transceiver;

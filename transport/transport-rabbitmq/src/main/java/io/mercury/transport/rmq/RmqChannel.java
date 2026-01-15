@@ -5,7 +5,7 @@ import io.mercury.transport.rmq.config.RmqConnection;
 
 import java.time.ZonedDateTime;
 
-import static io.mercury.common.datetime.TimeZone.SYS_DEFAULT;
+import static io.mercury.common.constant.TimeZoneConst.SYS_DEFAULT;
 
 public final class RmqChannel extends RmqTransport {
 

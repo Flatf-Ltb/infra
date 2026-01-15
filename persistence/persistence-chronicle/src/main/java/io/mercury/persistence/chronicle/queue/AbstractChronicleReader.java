@@ -2,7 +2,7 @@ package io.mercury.persistence.chronicle.queue;
 
 import io.mercury.common.annotation.AbstractFunction;
 import io.mercury.common.annotation.thread.OnlyAllowSingleThreadAccess;
-import io.mercury.common.datetime.TimeConst;
+import io.mercury.common.constant.TimeConst;
 import io.mercury.common.thread.Sleep;
 import io.mercury.persistence.chronicle.exception.ChronicleReadException;
 import io.mercury.persistence.chronicle.queue.params.ReaderParams;

@@ -6,7 +6,7 @@ import net.openhft.chronicle.queue.RollCycles;
 
 import java.time.Instant;
 
-import static io.mercury.common.datetime.TimeConst.MILLIS_PER_SECONDS;
+import static io.mercury.common.constant.TimeConst.MILLIS_PER_SECONDS;
 
 public enum FileCycle {
 

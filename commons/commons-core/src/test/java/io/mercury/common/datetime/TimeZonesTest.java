@@ -1,5 +1,6 @@
 package io.mercury.common.datetime;
 
+import io.mercury.common.constant.TimeZoneConst;
 import org.junit.Test;
 
 import java.time.Instant;
@@ -15,15 +16,15 @@ public class TimeZonesTest {
 
 		System.out.println(standardOffset);
 
-		System.out.println(TimeZone.SYS_DEFAULT);
-		System.out.println(TimeZone.CST);
-		System.out.println(TimeZone.JST);
+		System.out.println(TimeZoneConst.SYS_DEFAULT);
+		System.out.println(TimeZoneConst.CST);
+		System.out.println(TimeZoneConst.JST);
 
 		ZoneOffset ofHours = ZoneOffset.ofHours(8);
 
-		System.out.println(TimeZone.SYS_DEFAULT.equals(ofHours));
+		System.out.println(TimeZoneConst.SYS_DEFAULT.equals(ofHours));
 
-		System.out.println(TimeZone.SYS_DEFAULT.equals(standardOffset));
+		System.out.println(TimeZoneConst.SYS_DEFAULT.equals(standardOffset));
 
 		ZoneId.getAvailableZoneIds().forEach(System.out::println);
 

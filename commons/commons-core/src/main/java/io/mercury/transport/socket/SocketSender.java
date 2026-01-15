@@ -5,7 +5,7 @@ import io.mercury.common.lang.Validator;
 import io.mercury.common.log4j2.Log4j2LoggerFactory;
 import io.mercury.transport.TransportComponent;
 import io.mercury.transport.api.Sender;
-import io.mercury.transport.socket.configurator.SocketConfigurator;
+import io.mercury.transport.socket.configurator.SocketCfg;
 import org.slf4j.Logger;
 
 import java.io.DataOutputStream;
@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public final class SocketSender extends TransportComponent implements Sender<byte[]> {
 
-    private final SocketConfigurator configurator;
+    private final SocketCfg configurator;
 
     private Socket socket;
 
@@ -26,7 +26,7 @@ public final class SocketSender extends TransportComponent implements Sender<byt
     private final Queue<byte[]> innerQueue;
 
 
-    public SocketSender(SocketConfigurator configurator, Queue<byte[]> queue) {
+    public SocketSender(SocketCfg configurator, Queue<byte[]> queue) {
         Validator.nonNull(configurator, "configurator");
         this.configurator = configurator;
         this.innerQueue = queue;
@@ -86,7 +86,7 @@ public final class SocketSender extends TransportComponent implements Sender<byt
 
 
     public static void main(String[] args) throws IOException {
-        SocketConfigurator configurator = SocketConfigurator.builder().host("192.168.1.138").port(7901).build();
+        SocketCfg configurator = SocketCfg.builder().host("192.168.1.138").port(7901).build();
         try (SocketSender sender = new SocketSender(configurator, null)) {
             sender.send("hello".getBytes());
         }

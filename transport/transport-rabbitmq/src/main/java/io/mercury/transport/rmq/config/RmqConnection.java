@@ -6,7 +6,7 @@ import io.mercury.common.config.ConfigWrapper;
 import io.mercury.common.lang.Validator;
 import io.mercury.common.util.StringSupport;
 import io.mercury.serialization.json.JsonWriter;
-import io.mercury.transport.TransportConfigurator;
+import io.mercury.transport.TransportCfg;
 import io.mercury.transport.rmq.RmqTransport.ShutdownSignalHandler;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +16,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.net.ssl.SSLContext;
 
-public final class RmqConnection implements TransportConfigurator {
+public final class RmqConnection implements TransportCfg {
 
     // 连接地址
     @Getter

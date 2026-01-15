@@ -30,7 +30,7 @@ public final class ZmqPublisher<T> extends ZmqComponent implements Publisher<byt
      * @param topic        String
      * @param serializer   BytesSerializer<T>
      */
-    ZmqPublisher(@Nonnull ZmqConfigurator configurator,
+    ZmqPublisher(@Nonnull ZmqCfg configurator,
                  @Nonnull String topic,
                  @Nonnull BytesSerializer<T> serializer) {
         super(configurator);
@@ -82,7 +82,7 @@ public final class ZmqPublisher<T> extends ZmqComponent implements Publisher<byt
     }
 
     public static void main(String[] args) throws Exception {
-        try (ZmqPublisher<String> publisher = ZmqConfigurator.tcp("127.0.0.1", 13001)
+        try (ZmqPublisher<String> publisher = ZmqCfg.tcp("127.0.0.1", 13001)
                 .ioThreads(2)
                 .createPublisherWithString("test")) {
             Random random = new Random();

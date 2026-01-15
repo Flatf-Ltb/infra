@@ -1,6 +1,6 @@
 package io.mercury.common.file.filter;
 
-import io.mercury.common.datetime.TimeZone;
+import io.mercury.common.constant.TimeZoneConst;
 import io.mercury.common.datetime.pattern.TemporalPattern;
 import io.mercury.common.datetime.pattern.impl.DatePattern;
 import io.mercury.common.log4j2.Log4j2LoggerFactory;
@@ -38,7 +38,7 @@ public class FileNameDateTimeFilter implements FileFilter {
             pattern = DatePattern.YYYY_MM_DD;
         }
         if (zoneId == null) {
-            zoneId = TimeZone.SYS_DEFAULT;
+            zoneId = TimeZoneConst.SYS_DEFAULT;
         }
         this.pattern = pattern;
         this.zoneId = zoneId;

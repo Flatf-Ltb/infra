@@ -18,7 +18,7 @@ public class ZmqIpcPubSubTest {
         String topic = "ipc-test";
 
         Threads.startNewThread(() -> {
-            try (Subscriber subscriber = ZmqConfigurator.ipc("test/01").ioThreads(1).createSubscriber(Topics.with(topic),
+            try (Subscriber subscriber = ZmqCfg.ipc("test/01").ioThreads(1).createSubscriber(Topics.with(topic),
                     this::handleMag)) {
                 subscriber.subscribe();
             } catch (IOException e) {
@@ -28,7 +28,7 @@ public class ZmqIpcPubSubTest {
 
         Sleep.millis(3000);
 
-        try (ZmqPublisher<String> publisher = ZmqConfigurator.ipc("test/01").ioThreads(1)
+        try (ZmqPublisher<String> publisher = ZmqCfg.ipc("test/01").ioThreads(1)
                 .createPublisherWithString(topic)) {
             Sleep.millis(2000);
             Random random = new Random();

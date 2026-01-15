@@ -2,7 +2,7 @@ package io.mercury.transport.netty;
 
 import io.mercury.common.log4j2.Log4j2LoggerFactory;
 import io.mercury.transport.api.TransportClient;
-import io.mercury.transport.netty.configurator.NettyConfigurator;
+import io.mercury.transport.netty.configurator.NettyCfg;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
@@ -22,7 +22,7 @@ public class NettyClient extends NettyTransport implements TransportClient {
      * @param configurator    NettyConfigurator
      * @param channelHandlers ChannelHandler[]
      */
-    public NettyClient(String tag, NettyConfigurator configurator, ChannelHandler... channelHandlers) {
+    public NettyClient(String tag, NettyCfg configurator, ChannelHandler... channelHandlers) {
         super(tag, configurator, channelHandlers);
     }
 

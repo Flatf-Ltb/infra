@@ -2,7 +2,7 @@ package io.mercury.transport.netty;
 
 import io.mercury.common.log4j2.Log4j2LoggerFactory;
 import io.mercury.transport.api.TransportServer;
-import io.mercury.transport.netty.configurator.NettyConfigurator;
+import io.mercury.transport.netty.configurator.NettyCfg;
 import io.mercury.transport.netty.handler.GeneralNettyHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
@@ -28,7 +28,7 @@ public class NettyServer extends NettyTransport implements TransportServer {
      * @param configurator NettyConfigurator
      * @param handlers     ChannelHandler[]
      */
-    public NettyServer(String tag, NettyConfigurator configurator, ChannelHandler... handlers) {
+    public NettyServer(String tag, NettyCfg configurator, ChannelHandler... handlers) {
         super(tag, configurator, handlers);
     }
 
@@ -83,7 +83,7 @@ public class NettyServer extends NettyTransport implements TransportServer {
 
     public static void main(String[] args) throws Exception {
 
-        NettyConfigurator configurator = NettyConfigurator.builder("192.168.1.138", 7901).build();
+        NettyCfg configurator = NettyCfg.builder("192.168.1.138", 7901).build();
 
         try (NettyServer nettyServer = new NettyServer("LocalTest", configurator, new GeneralNettyHandler() {
 

@@ -25,7 +25,7 @@ public class ZmqSender<T> extends ZmqComponent implements Sender<T>, Closeable {
      * @param configurator ZmqConfigurator
      * @param serializer   BytesSerializer<T>
      */
-    ZmqSender(@Nonnull ZmqConfigurator configurator,
+    ZmqSender(@Nonnull ZmqCfg configurator,
               @Nonnull BytesSerializer<T> serializer) {
         super(configurator);
         nonNull(serializer, "serializer");
@@ -62,7 +62,7 @@ public class ZmqSender<T> extends ZmqComponent implements Sender<T>, Closeable {
 
     public static void main(String[] args) {
 
-        ZmqConfigurator cfg = ZmqConfigurator.tcp("localhost", 5551);
+        ZmqCfg cfg = ZmqCfg.tcp("localhost", 5551);
         try (ZmqSender<String> sender = new ZmqSender<>(cfg, String::getBytes)) {
             sender.send("TEST MSG");
         } catch (IOException ignored) {

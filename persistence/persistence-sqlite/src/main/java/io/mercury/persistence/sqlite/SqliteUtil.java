@@ -4,7 +4,7 @@ import io.mercury.common.lang.Validator;
 import io.mercury.common.log4j2.Log4j2LoggerFactory;
 import io.mercury.common.sys.SysProperties;
 import io.mercury.common.util.StringSupport;
-import io.mercury.persistence.rdb.ResultSetProcessor;
+import org.apache.commons.dbutils.RowProcessor;
 import org.slf4j.Logger;
 
 import javax.annotation.Nonnull;
@@ -31,7 +31,7 @@ public final class SqliteUtil {
     }
 
     public static <T> List<T> query(@Nonnull Connection connection, @Nonnull String sql,
-                                    @Nonnull ResultSetProcessor processor, Class<T> type) throws SQLException {
+                                    @Nonnull RowProcessor processor, Class<T> type) throws SQLException {
         Validator.nonNull(connection, "connection");
         try (// create a database connection
              Statement statement = connection.createStatement();

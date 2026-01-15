@@ -1,5 +1,6 @@
 package io.mercury.common.datetime;
 
+import io.mercury.common.constant.TimeZoneConst;
 import io.mercury.common.epoch.EpochUtil;
 import io.mercury.common.epoch.EpochUnit;
 import io.mercury.common.epoch.HighResolutionEpoch;
@@ -13,9 +14,9 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-import static io.mercury.common.datetime.TimeConst.MICROS_PER_SECONDS;
-import static io.mercury.common.datetime.TimeConst.NANOS_PER_SECOND;
-import static io.mercury.common.datetime.TimeZone.SYS_DEFAULT;
+import static io.mercury.common.constant.TimeConst.MICROS_PER_SECONDS;
+import static io.mercury.common.constant.TimeConst.NANOS_PER_SECOND;
+import static io.mercury.common.constant.TimeZoneConst.SYS_DEFAULT;
 import static io.mercury.common.epoch.EpochUnit.MICROS;
 import static io.mercury.common.epoch.EpochUnit.MILLIS;
 import static io.mercury.common.epoch.EpochUnit.NANOS;
@@ -182,7 +183,7 @@ public final class Timestamp implements Comparable<Timestamp>, JsonSerializable 
 
     public static void main(String[] args) {
 
-        System.out.println(TimeZone.CST);
+        System.out.println(TimeZoneConst.CST);
 
         Timestamp timestamp = Timestamp.nowWithMillis();
         System.out.println(timestamp);
@@ -227,8 +228,8 @@ public final class Timestamp implements Comparable<Timestamp>, JsonSerializable 
         System.out.println(now);
 
         System.out.println(Timestamp.nowWithMillis());
-        System.out.println(Timestamp.withEpochMillis(47237547328L).getDateTimeWith(TimeZone.UTC));
-        System.out.println(Timestamp.withDateTime(LocalDateTime.now(), TimeZone.CST));
+        System.out.println(Timestamp.withEpochMillis(47237547328L).getDateTimeWith(TimeZoneConst.UTC));
+        System.out.println(Timestamp.withDateTime(LocalDateTime.now(), TimeZoneConst.CST));
 
     }
 

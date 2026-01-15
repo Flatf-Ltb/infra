@@ -1,8 +1,8 @@
 package io.mercury.common.epoch;
 
-import static io.mercury.common.datetime.TimeConst.MICROS_PER_MILLIS;
-import static io.mercury.common.datetime.TimeConst.NANOS_PER_MICROS;
-import static io.mercury.common.datetime.TimeConst.NANOS_PER_MILLIS;
+import static io.mercury.common.constant.TimeConst.MICROS_PER_MILLIS;
+import static io.mercury.common.constant.TimeConst.NANOS_PER_MICROS;
+import static io.mercury.common.constant.TimeConst.NANOS_PER_MILLIS;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.System.nanoTime;
 
