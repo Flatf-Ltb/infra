@@ -6,11 +6,16 @@ import com.lmax.disruptor.WaitStrategy;
 
 import static io.mercury.common.concurrent.disruptor.base.CommonStrategy.Yielding;
 
-public abstract class RingEventHandler<E> implements EventHandler<E> {
+/**
+ * Ring Event Station
+ * 融合了 RingEventbus 和 EventHandler 的抽象类
+ * @param <E> Event Type
+ */
+public abstract class RingEventCollector<E> implements EventHandler<E> {
 
     protected final RingEventbus<E> eventbus;
 
-    protected RingEventHandler(Builder builder, EventFactory<E> factory) {
+    protected RingEventCollector(Builder builder, EventFactory<E> factory) {
         if (builder.isSingleProducer) {
             this.eventbus = RingEventbus.singleProducer(factory)
                     .size(builder.size)

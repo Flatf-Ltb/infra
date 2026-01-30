@@ -43,8 +43,7 @@ import static java.util.Objects.requireNonNullElse;
  * 扩展多写和单写 [DONE]
  */
 public abstract sealed class RingEventbus<E> extends RunnableComponent
-        permits RingEventbus.MultiProducerRingEventbus,
-        RingEventbus.SingleProducerRingEventbus {
+        permits RingEventbus.MultiProducerRingEventbus, RingEventbus.SingleProducerRingEventbus {
 
     private static final Logger log = getLogger(RingEventbus.class);
 
