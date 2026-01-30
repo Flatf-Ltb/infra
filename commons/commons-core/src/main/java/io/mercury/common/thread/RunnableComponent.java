@@ -69,7 +69,7 @@ public abstract class RunnableComponent {
     /**
      * 启动组件
      */
-    public void start() {
+    public void start() throws ComponentStartException {
         if (isRunning.compareAndSet(false, true)) {
             try {
                 start0();
@@ -92,7 +92,7 @@ public abstract class RunnableComponent {
     /**
      * 停止运行
      */
-    public void stop() {
+    public void stop() throws ComponentStopException {
         isRunning.set(false);
         if (isClosed.compareAndSet(false, true)) {
             try {
@@ -137,7 +137,7 @@ public abstract class RunnableComponent {
         }
 
         public static StartMode delay(long delayMillis) {
-            return new StartMode(false, delayMillis < 1 ? 1 : delayMillis);
+            return new StartMode(false, Math.max(delayMillis, 1L));
         }
 
         private final boolean immediately;

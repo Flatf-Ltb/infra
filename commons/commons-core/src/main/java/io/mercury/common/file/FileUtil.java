@@ -152,7 +152,7 @@ public final class FileUtil {
 
         } while (read0 >= 0 && read1 >= 0);
         // both at EOF
-        return read0 < 0 && read1 < 0;
+        return true;
     }
 
     /**

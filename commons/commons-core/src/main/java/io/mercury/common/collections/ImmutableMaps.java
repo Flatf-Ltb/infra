@@ -61,7 +61,6 @@ public final class ImmutableMaps {
         return ImmutableMapFactoryImpl.INSTANCE.with(key, value);
     }
 
-
     /**
      * @param pairs Pair<K, V> array
      * @param <K>   Key type

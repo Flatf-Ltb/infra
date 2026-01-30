@@ -16,9 +16,13 @@ public final class HighResolutionEpoch {
     private static final long MICROS_EPOCH_OFFSET;
 
     static {
+        for (int i = 0; i < 10000; i++) {
+            // 预热, 确保JIT编译器优化完成
+            currentTimeMillis();
+            nanoTime();
+        }
         // 当前Epoch毫秒数
         long millisEpoch = currentTimeMillis();
-
         // 当前系统纳秒数
         long baseline = nanoTime();
 

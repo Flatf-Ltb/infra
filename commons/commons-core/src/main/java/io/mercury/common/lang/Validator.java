@@ -29,8 +29,23 @@ public final class Validator {
      */
     public static void greaterThan(int value, int min, String objName)
             throws IllegalArgumentException {
-        if (!isGreaterThan(value, min))
-            throw new IllegalArgumentException("Param: [" + objName + " ] must greater than " + min);
+        greaterThan(value, min, objName, null);
+    }
+
+    /**
+     * @param value   int
+     * @param min     int
+     * @param objName String
+     * @param logger  Logger
+     * @throws IllegalArgumentException exception
+     */
+    public static void greaterThan(int value, int min, String objName, Logger logger)
+            throws IllegalArgumentException {
+        if (!isGreaterThan(value, min)) {
+            if (logger != null)
+                logger.error("illegal int param [{}] == {}, min limit: {}", objName, value, min);
+            throw new IllegalArgumentException("IntParam: [" + objName + " ] must greater than " + min);
+        }
     }
 
     /**
@@ -41,8 +56,23 @@ public final class Validator {
      */
     public static void greaterThan(long value, long min, String objName)
             throws IllegalArgumentException {
-        if (!isGreaterThan(value, min))
-            throw new IllegalArgumentException("Param: [" + objName + "] must greater than " + min);
+        greaterThan(value, min, objName, null);
+    }
+
+    /**
+     * @param value   long
+     * @param min     long
+     * @param objName String
+     * @param logger  Logger
+     * @throws IllegalArgumentException exception
+     */
+    public static void greaterThan(long value, long min, String objName, Logger logger)
+            throws IllegalArgumentException {
+        if (!isGreaterThan(value, min)) {
+            if (logger != null)
+                logger.error("illegal long param [{}] == {}, min limit: {}", objName, value, min);
+            throw new IllegalArgumentException("LongParam: [" + objName + "] must greater than " + min);
+        }
     }
 
     /**
@@ -53,8 +83,23 @@ public final class Validator {
      */
     public static void greaterOrEqualThan(int value, int min, String objName)
             throws IllegalArgumentException {
-        if (!isGreaterOrEqualThan(value, min))
-            throw new IllegalArgumentException("Param: [" + objName + "] must greater or equal than " + min);
+        greaterOrEqualThan(value, min, objName, null);
+    }
+
+    /**
+     * @param value   int
+     * @param min     int
+     * @param objName String
+     * @param logger  Logger
+     * @throws IllegalArgumentException exception
+     */
+    public static void greaterOrEqualThan(int value, int min, String objName, Logger logger)
+            throws IllegalArgumentException {
+        if (!isGreaterOrEqualThan(value, min)) {
+            if (logger != null)
+                logger.error("illegal int param [{}] == {}, min limit: {}", objName, value, min);
+            throw new IllegalArgumentException("IntParam: [" + objName + "] must greater or equal than " + min);
+        }
     }
 
     /**
@@ -65,8 +110,23 @@ public final class Validator {
      */
     public static void greaterOrEqualThan(long value, long min, String objName)
             throws IllegalArgumentException {
-        if (!isGreaterOrEqualThan(value, min))
-            throw new IllegalArgumentException("Param: [" + objName + "] must greater or equal than " + min);
+        greaterOrEqualThan(value, min, objName, null);
+    }
+
+    /**
+     * @param value   long
+     * @param min     long
+     * @param objName String
+     * @param logger  Logger
+     * @throws IllegalArgumentException exception
+     */
+    public static void greaterOrEqualThan(long value, long min, String objName, Logger logger)
+            throws IllegalArgumentException {
+        if (!isGreaterOrEqualThan(value, min)) {
+            if (logger != null)
+                logger.error("illegal long param [{}] == {}, min limit: {}", objName, value, min);
+            throw new IllegalArgumentException("LongParam: [" + objName + "] must greater or equal than " + min);
+        }
     }
 
     /**
@@ -77,8 +137,23 @@ public final class Validator {
      */
     public static void lessThan(int value, int max, String objName)
             throws IllegalArgumentException {
-        if (!isLessThan(value, max))
-            throw new IllegalArgumentException("Param: [" + objName + "] must less than " + max);
+        lessThan(value, max, objName, null);
+    }
+
+    /**
+     * @param value   int
+     * @param max     int
+     * @param objName String
+     * @param logger  Logger
+     * @throws IllegalArgumentException exception
+     */
+    public static void lessThan(int value, int max, String objName, Logger logger)
+            throws IllegalArgumentException {
+        if (!isLessThan(value, max)) {
+            if (logger != null)
+                logger.error("illegal int param [{}] == {}, max limit: {}", objName, value, max);
+            throw new IllegalArgumentException("IntParam: [" + objName + "] must less than " + max);
+        }
     }
 
     /**
@@ -89,8 +164,23 @@ public final class Validator {
      */
     public static void lessThan(long value, long max, String objName)
             throws IllegalArgumentException {
-        if (!isLessThan(value, max))
-            throw new IllegalArgumentException("Param: [" + objName + "] must less than " + max);
+        lessThan(value, max, objName, null);
+    }
+
+    /**
+     * @param value   long
+     * @param max     long
+     * @param objName String
+     * @param logger  Logger
+     * @throws IllegalArgumentException exception
+     */
+    public static void lessThan(long value, long max, String objName, Logger logger)
+            throws IllegalArgumentException {
+        if (!isLessThan(value, max)) {
+            if (logger != null)
+                logger.error("illegal long param [{}] == {}, max limit: {}", objName, value, max);
+            throw new IllegalArgumentException("LongParam: [" + objName + "] must less than " + max);
+        }
     }
 
     /**
@@ -101,8 +191,23 @@ public final class Validator {
      */
     public static void lessOrEqualThan(int value, int max, String objName)
             throws IllegalArgumentException {
-        if (!isLessOrEqualThan(value, max))
+        lessOrEqualThan(value, max, objName, null);
+    }
+
+    /**
+     * @param value   int
+     * @param max     int
+     * @param objName String
+     * @param logger  Logger
+     * @throws IllegalArgumentException exception
+     */
+    public static void lessOrEqualThan(int value, int max, String objName, Logger logger)
+            throws IllegalArgumentException {
+        if (!isLessOrEqualThan(value, max)) {
+            if (logger != null)
+                logger.error("illegal int param [{}] == {}, max limit: {}", objName, value, max);
             throw new IllegalArgumentException("Param: [" + objName + "] must less or equal than " + max);
+        }
     }
 
     /**
@@ -113,8 +218,23 @@ public final class Validator {
      */
     public static void lessOrEqualThan(long value, long max, String objName)
             throws IllegalArgumentException {
-        if (!isLessOrEqualThan(value, max))
+        lessOrEqualThan(value, max, objName, null);
+    }
+
+    /**
+     * @param value   long
+     * @param max     long
+     * @param objName String
+     * @param logger  Logger
+     * @throws IllegalArgumentException exception
+     */
+    public static void lessOrEqualThan(long value, long max, String objName, Logger logger)
+            throws IllegalArgumentException {
+        if (!isLessOrEqualThan(value, max)) {
+            if (logger != null)
+                logger.error("illegal long param [{}] == {}, max limit: {}", objName, value, max);
             throw new IllegalArgumentException("Param: [" + objName + "] must less or equal than " + max);
+        }
     }
 
     /**
@@ -140,7 +260,7 @@ public final class Validator {
     public static void atWithinRange(int value, int min, int max, String objName, Logger logger) {
         if (!isAtWithinRange(value, min, max)) {
             if (logger != null)
-                logger.error("illegal int param -> {}=={}", objName, value);
+                logger.error("illegal int param [{}] == {}, min limit: {}, max limit: {}", objName, value, min, max);
             throw new IllegalArgumentException(
                     "Param: [" + objName + "] must in the range of [" + min + "] to [" + max + "]");
         }
@@ -169,15 +289,14 @@ public final class Validator {
     public static void atWithinRange(long value, long min, long max, String objName, Logger logger) {
         if (!isAtWithinRange(value, min, max)) {
             if (logger != null)
-                logger.error("illegal long param -> {}=={}", objName, value);
+                logger.error("illegal long param [{}]: {}, min limit: {}, max limit: {}", objName, value, min, max);
             throw new IllegalArgumentException(
                     "Param: [" + objName + "] must in the range of [" + min + "] to [" + max + "]");
         }
     }
 
     /**
-     * @param <T> T
-     * @param t   T
+     * @param t T
      * @return T
      * @throws NullPointerException exception
      */
@@ -186,7 +305,6 @@ public final class Validator {
     }
 
     /**
-     * @param <T>     T
      * @param t       T
      * @param objName String
      * @return T
@@ -230,26 +348,20 @@ public final class Validator {
      */
     public static void nonEmpty(String str, String objName, Logger logger)
             throws NullPointerException, IllegalArgumentException {
-        if (logger == null) {
-            if (str == null)
-                throw new NullPointerException("Param: [" + objName + "] can not be null");
-            if (str.isEmpty())
-                throw new IllegalArgumentException("Param: [" + objName + "] can not be empty");
-        } else {
-            if (str == null) {
-                logger.error("Param: [{}] can not be null", objName);
-                throw new NullPointerException("Param: [" + objName + "] can not be null");
-            }
-            if (str.isEmpty()) {
-                logger.error("Param: [{}] can not be empty", objName);
-                throw new IllegalArgumentException("Param: [" + objName + "] can not be empty");
-            }
+        if (str == null) {
+            if (logger != null)
+                logger.error("StringParam: [{}] can not be null", objName);
+            throw new NullPointerException("StringParam: [" + objName + "] can not be null");
+        }
+        if (str.isEmpty()) {
+            if (logger != null)
+                logger.error("StringParam: [{}] can not be empty", objName);
+            throw new IllegalArgumentException("StringParam: [" + objName + "] can not be empty");
         }
     }
 
 
     /**
-     * @param <C>        C
      * @param collection C
      * @param objName    String
      * @throws NullPointerException     exception
@@ -264,7 +376,6 @@ public final class Validator {
     }
 
     /**
-     * @param <M>     Map type
      * @param map     M
      * @param objName String
      * @throws NullPointerException     exception
@@ -279,7 +390,6 @@ public final class Validator {
     }
 
     /**
-     * @param <T>            Type
      * @param array          T[]
      * @param requiredLength int
      * @param arrayName      String
@@ -458,7 +568,6 @@ public final class Validator {
     }
 
     /**
-     * @param <T>       T
      * @param param     T
      * @param predicate Predicate<T>
      * @param paramName String
@@ -470,8 +579,6 @@ public final class Validator {
     }
 
     /**
-     * @param <T>       T
-     * @param <E>       E
      * @param param     T
      * @param predicate Predicate<T>
      * @param exception E
