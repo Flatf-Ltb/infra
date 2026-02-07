@@ -11,6 +11,7 @@ import io.mercury.common.concurrent.disruptor.base.EventHandlerWrapper;
 import io.mercury.common.concurrent.disruptor.base.ReflectionEventFactory;
 import io.mercury.common.concurrent.disruptor.base.RingComponent;
 import io.mercury.common.functional.Processor;
+import io.mercury.common.lang.ThrowsUtil;
 import io.mercury.common.log4j2.Log4j2LoggerFactory;
 import io.mercury.common.util.StringSupport;
 import org.slf4j.Logger;
@@ -23,7 +24,6 @@ import static io.mercury.common.collections.CollectionUtil.toArray;
 import static io.mercury.common.datetime.pattern.impl.DateTimePattern.YYYYMMDD_L_HHMMSSSSS;
 import static io.mercury.common.lang.Validator.nonNull;
 import static io.mercury.common.lang.Validator.requiredLength;
-import static io.mercury.common.lang.Throws.illegalArgument;
 import static io.mercury.common.sys.CurrentRuntime.availableProcessors;
 
 /**
@@ -169,7 +169,7 @@ public final class RingMulticaster<E, I> extends RingComponent<E, I> {
 
         public RingMulticaster<E, I> create() {
             if (handlers.isEmpty())
-                illegalArgument("handlers");
+                ThrowsUtil.throwsIllegalArgument("handlers");
             if (waitStrategy == null)
                 waitStrategy = handlers.size() > availableProcessors() ? CommonStrategy.Sleeping.get() : CommonStrategy.Yielding.get();
             if (StringSupport.isNullOrEmpty(name))

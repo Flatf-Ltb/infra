@@ -1,11 +1,11 @@
 package io.mercury.common.config;
 
-import static io.mercury.common.lang.Throws.unsupportedOperation;
+import static io.mercury.common.lang.ThrowsUtil.throwsUnsupportedOperation;
 
 public final class ConfigStorage {
 
     private ConfigStorage() {
-        unsupportedOperation("[ConfigStorage] cannot be instantiated");
+        throwsUnsupportedOperation("[ConfigStorage] cannot be instantiated");
     }
 
 }

@@ -12,7 +12,7 @@ import io.mercury.common.concurrent.disruptor.base.CommonStrategy;
 import io.mercury.common.concurrent.disruptor.base.EventHandlerWrapper;
 import io.mercury.common.concurrent.disruptor.base.RingComponent;
 import io.mercury.common.functional.Processor;
-import io.mercury.common.lang.Throws;
+import io.mercury.common.lang.ThrowsUtil;
 import io.mercury.common.log4j2.Log4j2LoggerFactory;
 import io.mercury.common.util.StringSupport;
 import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
@@ -221,7 +221,7 @@ public class RingProcessChain<E, I> extends RingComponent<E, I> {
 
         public RingProcessChain<E, I> create() {
             if (handlersMap.isEmpty())
-                Throws.illegalArgument("handlersMap");
+                ThrowsUtil.throwsIllegalArgument("handlersMap");
             if (waitStrategy == null)
                 waitStrategy = handlersMap.stream().mapToInt(List::size).sum() > availableProcessors() ? Sleeping.get()
                         : Yielding.get();

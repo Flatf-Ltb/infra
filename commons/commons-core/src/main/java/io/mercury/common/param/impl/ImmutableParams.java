@@ -24,7 +24,7 @@ import static io.mercury.common.datetime.pattern.StandardPattern.toDate;
 import static io.mercury.common.datetime.pattern.StandardPattern.toDateTime;
 import static io.mercury.common.datetime.pattern.StandardPattern.toTime;
 import static io.mercury.common.datetime.pattern.StandardPattern.toZonedDateTime;
-import static io.mercury.common.lang.Validator.nonEmptyMap;
+import static io.mercury.common.lang.Validator.nonEmpty;
 import static io.mercury.common.lang.Validator.nonNull;
 import static io.mercury.common.lang.Validator.requiredLength;
 import static java.lang.Boolean.parseBoolean;
@@ -50,7 +50,7 @@ public class ImmutableParams implements Params {
      */
     public ImmutableParams(@Nonnull Map<String, ?> inputMap, @Nonnull ParamKey... keys)
             throws NullPointerException, IllegalArgumentException {
-        nonEmptyMap(inputMap, "inputMap");
+        nonEmpty(inputMap, "inputMap");
         requiredLength(keys, 1, "keys");
         var map = MutableMaps.<ParamKey, String>newUnifiedMap();
         // 只加载指定Key对应的Value

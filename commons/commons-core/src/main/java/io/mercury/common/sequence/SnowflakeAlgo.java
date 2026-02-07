@@ -22,8 +22,9 @@ import static java.time.LocalTime.MIN;
  * 时间戳 | 所有者(可以是某个业务ID或者分布式系统上的机器ID) | 自增序列<br>
  *
  * <pre>
- * 0b|---------------EPOCH TIMESTAMP----------------|---OWNER---|--INCREMENT--|
- * 0b01111111 11111111 11111111 11111111 11111111 11_111111 1111_1111 11111111
+ * 0b|------------------- 41 bits ------------------|--10 bits--|-- 12 bits --|
+ * 0b|--------------- EPOCH TIMESTAMP --------------|-- OWNER --|- INCREMENT -|
+ * 0b01111111_11111111_11111111_11111111_11111111_11 111111_1111 1111_11111111
  *
  * <pre>
  *
@@ -40,7 +41,7 @@ public final class SnowflakeAlgo {
     /**
      * 所有者在ID中占的位数
      */
-    public static final int OWNER_ID_BITS = 10;
+    public static final int NODE_ID_BITS = 10;
 
     /**
      * 序列在ID中的位数
@@ -55,12 +56,12 @@ public final class SnowflakeAlgo {
     /**
      * 所有者ID向左移12位
      */
-    public static final int OWNER_ID_LEFT_SHIFT = SEQUENCE_BITS;
+    public static final int NODE_ID_LEFT_SHIFT = SEQUENCE_BITS;
 
     /**
      * 时间截向左移22位(10+12)
      */
-    public static final int TIMESTAMP_LEFT_SHIFT = OWNER_ID_BITS + SEQUENCE_BITS;
+    public static final int TIMESTAMP_LEFT_SHIFT = NODE_ID_BITS + SEQUENCE_BITS;
 
     /**
      * 生成序列的掩码, 4095 (0xffff == 4095 == 0b1111_11111111)
@@ -70,13 +71,13 @@ public final class SnowflakeAlgo {
     /**
      * 所有者ID的掩码
      */
-    public static final long OWNER_ID_MASK = maxValueOfBit(OWNER_ID_BITS) << OWNER_ID_LEFT_SHIFT;
+    public static final long NODE_ID_MASK = maxValueOfBit(NODE_ID_BITS) << NODE_ID_LEFT_SHIFT;
 
     // 开始时间截 (使用自己业务系统指定的时间)
     private final long baseline;
 
     // 所有者ID(0~1024)
-    private final long ownerId;
+    private final long nodeId;
 
     // 毫秒内序列(0~4096)
     private volatile long sequence = 0L;
@@ -85,30 +86,30 @@ public final class SnowflakeAlgo {
     private volatile long lastTimestamp = -1L;
 
     /**
-     * @param ownerId int
+     * @param nodeId int
      */
-    public SnowflakeAlgo(int ownerId) {
-        this(ownerId, ZonedDateTime.ofInstant(Instant.EPOCH, UTC));
+    public SnowflakeAlgo(int nodeId) {
+        this(nodeId, ZonedDateTime.ofInstant(Instant.EPOCH, UTC));
     }
 
     /**
-     * @param ownerId int
-     * @param start   LocalDate
+     * @param nodeId int
+     * @param start  LocalDate
      */
-    public SnowflakeAlgo(int ownerId,
+    public SnowflakeAlgo(int nodeId,
                          @Nonnull final LocalDate start) {
-        this(ownerId, start, UTC);
+        this(nodeId, start, UTC);
     }
 
     /**
-     * @param ownerId int
-     * @param start   LocalDate
-     * @param zoneId  ZoneId
+     * @param nodeId int
+     * @param start  LocalDate
+     * @param zoneId ZoneId
      */
-    public SnowflakeAlgo(int ownerId,
+    public SnowflakeAlgo(int nodeId,
                          @Nullable final LocalDate start,
                          @Nullable final ZoneId zoneId) {
-        this(ownerId,
+        this(nodeId,
                 start == null ? EPOCH_ZERO :
                         ZonedDateTime.of(start, MIN,
                                 zoneId == null ? UTC : zoneId));
@@ -117,10 +118,10 @@ public final class SnowflakeAlgo {
     /**
      * @param start int
      */
-    private SnowflakeAlgo(int ownerId, ZonedDateTime start) {
-        if (ownerId < 0 || ownerId > maxValueOfBit(OWNER_ID_BITS))
+    private SnowflakeAlgo(int nodeId, ZonedDateTime start) {
+        if (nodeId < 0 || nodeId > maxValueOfBit(NODE_ID_BITS))
             throw new IllegalArgumentException("ownerId must be [greater than 0] and [less than or equal 1024]");
-        this.ownerId = ownerId;
+        this.nodeId = nodeId;
         this.baseline = start.isBefore(EPOCH_ZERO) ? 0 : start.toInstant().toEpochMilli();
     }
 
@@ -150,17 +151,17 @@ public final class SnowflakeAlgo {
      * @return long
      */
     public static long parseBaselineDiffMillis(long seq) {
-        return (seq >> (OWNER_ID_BITS + SEQUENCE_BITS));
+        return (seq >> (NODE_ID_BITS + SEQUENCE_BITS));
     }
 
     /**
-     * 解析序列ID中包含的所有者ID
+     * 解析序列ID中包含的节点ID
      *
      * @param seq long
      * @return long
      */
-    public static long parseOwnerId(long seq) {
-        return (seq & OWNER_ID_MASK) >> OWNER_ID_LEFT_SHIFT;
+    public static long parseNodeId(long seq) {
+        return (seq & NODE_ID_MASK) >> NODE_ID_LEFT_SHIFT;
     }
 
     /**
@@ -193,10 +194,10 @@ public final class SnowflakeAlgo {
         // 移位并通过或运算拼接在一起组成63位ID
         return // 计算时间戳于基线时间的偏移量, 并将偏移量左移至高位
                 ((currentTimestamp - baseline) << TIMESTAMP_LEFT_SHIFT)
-                        // 所有者ID左移至中间位
-                        | (ownerId << OWNER_ID_LEFT_SHIFT)
-                        // 自增位
-                        | sequence;
+                // 所有者ID左移至中间位
+                | (nodeId << NODE_ID_LEFT_SHIFT)
+                // 自增位
+                | sequence;
     }
 
     /**
@@ -216,7 +217,7 @@ public final class SnowflakeAlgo {
     public static void main(String[] args) {
 
         System.out.println(BitFormatter.longBinaryFormat(SEQUENCE_MASK));
-        System.out.println(BitFormatter.longBinaryFormat(OWNER_ID_MASK));
+        System.out.println(BitFormatter.longBinaryFormat(NODE_ID_MASK));
 
         SnowflakeAlgo algorithm = new SnowflakeAlgo(20);
 
@@ -227,7 +228,7 @@ public final class SnowflakeAlgo {
         System.out.println(System.currentTimeMillis());
         System.out.println(time);
         System.out.println(BitFormatter.longBinaryFormat(time));
-        System.out.println(SnowflakeAlgo.parseOwnerId(next));
+        System.out.println(SnowflakeAlgo.parseNodeId(next));
 
         System.out.println(ZonedDateTime.ofInstant(Instant.ofEpochMilli(time), TimeZoneConst.UTC));
 
@@ -236,7 +237,7 @@ public final class SnowflakeAlgo {
         System.out.println(BitFormatter.longBinaryFormat(maxSequence));
         System.out.println(HexUtil.toHex(maxSequence));
 
-        long maxOwnerId = maxValueOfBit(OWNER_ID_BITS);
+        long maxOwnerId = maxValueOfBit(NODE_ID_BITS);
         System.out.println(maxOwnerId);
         System.out.println(BitFormatter.longBinaryFormat(maxOwnerId));
         System.out.println(HexUtil.toHex(maxOwnerId));
