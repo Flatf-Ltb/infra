@@ -12,7 +12,7 @@
     <name>serialization-fory</name>
 
     <properties>
-        <fory.version>0.14.1</fory.version>
+        <fory.version>0.15.0</fory.version>
     </properties>
 
     <dependencies>

@@ -120,7 +120,8 @@ public final class JsonReader {
      * @throws JsonParseException e
      */
     @Nonnull
-    public static <T> MutableList<T> toMutableList(@Nonnull String json) throws JsonParseException {
+    public static <T> MutableList<T> toMutableList(@Nonnull String json)
+            throws JsonParseException {
         return newFastList(
                 // List convert to MutableList
                 toList(json));
@@ -132,7 +133,8 @@ public final class JsonReader {
      * @throws JsonParseException e
      */
     @Nonnull
-    public static <T> ImmutableList<T> toImmutableList(@Nonnull String json) throws JsonParseException {
+    public static <T> ImmutableList<T> toImmutableList(@Nonnull String json)
+            throws JsonParseException {
         return newImmutableList(
                 // List convert to MutableList
                 toList(json));
@@ -145,7 +147,8 @@ public final class JsonReader {
      * @throws JsonParseException e
      */
     @Nonnull
-    public static <T> List<T> toList(@Nonnull String json, Class<T> type) throws JsonParseException {
+    public static <T> List<T> toList(@Nonnull String json, Class<T> type)
+            throws JsonParseException {
         try {
             if (json.isEmpty() || type == null)
                 return new ArrayList<>();
@@ -161,7 +164,8 @@ public final class JsonReader {
      * @throws JsonParseException e
      */
     @Nonnull
-    public static <T> MutableList<T> toMutableList(@Nonnull String json, Class<T> type) throws JsonParseException {
+    public static <T> MutableList<T> toMutableList(@Nonnull String json, Class<T> type)
+            throws JsonParseException {
         return newFastList(
                 // List convert to MutableList
                 toList(json, type));
@@ -173,7 +177,8 @@ public final class JsonReader {
      * @throws JsonParseException e
      */
     @Nonnull
-    public static <T> ImmutableList<T> toImmutableList(@Nonnull String json, Class<T> type) throws JsonParseException {
+    public static <T> ImmutableList<T> toImmutableList(@Nonnull String json, Class<T> type)
+            throws JsonParseException {
         return newImmutableList(
                 // List convert to MutableList
                 toList(json, type));
