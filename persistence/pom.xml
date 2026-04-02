@@ -4,8 +4,8 @@
     <modelVersion>4.0.0</modelVersion>
     <!-- This is persistence pom.xml -->
     <parent>
-        <groupId>io.mercury</groupId>
-        <artifactId>mercury</artifactId>
+        <groupId>io.flatf</groupId>
+        <artifactId>basic</artifactId>
         <version>1.0.1</version>
     </parent>
 
@@ -48,17 +48,17 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>io.mercury</groupId>
+                <groupId>io.flatf</groupId>
                 <artifactId>commons-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.mercury</groupId>
+                <groupId>io.flatf</groupId>
                 <artifactId>commons-concurrent</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.mercury</groupId>
+                <groupId>io.flatf</groupId>
                 <artifactId>serialization-json</artifactId>
                 <version>${project.version}</version>
             </dependency>

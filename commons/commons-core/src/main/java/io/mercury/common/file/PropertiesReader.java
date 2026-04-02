@@ -38,7 +38,9 @@ public final class PropertiesReader {
                 log.info("Properties file -> [{}] start load", file);
                 String fileName = file.getName();
                 Properties prop = new Properties();
-                prop.load(new FileInputStream(file));
+                try (FileInputStream fis = new FileInputStream(file)) {
+                    prop.load(fis);
+                }
                 PropertiesMap.put(deleteSuffix(fileName), prop);
                 for (String propName : prop.stringPropertyNames()) {
                     String key = mergePropertiesKey(fileName, propName);

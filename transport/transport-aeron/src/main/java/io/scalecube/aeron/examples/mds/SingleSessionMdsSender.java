@@ -10,7 +10,6 @@ import io.aeron.driver.MediaDriver;
 import io.scalecube.aeron.examples.AeronHelper;
 import net.bytebuddy.agent.ByteBuddyAgent;
 import org.agrona.CloseHelper;
-import org.agrona.concurrent.SigInt;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -44,7 +43,7 @@ public class SingleSessionMdsSender {
         System.setProperty("aeron.event.archive.log", "all");
         EventLogAgent.agentmain("", ByteBuddyAgent.install());
 
-        SigInt.register(SingleSessionMdsSender::close);
+//        SigInt.register(SingleSessionMdsSender::close);
 
         mediaDriver = MediaDriver.launchEmbedded(
                 new MediaDriver.Context()

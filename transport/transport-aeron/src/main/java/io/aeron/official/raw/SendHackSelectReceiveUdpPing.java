@@ -17,7 +17,6 @@ package io.aeron.official.raw;
 
 import io.aeron.driver.Configuration;
 import org.HdrHistogram.Histogram;
-import org.agrona.concurrent.SigInt;
 import org.agrona.hints.ThreadHints;
 
 import java.io.IOException;
@@ -67,10 +66,10 @@ public class SendHackSelectReceiveUdpPing implements ToIntFunction<SelectionKey>
 
         final Selector selector = Selector.open();
         receiveChannel.register(selector, OP_READ, this);
-        // final NioSelectedKeySet keySet = Common.keySet(selector);
+//        final NioSelectedKeySet keySet = Common.keySet(selector);
 
         final AtomicBoolean running = new AtomicBoolean(true);
-        SigInt.register(() -> running.set(false));
+//        SigInt.register(() -> running.set(false));
 
         while (running.get()) {
             measureRoundTrip(HISTOGRAM, SEND_ADDRESS, buffer, sendChannel, selector, running);

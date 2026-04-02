@@ -17,7 +17,6 @@ import io.scalecube.aeron.examples.DynamicCompositeAgent;
 import org.agrona.CloseHelper;
 import org.agrona.concurrent.Agent;
 import org.agrona.concurrent.AgentRunner;
-import org.agrona.concurrent.SigInt;
 import org.agrona.concurrent.YieldingIdleStrategy;
 
 import java.nio.file.Path;
@@ -54,7 +53,7 @@ public class MultiSessionReplayReceiver {
      * @param args args
      */
     public static void main(String[] args) throws InterruptedException {
-        SigInt.register(MultiSessionReplayReceiver::close);
+//        SigInt.register(MultiSessionReplayReceiver::close);
 
         Path aeronPath = Paths.get(CommonContext.generateRandomDirName());
 

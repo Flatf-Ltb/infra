@@ -10,7 +10,6 @@ import io.aeron.driver.MediaDriver.Context;
 import io.aeron.driver.status.SystemCounterDescriptor;
 import io.scalecube.aeron.examples.AeronHelper;
 import org.agrona.CloseHelper;
-import org.agrona.concurrent.SigInt;
 import org.agrona.concurrent.status.AtomicCounter;
 
 import java.nio.file.Path;
@@ -37,7 +36,7 @@ public class BasicArchiveInstance2 {
      * @param args args
      */
     public static void main(String[] args) throws InterruptedException {
-        SigInt.register(BasicArchiveInstance2::close);
+//        SigInt.register(BasicArchiveInstance2::close);
 
         Path aeronPath = Paths.get(CommonContext.generateRandomDirName());
         String instanceName = aeronPath.getFileName().toString();

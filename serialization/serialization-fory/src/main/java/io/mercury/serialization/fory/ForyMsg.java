@@ -89,7 +89,7 @@ public class ForyMsg implements OrderedObject<ForyMsg> {
     }
 
     @Override
-    public long orderNum() {
+    public long sequence() {
         return sequence;
     }
 

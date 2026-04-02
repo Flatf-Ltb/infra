@@ -1,7 +1,6 @@
 package io.mercury.common.collections;
 
 import io.mercury.common.lang.Validator;
-import io.mercury.common.util.ArrayUtil;
 import org.eclipse.collections.api.bimap.MutableBiMap;
 import org.eclipse.collections.api.map.ConcurrentMutableMap;
 import org.eclipse.collections.api.map.MutableMap;
@@ -49,10 +48,15 @@ import org.eclipse.collections.impl.map.sorted.mutable.TreeSortedMap;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
+import java.util.stream.Stream;
 
 import static io.mercury.common.collections.MapUtil.optimizationCapacity;
+import static io.mercury.common.util.ArrayUtil.isNullOrEmpty;
+import static org.eclipse.collections.impl.collector.Collectors2.toMap;
 
 public final class MutableMaps {
 
@@ -152,7 +156,7 @@ public final class MutableMaps {
     public static <V> MutableIntObjectMap<V> newIntObjectMap(@Nonnull ToIntFunction<V> keyFunc,
                                                              @Nullable V... values) {
         Validator.nonNull(keyFunc, "keyFunc");
-        if (ArrayUtil.isNullOrEmpty(values))
+        if (isNullOrEmpty(values))
             return newIntObjectMap();
         MutableIntObjectMap<V> map = newIntObjectMap(values.length * 2);
         for (V value : values)
@@ -410,67 +414,17 @@ public final class MutableMaps {
     }
 
     /**
-     * @param <K>   Key type
-     * @param <V>   Value type
-     * @param key   key
-     * @param value value
+     *
+     * @param keyFunc Function<V, K>
+     * @param stream Stream<V>
      * @return MutableMap<K, V>
+     * @param <K> K
+     * @param <V> V
      */
-    public static <K, V> MutableMap<K, V> newUnifiedMap(K key, V value) {
-        return UnifiedMap.newWithKeysValues(key, value);
-    }
-
-    /**
-     * @param <K>    Key type
-     * @param <V>    Value type
-     * @param key0   key
-     * @param value0 value
-     * @param key1   key
-     * @param value1 value
-     * @return MutableMap<K, V>
-     */
-    public static <K, V> MutableMap<K, V> newUnifiedMap(K key0, V value0,
-                                                        K key1, V value1) {
-        return UnifiedMap.newWithKeysValues(key0, value0, key1, value1);
-    }
-
-    /**
-     * @param <K>    Key type
-     * @param <V>    Value type
-     * @param key0   key
-     * @param value0 value
-     * @param key1   key
-     * @param value1 value
-     * @param key2   key
-     * @param value2 value
-     * @return MutableMap<K, V>
-     */
-    public static <K, V> MutableMap<K, V> newUnifiedMap(K key0, V value0,
-                                                        K key1, V value1,
-                                                        K key2, V value2) {
-        return UnifiedMap.newWithKeysValues(
-                key0, value0, key1, value1, key2, value2);
-    }
-
-    /**
-     * @param <K>    Key type
-     * @param <V>    Value type
-     * @param key0   key
-     * @param value0 value
-     * @param key1   key
-     * @param value1 value
-     * @param key2   key
-     * @param value2 value
-     * @param key3   key
-     * @param value3 value
-     * @return MutableMap<K, V>
-     */
-    public static <K, V> MutableMap<K, V> newUnifiedMap(K key0, V value0,
-                                                        K key1, V value1,
-                                                        K key2, V value2,
-                                                        K key3, V value3) {
-        return UnifiedMap.newWithKeysValues(
-                key0, value0, key1, value1, key2, value2, key3, value3);
+    public static <K, V> MutableMap<K, V> newUnifiedMap(@Nonnull Function<V, K> keyFunc,
+                                                        @Nonnull Stream<V> stream) {
+        return stream.filter(Objects::nonNull)
+                .collect(toMap(keyFunc::apply, v -> v));
     }
 
     /**

@@ -51,7 +51,8 @@ public final class SocketSender extends TransportComponent implements Sender<byt
     public boolean closeIgnoreException() {
         this.isRun.set(false);
         try {
-            outputStream.close();
+            if (outputStream != null)
+                outputStream.close();
             if (socket != null)
                 socket.close();
         } catch (IOException ignored) {

@@ -17,7 +17,6 @@ import org.agrona.concurrent.AgentRunner;
 import org.agrona.concurrent.AgentTerminationException;
 import org.agrona.concurrent.BackoffIdleStrategy;
 import org.agrona.concurrent.NoOpIdleStrategy;
-import org.agrona.concurrent.SigInt;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -54,7 +53,7 @@ public class FlowControlMdcSpySender {
      * @param args args
      */
     public static void main(String[] args) throws InterruptedException {
-        SigInt.register(() -> running.set(false));
+//        SigInt.register(() -> running.set(false));
 
         try {
             if (messageRate == null)

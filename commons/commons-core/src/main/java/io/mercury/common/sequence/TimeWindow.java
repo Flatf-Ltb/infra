@@ -180,7 +180,7 @@ public class TimeWindow implements OrderedObject<TimeWindow> {
     }
 
     @Override
-    public long orderNum() {
+    public long sequence() {
         return epochSecond;
     }
 

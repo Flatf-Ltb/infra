@@ -104,7 +104,7 @@ public final class ThreadSafeForyMsg implements OrderedObject<ThreadSafeForyMsg>
     }
 
     @Override
-    public long orderNum() {
+    public long sequence() {
         return sequence;
     }
 

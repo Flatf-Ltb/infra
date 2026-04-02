@@ -38,10 +38,8 @@ public class UnsafeRingBuffer {
             if (senderHasCreated.compareAndSet(false, true)) {
                 return null;
             }
-            return null;
-        } else {
-            return null;
         }
+        return null;
     }
 
 

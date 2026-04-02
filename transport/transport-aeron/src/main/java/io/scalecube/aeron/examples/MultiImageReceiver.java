@@ -9,7 +9,7 @@ import io.aeron.Subscription;
 import io.aeron.driver.MediaDriver;
 import org.agrona.CloseHelper;
 import org.agrona.concurrent.BackoffIdleStrategy;
-import org.agrona.concurrent.SigInt;
+import org.agrona.concurrent.ShutdownSignalBarrier;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -34,69 +34,72 @@ public class MultiImageReceiver {
      * @param args args
      */
     public static void main(String[] args) {
-        SigInt.register(MultiImageReceiver::close);
+        try (ShutdownSignalBarrier barrier = new ShutdownSignalBarrier(MultiImageReceiver::close);) {
 
-        mediaDriver = MediaDriver.launchEmbedded(
-                new MediaDriver.Context().imageLivenessTimeoutNs(TimeUnit.SECONDS.toNanos(3)));
-        String aeronDirectoryName = mediaDriver.aeronDirectoryName();
 
-        Context context = new Context()
-                .aeronDirectoryName(aeronDirectoryName)
-                .availableImageHandler(AeronHelper::printAvailableImage)
-                .unavailableImageHandler(AeronHelper::printUnavailableImage);
+            mediaDriver = MediaDriver.launchEmbedded(
+                    new MediaDriver.Context().imageLivenessTimeoutNs(TimeUnit.SECONDS.toNanos(3)));
+            String aeronDirectoryName = mediaDriver.aeronDirectoryName();
 
-        aeron = Aeron.connect(context);
-        System.out.println("hello, " + context.aeronDirectoryName());
+            Context context = new Context()
+                    .aeronDirectoryName(aeronDirectoryName)
+                    .availableImageHandler(AeronHelper::printAvailableImage)
+                    .unavailableImageHandler(AeronHelper::printUnavailableImage);
 
-        final String channel = new ChannelUriStringBuilder()
-                .media(UDP_MEDIA)
-                .termLength(TERM_LENGTH)
-                .endpoint(ENDPOINT)
-                .build();
+            aeron = Aeron.connect(context);
+            System.out.println("hello, " + context.aeronDirectoryName());
 
-        // yes, several subscriptions on the same channel
-        Subscription subscription = aeron.addSubscription(channel, STREAM_ID);
-        Subscription subscription2 = aeron.addSubscription(channel, STREAM_ID);
-        Subscription subscription3 = aeron.addSubscription(channel, STREAM_ID);
+            final String channel = new ChannelUriStringBuilder()
+                    .media(UDP_MEDIA)
+                    .termLength(TERM_LENGTH)
+                    .endpoint(ENDPOINT)
+                    .build();
 
-        printSubscription(subscription);
-        printSubscription(subscription2);
-        printSubscription(subscription3);
+            // yes, several subscriptions on the same channel
+            Subscription subscription = aeron.addSubscription(channel, STREAM_ID);
+            Subscription subscription2 = aeron.addSubscription(channel, STREAM_ID);
+            Subscription subscription3 = aeron.addSubscription(channel, STREAM_ID);
 
-        awaitImage(subscription);
-        awaitImage(subscription2);
-        awaitImage(subscription3);
+            printSubscription(subscription);
+            printSubscription(subscription2);
+            printSubscription(subscription3);
 
-        FragmentAssembler fragmentAssembler = new FragmentAssembler(AeronHelper
-                .printAsciiMessage(STREAM_ID, "1"));
-        FragmentAssembler fragmentAssembler2 = new FragmentAssembler(AeronHelper
-                .printAsciiMessage(STREAM_ID, "2"));
-        FragmentAssembler fragmentAssembler3 = new FragmentAssembler(AeronHelper
-                .printAsciiMessage(STREAM_ID, "3"));
+            awaitImage(subscription);
+            awaitImage(subscription2);
+            awaitImage(subscription3);
 
-        final Image image = subscription.imageAtIndex(0);
-        final Image image2 = subscription2.imageAtIndex(0);
-        final Image image3 = subscription3.imageAtIndex(0);
+            FragmentAssembler fragmentAssembler = new FragmentAssembler(AeronHelper
+                    .printAsciiMessage(STREAM_ID, "1"));
+            FragmentAssembler fragmentAssembler2 = new FragmentAssembler(AeronHelper
+                    .printAsciiMessage(STREAM_ID, "2"));
+            FragmentAssembler fragmentAssembler3 = new FragmentAssembler(AeronHelper
+                    .printAsciiMessage(STREAM_ID, "3"));
 
-        long time = System.nanoTime();
-        long step = TimeUnit.SECONDS.toNanos(1);
-        long next = time + step;
+            final Image image = subscription.imageAtIndex(0);
+            final Image image2 = subscription2.imageAtIndex(0);
+            final Image image3 = subscription3.imageAtIndex(0);
 
-        while (running.get()) {
-            final long now = System.nanoTime();
+            long time = System.nanoTime();
+            long step = TimeUnit.SECONDS.toNanos(1);
+            long next = time + step;
 
-            pollImageIfNotClosed(fragmentAssembler, image, FRAGMENT_LIMIT);
+            while (running.get()) {
+                final long now = System.nanoTime();
 
-            if (now >= next) {
-                next = now + step;
-                pollImageIfNotClosed(fragmentAssembler2, image2, 1);
-                pollImageIfNotClosed(fragmentAssembler3, image3, 1);
+                pollImageIfNotClosed(fragmentAssembler, image, FRAGMENT_LIMIT);
+
+                if (now >= next) {
+                    next = now + step;
+                    pollImageIfNotClosed(fragmentAssembler2, image2, 1);
+                    pollImageIfNotClosed(fragmentAssembler3, image3, 1);
+                }
             }
+
+            System.out.println("Shutting down...");
+
+            close();
+            barrier.signal();
         }
-
-        System.out.println("Shutting down...");
-
-        close();
     }
 
     private static void awaitImage(Subscription subscription) {
@@ -120,4 +123,5 @@ public class MultiImageReceiver {
         CloseHelper.close(aeron);
         CloseHelper.close(mediaDriver);
     }
+
 }

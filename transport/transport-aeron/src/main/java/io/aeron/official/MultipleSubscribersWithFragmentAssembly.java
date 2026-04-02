@@ -22,7 +22,6 @@ import io.aeron.Subscription;
 import io.aeron.logbuffer.FragmentHandler;
 import org.agrona.concurrent.BackoffIdleStrategy;
 import org.agrona.concurrent.IdleStrategy;
-import org.agrona.concurrent.SigInt;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -60,7 +59,7 @@ public class MultipleSubscribersWithFragmentAssembly {
         final FragmentAssembler assembler2 = new FragmentAssembler(reassembledMessage2(STREAM_ID_2));
 
         final AtomicBoolean running = new AtomicBoolean(true);
-        SigInt.register(() -> running.set(false));
+//        SigInt.register(() -> running.set(false));
 
         try (Aeron aeron = Aeron.connect(ctx);
              Subscription subscription1 = aeron.addSubscription(CHANNEL, STREAM_ID_1);

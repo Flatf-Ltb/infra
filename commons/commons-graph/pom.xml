@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>io.mercury</groupId>
+        <groupId>io.flatf</groupId>
         <artifactId>commons</artifactId>
         <version>1.0.1</version>
     </parent>
@@ -13,7 +13,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.mercury</groupId>
+            <groupId>io.flatf</groupId>
             <artifactId>commons-core</artifactId>
         </dependency>
 
@@ -21,9 +21,7 @@
              and queues with a small memory footprint and fast access and insertion;
              it provides also big (64-bit) arrays, sets and lists,
              sorting algorithms, fast, practical I/O classes for binary and text files,
-             and facilities for memory mapping large files.
-             Note that if you have both this jar and fastutil-core.jar
-             in your dependencies, fastutil-core.jar should be excluded. -->
+             and facilities for memory mapping large files. -->
         <dependency>
             <groupId>it.unimi.dsi</groupId>
             <artifactId>fastutil</artifactId>

@@ -3,10 +3,16 @@ package io.mercury.serialization.json;
 import io.mercury.common.epoch.EpochUnit;
 import io.mercury.common.serialization.ContentType;
 import io.mercury.common.serialization.specific.JsonSerializable;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+@Getter
+@Setter
+@Accessors(chain = true)
 public final class JsonMsg implements JsonSerializable {
 
     private long sequence;
@@ -16,68 +22,6 @@ public final class JsonMsg implements JsonSerializable {
     private int version = 1;
     private ContentType contentType;
     private String content;
-
-    public long getSequence() {
-        return sequence;
-    }
-
-    public long getEpoch() {
-        return epoch;
-    }
-
-    public EpochUnit getEpochUnit() {
-        return epochUnit;
-    }
-
-    public int getEnvelope() {
-        return envelope;
-    }
-
-    public int getVersion() {
-        return version;
-    }
-
-    public ContentType getContentType() {
-        return contentType;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public JsonMsg setSequence(long sequence) {
-        this.sequence = sequence;
-        return this;
-    }
-
-    public void setEpoch(long epoch) {
-        this.epoch = epoch;
-    }
-
-    public JsonMsg setEpochUnit(EpochUnit epochUnit) {
-        this.epochUnit = epochUnit;
-        return this;
-    }
-
-    public JsonMsg setEnvelope(int envelope) {
-        this.envelope = envelope;
-        return this;
-    }
-
-    public JsonMsg setVersion(int version) {
-        this.version = version;
-        return this;
-    }
-
-    public JsonMsg setContentType(ContentType contentType) {
-        this.contentType = contentType;
-        return this;
-    }
-
-    public JsonMsg setContent(String content) {
-        this.content = content;
-        return this;
-    }
 
     @Override
     public String toString() {

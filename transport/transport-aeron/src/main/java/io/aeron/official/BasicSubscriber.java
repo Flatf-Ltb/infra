@@ -20,7 +20,6 @@ import io.aeron.Subscription;
 import io.aeron.driver.MediaDriver;
 import io.aeron.logbuffer.FragmentHandler;
 import org.agrona.CloseHelper;
-import org.agrona.concurrent.SigInt;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -63,7 +62,7 @@ public class BasicSubscriber {
         final AtomicBoolean running = new AtomicBoolean(true);
 
         // Register a SIGINT handler for graceful shutdown.
-        SigInt.register(() -> running.set(false));
+        // SigInt.register(() -> running.set(false));
 
         // Create an Aeron instance using the configured Context and create a
         // Subscription on that instance that subscribes to the configured

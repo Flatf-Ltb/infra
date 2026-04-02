@@ -77,8 +77,6 @@ public final class PropertiesUtil {
         Properties props = new Properties();
         try (final InputStream in = stream) {
             props.load(in);
-        } catch (Exception e) {
-            // noop
         }
         return props;
     }

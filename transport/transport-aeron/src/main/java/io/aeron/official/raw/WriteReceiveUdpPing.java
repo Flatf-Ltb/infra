@@ -15,7 +15,6 @@
 package io.aeron.official.raw;
 
 import org.HdrHistogram.Histogram;
-import org.agrona.concurrent.SigInt;
 import org.agrona.hints.ThreadHints;
 
 import java.io.IOException;
@@ -63,7 +62,7 @@ public class WriteReceiveUdpPing {
         Common.init(writeChannel, writeAddress);
 
         final AtomicBoolean running = new AtomicBoolean(true);
-        SigInt.register(() -> running.set(false));
+//        SigInt.register(() -> running.set(false));
 
         while (running.get()) {
             measureRoundTrip(histogram, buffer, receiveChannels, writeChannel, running);

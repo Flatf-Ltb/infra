@@ -68,7 +68,7 @@ public class TimePoint implements OrderedObject<TimePoint> {
     }
 
     @Override
-    public long orderNum() {
+    public long sequence() {
         return serialId;
     }
 
@@ -92,13 +92,13 @@ public class TimePoint implements OrderedObject<TimePoint> {
         System.out.println(timeStarted0);
         System.out.println(timeStarted0.getDatetime());
         System.out.println(timeStarted0.getEpochSecond());
-        System.out.println(timeStarted0.orderNum());
+        System.out.println(timeStarted0.sequence());
 
         TimePoint timeStarted1 = TimePoint.with(timeStarted0);
         System.out.println(timeStarted1);
         System.out.println(timeStarted1.getDatetime());
         System.out.println(timeStarted1.getEpochSecond());
-        System.out.println(timeStarted1.orderNum());
+        System.out.println(timeStarted1.sequence());
 
         System.out.println(EpochUtil.getEpochMillis());
         System.out.println(EpochUtil.getEpochSeconds());

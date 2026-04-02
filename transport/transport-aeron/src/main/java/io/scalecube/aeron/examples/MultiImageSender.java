@@ -7,7 +7,6 @@ import io.aeron.ExclusivePublication;
 import io.aeron.driver.MediaDriver;
 import org.agrona.CloseHelper;
 import org.agrona.concurrent.IdleStrategy;
-import org.agrona.concurrent.SigInt;
 import org.agrona.concurrent.SleepingIdleStrategy;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -31,7 +30,7 @@ public class MultiImageSender {
      * @param args args
      */
     public static void main(String[] args) throws InterruptedException {
-        SigInt.register(MultiImageSender::close);
+        //SigInt.register(MultiImageSender::close);
 
         mediaDriver = MediaDriver.launchEmbedded();
         String aeronDirectoryName = mediaDriver.aeronDirectoryName();

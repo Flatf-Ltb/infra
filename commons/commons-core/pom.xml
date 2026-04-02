@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>io.mercury</groupId>
+        <groupId>io.flatf</groupId>
         <artifactId>commons</artifactId>
         <version>1.0.1</version>
     </parent>
@@ -12,7 +12,7 @@
     <name>commons-core</name>
 
     <properties>
-        <log4j2.version>2.25.3</log4j2.version>
+        <log4j2.version>2.25.4</log4j2.version>
     </properties>
 
     <build>
@@ -35,12 +35,6 @@
     </build>
 
     <dependencies>
-        <!-- JSR305 Annotations for Find bugs -->
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
-        </dependency>
-
         <!-- #################### Log dependency #################### -->
         <!-- ### Use slf4j API + log4j2 Implement + slf4j Adapter ### -->
         <!-- The SLF4j API -->
@@ -140,12 +134,7 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>error_prone_annotations</artifactId>
-                    <groupId>com.google.errorprone</groupId>
-                </exclusion>
-            </exclusions>
+
         </dependency>
 
         <!-- configuration library for JVM languages using HOCON files -->
@@ -159,6 +148,13 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
+            <version>26.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+            <version>3.0.0</version>
         </dependency>
 
         <!-- ####### Unit test mock tool ####### -->

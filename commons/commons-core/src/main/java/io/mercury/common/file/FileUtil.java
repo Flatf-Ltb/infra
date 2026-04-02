@@ -420,8 +420,9 @@ public final class FileUtil {
      * @throws IOException ioe
      */
     public static byte[] load(File file) throws IOException {
-        FileInputStream fis = new FileInputStream(file);
-        return load(fis, true);
+        try (FileInputStream fis = new FileInputStream(file)) {
+            return load(fis, false);
+        }
     }
 
     /**

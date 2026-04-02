@@ -12,7 +12,6 @@ import io.aeron.driver.MediaDriver;
 import io.aeron.driver.status.SystemCounterDescriptor;
 import io.scalecube.aeron.examples.AeronHelper;
 import org.agrona.CloseHelper;
-import org.agrona.concurrent.SigInt;
 import org.agrona.concurrent.status.AtomicCounter;
 import org.agrona.concurrent.status.CountersReader;
 
@@ -54,7 +53,7 @@ public class BasicMultiExclusiveRecorder {
      * @param args args
      */
     public static void main(String[] args) throws InterruptedException {
-        SigInt.register(BasicMultiExclusiveRecorder::close);
+//        SigInt.register(BasicMultiExclusiveRecorder::close);
 
         Path aeronPath = Paths.get(CommonContext.generateRandomDirName());
         String instanceName = aeronPath.getFileName().toString();

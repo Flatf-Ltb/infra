@@ -3,8 +3,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>io.mercury</groupId>
-        <artifactId>mercury</artifactId>
+        <groupId>io.flatf</groupId>
+        <artifactId>basic</artifactId>
         <version>1.0.1</version>
     </parent>
 
@@ -31,13 +31,13 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.mercury</groupId>
+            <groupId>io.flatf</groupId>
             <artifactId>serialization-json</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>io.mercury</groupId>
+            <groupId>io.flatf</groupId>
             <artifactId>serialization-avro</artifactId>
             <version>${project.version}</version>
             <exclusions>

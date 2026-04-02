@@ -4,8 +4,8 @@
     <modelVersion>4.0.0</modelVersion>
     <!-- This is a transport module pom.xml -->
     <parent>
-        <groupId>io.mercury</groupId>
-        <artifactId>mercury</artifactId>
+        <groupId>io.flatf</groupId>
+        <artifactId>basic</artifactId>
         <version>1.0.1</version>
     </parent>
 
@@ -41,29 +41,29 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>1.18.40</version>
+                <version>1.18.42</version>
             </dependency>
 
             <dependency>
-                <groupId>io.mercury</groupId>
+                <groupId>io.flatf</groupId>
                 <artifactId>commons-concurrent</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>io.mercury</groupId>
+                <groupId>io.flatf</groupId>
                 <artifactId>serialization-sbe</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>io.mercury</groupId>
+                <groupId>io.flatf</groupId>
                 <artifactId>serialization-avro</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>io.mercury</groupId>
+                <groupId>io.flatf</groupId>
                 <artifactId>serialization-json</artifactId>
                 <version>${project.version}</version>
             </dependency>

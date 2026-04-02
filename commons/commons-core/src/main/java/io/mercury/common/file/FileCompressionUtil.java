@@ -382,9 +382,10 @@ public class FileCompressionUtil {
 
         @Override
         public void uncompress(File srcFile, File destFile) throws IOException {
-            InputStream in = new FileInputStream(srcFile);
-            OutputStream out = new FileOutputStream(destFile);
-            uncompress(in, out);
+            try (InputStream in = new FileInputStream(srcFile);
+                 OutputStream out = new FileOutputStream(destFile)) {
+                uncompress(in, out);
+            }
         }
 
         @Override
@@ -492,9 +493,10 @@ public class FileCompressionUtil {
 
         @Override
         public void uncompress(File srcFile, File destFile) throws IOException {
-            InputStream in = new FileInputStream(srcFile);
-            OutputStream out = new FileOutputStream(destFile);
-            uncompress(in, out);
+            try (InputStream in = new FileInputStream(srcFile);
+                 OutputStream out = new FileOutputStream(destFile)) {
+                uncompress(in, out);
+            }
         }
 
         // NOTE: only reads the first zip file in the archive

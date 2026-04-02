@@ -34,7 +34,6 @@ import static io.aeron.driver.status.StreamCounter.CHANNEL_OFFSET;
 import static io.aeron.driver.status.StreamCounter.REGISTRATION_ID_OFFSET;
 import static io.aeron.driver.status.StreamCounter.SESSION_ID_OFFSET;
 import static io.aeron.driver.status.StreamCounter.STREAM_ID_OFFSET;
-import static io.aeron.driver.status.StreamCounter.labelName;
 
 /**
  * Tool for taking a snapshot of Aeron streams and relevant position counters.
@@ -117,7 +116,7 @@ public class StreamStat {
                     .append(" channel=").append(key.channel()).append(" :");
 
             for (final StreamPosition streamPosition : entry.getValue()) {
-                builder.append(' ').append(labelName(streamPosition.typeId()))
+                builder.append(' ').append(streamPosition.typeId())
                         .append(':').append(streamPosition.id())
                         .append(':').append(streamPosition.value());
             }

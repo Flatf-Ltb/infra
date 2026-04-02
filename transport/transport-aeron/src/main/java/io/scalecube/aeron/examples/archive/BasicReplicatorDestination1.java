@@ -24,7 +24,6 @@ import org.agrona.CloseHelper;
 import org.agrona.concurrent.Agent;
 import org.agrona.concurrent.AgentRunner;
 import org.agrona.concurrent.AgentTerminationException;
-import org.agrona.concurrent.SigInt;
 import org.agrona.concurrent.SleepingMillisIdleStrategy;
 import org.agrona.concurrent.status.AtomicCounter;
 
@@ -60,7 +59,7 @@ public class BasicReplicatorDestination1 {
      * @param args args
      */
     public static void main(String[] args) throws InterruptedException {
-        SigInt.register(BasicReplicatorDestination1::close);
+//        SigInt.register(BasicReplicatorDestination1::close);
 
         System.setProperty("aeron.event.log", "admin");
         System.setProperty("aeron.event.archive.log", "all");

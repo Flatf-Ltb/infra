@@ -3,46 +3,24 @@ package io.mercury.serialization.json;
 import com.alibaba.fastjson2.JSONObject;
 import io.mercury.common.epoch.EpochUnit;
 import io.mercury.common.serialization.specific.JsonSerializable;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import javax.annotation.Nonnull;
 
+@Getter
+@Accessors(chain = true)
 public class JsonObjectExt implements JsonSerializable {
 
+    @Setter
     private String title;
+    @Setter
     private long epochTime;
+    @Setter
     private EpochUnit epochUnit;
+
     private JSONObject object;
-
-    public String getTitle() {
-        return title;
-    }
-
-    public JsonObjectExt setTitle(String title) {
-        this.title = title;
-        return this;
-    }
-
-    public long getEpochTime() {
-        return epochTime;
-    }
-
-    public JsonObjectExt setEpochTime(long epochTime) {
-        this.epochTime = epochTime;
-        return this;
-    }
-
-    public EpochUnit getEpochUnit() {
-        return epochUnit;
-    }
-
-    public JsonObjectExt setEpochUnit(EpochUnit epochUnit) {
-        this.epochUnit = epochUnit;
-        return this;
-    }
-
-    public JSONObject getObject() {
-        return object;
-    }
 
     public <T> T getWith(Class<T> clazz) {
         return object.to(clazz);

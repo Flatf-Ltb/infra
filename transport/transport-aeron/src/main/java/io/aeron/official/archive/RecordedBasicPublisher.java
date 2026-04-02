@@ -22,7 +22,6 @@ import io.aeron.archive.status.RecordingPos;
 import io.aeron.official.SampleConfiguration;
 import org.agrona.BufferUtil;
 import org.agrona.concurrent.IdleStrategy;
-import org.agrona.concurrent.SigInt;
 import org.agrona.concurrent.UnsafeBuffer;
 import org.agrona.concurrent.YieldingIdleStrategy;
 import org.agrona.concurrent.status.CountersReader;
@@ -56,7 +55,7 @@ public class RecordedBasicPublisher {
         System.out.println("Publishing to " + CHANNEL + " on stream id " + STREAM_ID);
 
         final AtomicBoolean running = new AtomicBoolean(true);
-        SigInt.register(() -> running.set(false));
+//        SigInt.register(() -> running.set(false));
 
         // Create a unique response stream id so not to clash with other archive
         // clients.

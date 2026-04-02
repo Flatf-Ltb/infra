@@ -26,7 +26,6 @@ import org.agrona.LangUtil;
 import org.agrona.SystemUtil;
 import org.agrona.collections.Long2ObjectHashMap;
 import org.agrona.concurrent.IdleStrategy;
-import org.agrona.concurrent.SigInt;
 import org.agrona.concurrent.SleepingMillisIdleStrategy;
 import org.agrona.concurrent.UnsafeBuffer;
 
@@ -150,7 +149,7 @@ public class FileReceiver {
 
         final IdleStrategy idleStrategy = new SleepingMillisIdleStrategy(1);
         final AtomicBoolean running = new AtomicBoolean(true);
-        SigInt.register(() -> running.set(false));
+//        SigInt.register(() -> running.set(false));
 
         try (MediaDriver ignore = MediaDriver.launch();
              Aeron aeron = Aeron.connect();

@@ -13,7 +13,6 @@ import io.aeron.driver.status.SystemCounterDescriptor;
 import io.aeron.logbuffer.LogBufferDescriptor;
 import io.scalecube.aeron.examples.AeronHelper;
 import org.agrona.CloseHelper;
-import org.agrona.concurrent.SigInt;
 import org.agrona.concurrent.status.AtomicCounter;
 import org.agrona.concurrent.status.CountersReader;
 
@@ -58,7 +57,7 @@ public class BasicLocalRecorder {
      * @param args args
      */
     public static void main(String[] args) throws InterruptedException {
-        SigInt.register(BasicLocalRecorder::close);
+        // SigInt.register(BasicLocalRecorder::close);
 
         Path aeronPath = Paths.get(CommonContext.generateRandomDirName());
         String instanceName = aeronPath.getFileName().toString();

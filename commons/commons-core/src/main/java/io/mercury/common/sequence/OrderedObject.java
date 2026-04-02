@@ -3,11 +3,11 @@ package io.mercury.common.sequence;
 @FunctionalInterface
 public interface OrderedObject<O extends OrderedObject<O>> extends Comparable<O> {
 
-    long orderNum();
+    long sequence();
 
     @Override
     default int compareTo(O o) {
-        return Long.compare(orderNum(), o.orderNum());
+        return Long.compare(sequence(), o.sequence());
     }
 
 }

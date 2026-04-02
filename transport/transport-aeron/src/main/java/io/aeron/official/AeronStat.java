@@ -19,7 +19,6 @@ import io.aeron.CncFileDescriptor;
 import io.aeron.status.ChannelEndpointStatus;
 import org.agrona.DirectBuffer;
 import org.agrona.SystemUtil;
-import org.agrona.concurrent.SigInt;
 import org.agrona.concurrent.status.CountersReader;
 
 import java.io.IOException;
@@ -160,7 +159,7 @@ public class AeronStat {
     private static void workLoop(final long delayMs, final Runnable outputPrinter)
             throws IOException, InterruptedException {
         final AtomicBoolean running = new AtomicBoolean(true);
-        SigInt.register(() -> running.set(false));
+        // SigInt.register(() -> running.set(false));
         do {
             clearScreen();
             outputPrinter.run();
