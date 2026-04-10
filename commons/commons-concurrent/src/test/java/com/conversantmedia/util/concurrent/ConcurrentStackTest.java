@@ -54,7 +54,7 @@ public class ConcurrentStackTest {
 	}
 
 	@Test
-	public void pushPopTest() throws Exception {
+	public void pushPopTest() {
 		final ConcurrentStack<Integer> stack = new ConcurrentStack<>(10);
 
 		stack.push(1);
@@ -68,7 +68,7 @@ public class ConcurrentStackTest {
 	}
 
 	@Test(timeout = 10000)
-	public void multithreadPushPop() throws Exception {
+	public void multithreadPushPop() {
 		final ConcurrentStack<Integer> stack = new ConcurrentStack<>(10);
 
 		final AtomicInteger addCount = new AtomicInteger(0);
@@ -149,7 +149,7 @@ public class ConcurrentStackTest {
 		t.start();
 		t.join();
 
-		Assert.assertEquals(true, expectInterrupt.get());
+        Assert.assertTrue(expectInterrupt.get());
 
 	}
 
@@ -217,7 +217,7 @@ public class ConcurrentStackTest {
 		t.start();
 		t.join();
 
-		Assert.assertEquals(true, expectInterrupt.get());
+        Assert.assertTrue(expectInterrupt.get());
 	}
 
 }

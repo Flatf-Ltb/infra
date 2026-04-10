@@ -24,6 +24,13 @@
             <version>2.0.61</version>
         </dependency>
 
+        <!-- Core annotations used for value types, used by Jackson data binding package. -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson-annotations.version}</version>
+        </dependency>
+
         <!-- General data-binding functionality for Jackson: works on core streaming API -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

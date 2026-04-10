@@ -46,11 +46,6 @@
             <version>${slf4j.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
-        </dependency>
-
         <!-- The Bouncy Castle Java APIs for CMS, PKCS, EAC, TSP, CMP, CRMF, OCSP,
             and certificate generation. This jar contains APIs for JDK 1.5 and up. The
             APIs can be used in conjunction with a JCE/JCA provider such as the one provided

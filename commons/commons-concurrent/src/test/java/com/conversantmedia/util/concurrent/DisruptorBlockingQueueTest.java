@@ -39,11 +39,11 @@ public class DisruptorBlockingQueueTest {
 	@Test
 	public void testAsSynchronousQueue() {
 		final int cap = 1;
-		BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<Integer>(cap);
-		while (dbq.offer(Integer.valueOf(0)))
+		BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<>(cap);
+		while (dbq.offer(0))
 			;
 
-		Assert.assertFalse(dbq.offer(Integer.valueOf(10)));
+		Assert.assertFalse(dbq.offer(10));
 
 		Assert.assertEquals(1, dbq.size());
 
@@ -53,8 +53,8 @@ public class DisruptorBlockingQueueTest {
 	@Test
 	public void testDisruptorBlockingQueueTestC1() {
 		final int cap = 10;
-		BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<Integer>(cap);
-		while (dbq.offer(Integer.valueOf(0)))
+		BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<>(cap);
+		while (dbq.offer(0))
 			;
 		Assert.assertEquals(16, dbq.size());
 	}
@@ -64,12 +64,12 @@ public class DisruptorBlockingQueueTest {
 
 		final int cap = 50;
 
-		Set<Integer> x = new HashSet<Integer>(cap);
+		Set<Integer> x = new HashSet<>(cap);
 		for (int i = 0; i < 2 * cap; i++) {
-			x.add(Integer.valueOf(i));
+			x.add(i);
 		}
 
-		BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<Integer>(cap, x);
+		BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<>(cap, x);
 		// next power of two
 		Assert.assertEquals(64, dbq.size());
 	}
@@ -78,12 +78,12 @@ public class DisruptorBlockingQueueTest {
 	public void testOffer() {
 
 		final int cap = 16;
-		BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<Integer>(cap);
+		BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<>(cap);
 		for (int i = 0; i < cap; i++) {
-			dbq.offer(Integer.valueOf(i));
+			dbq.offer(i);
 		}
 
-		Assert.assertFalse(dbq.offer(Integer.valueOf(cap)));
+		Assert.assertFalse(dbq.offer(cap));
 
 		for (int i = 0; i < cap; i++) {
 			Assert.assertEquals(Integer.valueOf(i), dbq.poll());
@@ -93,7 +93,7 @@ public class DisruptorBlockingQueueTest {
 
 	@Test
 	public void offerTooManyTest() {
-		final DisruptorBlockingQueue<Integer> dbq = new DisruptorBlockingQueue<Integer>(8);
+		final DisruptorBlockingQueue<Integer> dbq = new DisruptorBlockingQueue<>(8);
 
 		for (int i = 0; i < 16; i++) {
 			dbq.offer(i);
@@ -106,9 +106,9 @@ public class DisruptorBlockingQueueTest {
 	public void remove() {
 
 		final int cap = 10;
-		BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<Integer>(cap);
+		BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<>(cap);
 		for (int i = 0; i < cap; i++) {
-			dbq.offer(Integer.valueOf(i));
+			dbq.offer(i);
 		}
 
 		Integer i = dbq.peek();
@@ -116,18 +116,19 @@ public class DisruptorBlockingQueueTest {
 
 		Assert.assertEquals(i, x);
 		Assert.assertEquals(i, Integer.valueOf(0));
-		Assert.assertFalse(i.equals(dbq.peek()));
+        Assert.assertNotNull(i);
+        Assert.assertNotEquals(i, dbq.peek());
 	}
 
 	@Test
 	public void testPoll() {
 		final int cap = 10;
-		BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<Integer>(cap);
+		BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<>(cap);
 
 		Assert.assertNull(dbq.poll());
 
-		dbq.offer(Integer.valueOf(1));
-		dbq.offer(Integer.valueOf(2));
+		dbq.offer(1);
+		dbq.offer(2);
 		Assert.assertEquals(dbq.poll(), Integer.valueOf(1));
 		Assert.assertEquals(dbq.poll(), Integer.valueOf(2));
 
@@ -159,7 +160,7 @@ public class DisruptorBlockingQueueTest {
 	@Test
 	public void testElement() {
 		final int cap = 10;
-		BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<Integer>(cap);
+		BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<>(cap);
 
 		try {
 			dbq.element();
@@ -172,7 +173,7 @@ public class DisruptorBlockingQueueTest {
 	@Test
 	public void testPeek() {
 		final int cap = 10;
-		BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<Integer>(cap);
+		BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<>(cap);
 
 		try {
 
@@ -183,7 +184,7 @@ public class DisruptorBlockingQueueTest {
 		}
 
 		for (int i = 0; i < cap; i++) {
-			dbq.offer(Integer.valueOf(i));
+			dbq.offer(i);
 			Assert.assertEquals(Integer.valueOf(0), dbq.peek());
 		}
 
@@ -197,10 +198,10 @@ public class DisruptorBlockingQueueTest {
 	public void testPut() throws InterruptedException {
 
 		final int cap = 10;
-		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<Integer>(cap);
+		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<>(cap);
 
 		for (int i = 0; i < cap; i++) {
-			dbq.offer(Integer.valueOf(i));
+			dbq.offer(i);
 		}
 
 		executor.execute(() -> {
@@ -215,11 +216,11 @@ public class DisruptorBlockingQueueTest {
 
 		// in main thread add one
 		// this operation must wait for thread
-		dbq.put(Integer.valueOf(cap));
+		dbq.put(cap);
 
 		boolean hasValCap = false;
 		while (!dbq.isEmpty()) {
-			if (dbq.poll().equals(Integer.valueOf(cap)))
+			if (dbq.poll().equals(cap))
 				hasValCap = true;
 		}
 		Assert.assertTrue(hasValCap);
@@ -253,7 +254,7 @@ public class DisruptorBlockingQueueTest {
 
 		boolean hasValCap = false;
 		while (!dbq.isEmpty()) {
-			if (dbq.poll().equals(Integer.valueOf(cap)))
+			if (dbq.poll().equals(cap))
 				hasValCap = true;
 		}
 		Assert.assertTrue(hasValCap);
@@ -261,7 +262,7 @@ public class DisruptorBlockingQueueTest {
 
 	@Ignore // timing test not suitable for build
 	public void pollTimeIsAccurate() throws InterruptedException {
-		final DisruptorBlockingQueue<Integer> dbq = new DisruptorBlockingQueue<Integer>(256);
+		final DisruptorBlockingQueue<Integer> dbq = new DisruptorBlockingQueue<>(256);
 
 		final long startTime = System.nanoTime();
 
@@ -303,13 +304,13 @@ public class DisruptorBlockingQueueTest {
 	public void testTake() throws InterruptedException {
 
 		final int cap = 10;
-		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<Integer>(cap);
+		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<>(cap);
 
 		executor.execute(() -> {
 			try {
 				Thread.sleep(1000);
 				// after a second remove one
-				dbq.offer(Integer.valueOf(cap));
+				dbq.offer(cap);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -322,13 +323,13 @@ public class DisruptorBlockingQueueTest {
 	@Test
 	public void testTimePoll() throws InterruptedException {
 		final int cap = 10;
-		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<Integer>(cap);
+		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<>(cap);
 
 		executor.execute(() -> {
 			try {
 				Thread.sleep(1000);
 				// after a second remove one
-				dbq.offer(Integer.valueOf(cap));
+				dbq.offer(cap);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -342,11 +343,11 @@ public class DisruptorBlockingQueueTest {
 	@Test
 	public void testRemainingCapacity() {
 		final int cap = 128;
-		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<Integer>(cap);
+		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<>(cap);
 
 		for (int i = 0; i < cap; i++) {
 			Assert.assertEquals(cap - i, dbq.remainingCapacity());
-			dbq.offer(Integer.valueOf(i));
+			dbq.offer(i);
 		}
 
 	}
@@ -354,14 +355,14 @@ public class DisruptorBlockingQueueTest {
 	@Test
 	public void testDrainToC() {
 		final int cap = 100;
-		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<Integer>(cap);
+		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<>(cap);
 
 		for (int i = 0; i < cap; i++) {
-			dbq.offer(Integer.valueOf(i));
+			dbq.offer(i);
 		}
 
 		final List<Integer> c = new LinkedList<>();
-		Assert.assertEquals(dbq.drainTo(c), cap);
+		Assert.assertEquals(cap, dbq.drainTo(c));
 		int i = 0;
 		for (final Integer a : c) {
 			Assert.assertEquals(a, Integer.valueOf(i++));
@@ -371,18 +372,17 @@ public class DisruptorBlockingQueueTest {
 
 	@Test
 	public void drainToToCMax() {
-
 		final int cap = 100;
 		final int max = 75;
-		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<Integer>(cap);
+		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<>(cap);
 
 		for (int i = 0; i < cap; i++) {
-			dbq.offer(Integer.valueOf(i));
+			dbq.offer(i);
 		}
 
 		final List<Integer> c = new LinkedList<>();
-		Assert.assertEquals(dbq.drainTo(c, max), max);
-		Assert.assertEquals(c.size(), max);
+		Assert.assertEquals(max, dbq.drainTo(c, max));
+		Assert.assertEquals(max, c.size());
 		int i = 0;
 		for (final Integer a : c) {
 			Assert.assertEquals(a, Integer.valueOf(i++));
@@ -392,12 +392,12 @@ public class DisruptorBlockingQueueTest {
 	@Test
 	public void testSize() {
 		final int cap = 100;
-		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<Integer>(cap);
+		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<>(cap);
 
 		Assert.assertEquals(0, dbq.size());
 
 		for (int i = 0; i < cap; i++) {
-			dbq.offer(Integer.valueOf(i));
+			dbq.offer(i);
 			Assert.assertEquals(i + 1, dbq.size());
 		}
 
@@ -411,7 +411,7 @@ public class DisruptorBlockingQueueTest {
 		Assert.assertEquals(0, dbq.size());
 
 		for (int i = 0; i < cap; i++) {
-			dbq.offer(Integer.valueOf(i));
+			dbq.offer(i);
 			Assert.assertEquals(i + 1, dbq.size());
 		}
 
@@ -427,12 +427,12 @@ public class DisruptorBlockingQueueTest {
 	@Test
 	public void testIsEmpty() {
 		final int cap = 100;
-		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<Integer>(cap);
+		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<>(cap);
 
 		Assert.assertTrue(dbq.isEmpty());
 
 		for (int i = 0; i < cap; i++) {
-			dbq.offer(Integer.valueOf(i));
+			dbq.offer(i);
 			Assert.assertFalse(dbq.isEmpty());
 		}
 
@@ -444,7 +444,7 @@ public class DisruptorBlockingQueueTest {
 		Assert.assertTrue(dbq.isEmpty());
 
 		for (int i = 0; i < cap; i++) {
-			dbq.offer(Integer.valueOf(i));
+			dbq.offer(i);
 			Assert.assertFalse(dbq.isEmpty());
 		}
 
@@ -460,22 +460,22 @@ public class DisruptorBlockingQueueTest {
 	public void testContains() {
 
 		final int cap = 100;
-		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<Integer>(cap);
+		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<>(cap);
 
 		for (int i = 0; i < cap; i++) {
-			Assert.assertFalse(dbq.contains(Integer.valueOf(i)));
+			Assert.assertFalse(dbq.contains(i));
 		}
 
 		for (int i = 0; i < cap; i++) {
-			dbq.offer(Integer.valueOf(i));
+			dbq.offer(i);
 		}
 
 		for (int i = 0; i < cap; i++) {
-			Assert.assertTrue(dbq.contains(Integer.valueOf(i)));
+			Assert.assertTrue(dbq.contains(i));
 		}
 
 		for (int i = cap; i < 2 * cap; i++) {
-			Assert.assertFalse(dbq.contains(Integer.valueOf(i)));
+			Assert.assertFalse(dbq.contains(i));
 		}
 	}
 
@@ -483,16 +483,15 @@ public class DisruptorBlockingQueueTest {
 	public void testToArray() {
 
 		final int cap = 100;
-		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<Integer>(cap);
+		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<>(cap);
 
 		for (int i = 0; i < cap; i++) {
-
-			Assert.assertTrue(dbq.offer(Integer.valueOf(i)));
+			Assert.assertTrue(dbq.offer(i));
 		}
 
 		Object[] objArray = dbq.toArray();
 		for (int i = 0; i < cap; i++) {
-			Assert.assertEquals(objArray[i], Integer.valueOf(i));
+			Assert.assertEquals(objArray[i], i);
 		}
 
 	}
@@ -500,15 +499,14 @@ public class DisruptorBlockingQueueTest {
 	@Test
 	public void testAdd() {
 		final int cap = 16;
-		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<Integer>(cap);
+		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<>(cap);
 
 		for (int i = 0; i < cap; i++) {
-
-			dbq.add(Integer.valueOf(i));
+			dbq.add(i);
 		}
 
 		try {
-			dbq.add(Integer.valueOf(cap));
+			dbq.add(cap);
 			Assert.fail();
 		} catch (IllegalStateException ex) {
 			// expected;
@@ -518,18 +516,17 @@ public class DisruptorBlockingQueueTest {
 	@Test
 	public void testRemoveObj() {
 		final int cap = 100;
-		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<Integer>(cap);
+		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<>(cap);
 
 		for (int i = 0; i < cap; i++) {
-
-			dbq.offer(Integer.valueOf(i));
+			dbq.offer(i);
 		}
 
 		for (int i = 0; i < cap; i += 2) {
-			dbq.remove(Integer.valueOf(i));
+			dbq.remove(i);
 		}
 
-		Assert.assertEquals(dbq.size(), cap / 2);
+		Assert.assertEquals(cap / 2, dbq.size());
 
 		for (int i = 1; i < cap; i += 2) {
 			Assert.assertEquals(Integer.valueOf(i), dbq.poll());
@@ -539,21 +536,21 @@ public class DisruptorBlockingQueueTest {
 	@Test
 	public void testRemoveObjDups() {
 		final int cap = 100;
-		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<Integer>(cap);
+		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<>(cap);
 
 		for (int i = 0; i < cap; i++) {
 			// all just zeros and ones
-			dbq.offer(Integer.valueOf(i & 1));
+			dbq.offer(i & 1);
 		}
 
 		// nothing removed
-		dbq.remove(Integer.valueOf(777));
+		dbq.remove(777);
 
-		Assert.assertEquals(dbq.size(), cap);
+		Assert.assertEquals(cap, dbq.size());
 
-		dbq.remove(Integer.valueOf(1));
+		dbq.remove(1);
 
-		Assert.assertEquals(dbq.size(), cap / 2);
+		Assert.assertEquals(cap / 2, dbq.size());
 
 		for (int i = 1; i < cap; i += 2) {
 			Assert.assertEquals(Integer.valueOf(0), dbq.poll());
@@ -564,20 +561,19 @@ public class DisruptorBlockingQueueTest {
 	public void testContainsAll() {
 
 		final int cap = 100;
-		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<Integer>(cap);
+		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<>(cap);
 
 		for (int i = 0; i < cap; i++) {
-
-			dbq.offer(Integer.valueOf(i));
+			dbq.offer(i);
 		}
 
 		Set<Integer> si = new HashSet<>(10);
 		for (int i = 0; i < cap / 10; i++) {
-			si.add(Integer.valueOf(i));
+			si.add(i);
 		}
 		Assert.assertTrue(dbq.containsAll(si));
 
-		si.add(Integer.valueOf(-1));
+		si.add(-1);
 		Assert.assertFalse(dbq.containsAll(si));
 		si.remove(-1);
 		dbq.clear();
@@ -588,35 +584,35 @@ public class DisruptorBlockingQueueTest {
 	public void testAddAll() {
 
 		final int cap = 100;
-		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<Integer>(cap);
+		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<>(cap);
 
 		Set<Integer> si = new HashSet<>(cap);
 		for (int i = 0; i < cap / 10; i++) {
-			si.add(Integer.valueOf(i));
+			si.add(i);
 		}
 		dbq.addAll(si);
 		Assert.assertTrue(dbq.containsAll(si));
 
 		Set<Integer> ni = new HashSet<>(cap);
 		for (int i = 0; i < cap / 10; i++) {
-			ni.add(Integer.valueOf(-i));
+			ni.add(-i);
 		}
 		dbq.addAll(ni);
 		Assert.assertTrue(dbq.containsAll(si));
 		Assert.assertTrue(dbq.containsAll(ni));
 
 		for (int i = 2 * cap / 10; i < 2 * cap; i++) {
-			si.add(Integer.valueOf(i));
+			si.add(i);
 		}
 		dbq.addAll(si);
-		Assert.assertEquals(dbq.size(), 128);
+		Assert.assertEquals(128, dbq.size());
 	}
 
 	@Test
 	public void testAddAllReturnTrue() {
 
 		final int cap = 8;
-		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<Integer>(cap);
+		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<>(cap);
 
 		final Set<Integer> set = new HashSet<>();
 
@@ -644,11 +640,11 @@ public class DisruptorBlockingQueueTest {
 	public void testRemoveAll() {
 
 		final int cap = 100;
-		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<Integer>(cap);
+		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<>(cap);
 
 		Set<Integer> si = new HashSet<>(cap);
 		for (int i = 0; i < cap / 10; i++) {
-			si.add(Integer.valueOf(i));
+			si.add(i);
 		}
 
 		dbq.addAll(si);
@@ -656,7 +652,7 @@ public class DisruptorBlockingQueueTest {
 
 		Set<Integer> ni = new HashSet<>(cap);
 		for (int i = 1; i < cap / 10; i++) {
-			ni.add(Integer.valueOf(-i));
+			ni.add(-i);
 		}
 
 		dbq.addAll(ni);
@@ -676,18 +672,18 @@ public class DisruptorBlockingQueueTest {
 	public void testRetainAll() {
 
 		final int cap = 100;
-		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<Integer>(cap);
+		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<>(cap);
 
 		Set<Integer> removedEle = new HashSet<>(cap);
 		for (int i = 0; i < cap; i++) {
-			final Integer iVal = Integer.valueOf(i);
+			final Integer iVal = i;
 			dbq.offer(iVal);
 			removedEle.add(iVal);
 		}
 
 		Set<Integer> si = new HashSet<>(cap);
 		for (int i = 0; i < cap / 10; i++) {
-			final Integer iVal = Integer.valueOf(i);
+			final Integer iVal = i;
 			si.add(iVal);
 			removedEle.remove(iVal);
 		}
@@ -728,8 +724,8 @@ public class DisruptorBlockingQueueTest {
 		Set<Integer> si = new HashSet<>(cap);
 
 		for (int i = 0; i < cap; i++) {
-			si.add(Integer.valueOf(i));
-			dbq.offer(Integer.valueOf(i));
+			si.add(i);
+			dbq.offer(i);
 		}
 
 		Assert.assertFalse(dbq.retainAll(si));
@@ -739,15 +735,15 @@ public class DisruptorBlockingQueueTest {
 	@Test
 	public void testClear() {
 		final int cap = 100;
-		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<Integer>(cap);
+		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<>(cap);
 
 		for (int i = 0; i < cap; i++) {
-			dbq.offer(Integer.valueOf(i));
+			dbq.offer(i);
 		}
 
 		Set<Integer> si = new HashSet<>(cap);
 		for (int i = 0; i < cap / 10; i++) {
-			si.add(Integer.valueOf(i));
+			si.add(i);
 		}
 
 		Assert.assertTrue(dbq.containsAll(si));
@@ -761,10 +757,10 @@ public class DisruptorBlockingQueueTest {
 	@Test
 	public void testIterator() {
 		final int cap = 100;
-		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<Integer>(cap);
+		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<>(cap);
 
 		for (int i = 0; i < cap; i++) {
-			dbq.offer(Integer.valueOf(i));
+			dbq.offer(i);
 		}
 
 		int i = 0;
@@ -776,10 +772,10 @@ public class DisruptorBlockingQueueTest {
 	@Test
 	public void testTypeToArray() {
 		final int cap = 100;
-		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<Integer>(cap);
+		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<>(cap);
 
 		for (int i = 0; i < cap; i++) {
-			dbq.offer(Integer.valueOf(i));
+			dbq.offer(i);
 		}
 
 		Integer[] t = new Integer[cap];
@@ -798,7 +794,7 @@ public class DisruptorBlockingQueueTest {
 
 		if (ALLOW_LONG_RUN) {
 			final int cap = 3;
-			final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<Integer>(cap);
+			final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<>(cap);
 
 			long nIter = 0;
 
@@ -806,7 +802,7 @@ public class DisruptorBlockingQueueTest {
 
 				for (int a = 0; a < cap; a++) {
 					Assert.assertEquals(dbq.size(), a);
-					dbq.offer(Integer.valueOf(a));
+					dbq.offer(a);
 					nIter++;
 				}
 
@@ -828,56 +824,50 @@ public class DisruptorBlockingQueueTest {
 	public void testSequentialFeed() throws InterruptedException {
 
 		final int feedCount = 8192;
-		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<Integer>(128);
+		final BlockingQueue<Integer> dbq = new DisruptorBlockingQueue<>(128);
 		final AtomicInteger nFed = new AtomicInteger(0);
 		final AtomicInteger nRead = new AtomicInteger(0);
 
 		final int nFeeders = 128;
 
 		for (int i = 0; i < nFeeders; i++) {
-			new Thread() {
-				@Override
-				public void run() {
-					try {
-						for (int i = 0; i < feedCount / nFeeders; i++) {
-							while (!dbq.offer(i, 50L, TimeUnit.MICROSECONDS))
-								Thread.yield();
-							nFed.incrementAndGet();
-						}
-					} catch (InterruptedException ex) {
+			new Thread(() -> {
+                try {
+                    for (int i1 = 0; i1 < feedCount / nFeeders; i1++) {
+                        while (!dbq.offer(i1, 50L, TimeUnit.MICROSECONDS))
+                            Thread.yield();
+                        nFed.incrementAndGet();
+                    }
+                } catch (InterruptedException _) {
 
-					}
-				}
-			}.start();
+                }
+            }).start();
 		}
 
 		final int nReaders = 64;
 		Thread[] t = new Thread[nReaders];
 		for (int i = 0; i < nReaders; i++) {
-			t[i] = new Thread() {
-				@Override
-				public void run() {
-					try {
-						while (nRead.get() < feedCount) {
-							Integer r;
-							do {
-								r = dbq.poll(50, TimeUnit.MILLISECONDS);
-								if (r == null)
-									Thread.yield();
-							} while ((r == null) && (nRead.get() < feedCount));
-							if (r != null) {
-								// we can't control which thread will return
-								// first, but the expected still must be within
-								// the number of threads range
-								Assert.assertTrue(r.intValue() <= nRead.get() + nReaders + 1);
-								nRead.incrementAndGet();
-							}
-						}
-					} catch (InterruptedException ex) {
+			t[i] = new Thread(() -> {
+                try {
+                    while (nRead.get() < feedCount) {
+                        Integer r;
+                        do {
+                            r = dbq.poll(50, TimeUnit.MILLISECONDS);
+                            if (r == null)
+                                Thread.yield();
+                        } while ((r == null) && (nRead.get() < feedCount));
+                        if (r != null) {
+                            // we can't control which thread will return
+                            // first, but the expected still must be within
+                            // the number of threads range
+                            Assert.assertTrue(r <= nRead.get() + nReaders + 1);
+                            nRead.incrementAndGet();
+                        }
+                    }
+                } catch (InterruptedException _) {
 
-					}
-				}
-			};
+                }
+            });
 			t[i].start();
 		}
 		for (int i = 0; i < nReaders; i++)

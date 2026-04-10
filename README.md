@@ -1,4 +1,5 @@
 ## Mercury 项目
+此文档由自动工具生成，基于工程中各模块的 pom.xml 和现有 README 等信息汇总（生成时间：2026-03-18）。
 
 ### 概览
 
@@ -135,7 +136,7 @@ actors 模块关键依赖
 
 贡献与联系方式
 ----------------
-- 项目源（父 pom 指向）：https://github.com/Cygnux-Ltb/basic
+- 项目源（父 pom 指向）：https://github.com/yellow013/mercury.git
 - 许可证：见项目目录下 LICENSE 文件
 - 贡献：建议通过 fork + pull request 流程，开 issue 或在 PR 中附上复现步骤与单元测试。
 
