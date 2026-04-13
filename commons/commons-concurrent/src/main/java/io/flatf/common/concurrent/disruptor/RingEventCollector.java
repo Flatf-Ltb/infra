@@ -3,7 +3,6 @@ package io.flatf.common.concurrent.disruptor;
 import com.lmax.disruptor.EventFactory;
 import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.WaitStrategy;
-import io.flatf.common.concurrent.disruptor.base.SimpleWaitStrategyOption;
 
 /**
  * Ring Event Station
@@ -13,17 +12,17 @@ import io.flatf.common.concurrent.disruptor.base.SimpleWaitStrategyOption;
  */
 public abstract class RingEventCollector<E> implements EventHandler<E> {
 
-    protected final RingEventbus<E> eventbus;
+    protected final RingHub<E> eventbus;
 
     protected RingEventCollector(Builder builder, EventFactory<E> factory) {
         if (builder.isSingleProducer) {
-            this.eventbus = RingEventbus.singleProducer(factory)
+            this.eventbus = RingHub.spHub(factory)
                     .size(builder.size)
                     .name(builder.name)
                     .waitStrategy(builder.waitStrategy)
-                    .process(this);
+                    .b(this);
         } else {
-            this.eventbus = RingEventbus.multiProducer(factory)
+            this.eventbus = RingHub.mpHub(factory)
                     .size(builder.size)
                     .name(builder.name)
                     .waitStrategy(builder.waitStrategy)
@@ -44,7 +43,7 @@ public abstract class RingEventCollector<E> implements EventHandler<E> {
         private final boolean isSingleProducer;
         private String name = "eventbus";
         private int size = 64;
-        private WaitStrategy waitStrategy = SimpleWaitStrategyOption.YIELDING.getInstance();
+        private WaitStrategy waitStrategy = SimpleWaitStrategy.YIELDING.getInstance();
 
         private Builder(boolean isSingleProducer) {
             this.isSingleProducer = isSingleProducer;

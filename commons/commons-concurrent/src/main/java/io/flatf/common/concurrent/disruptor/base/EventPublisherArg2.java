@@ -10,9 +10,9 @@ import javax.annotation.Nonnull;
  * <p>
  * 并负责传递EventTranslator实现
  *
- * @param <E>
- * @param <A0>
- * @param <A1>
+ * @param <E> Event type
+ * @param <A0> Arg0
+ * @param <A1> Arg1
  * @author yellow013
  */
 public final class EventPublisherArg2<E, A0, A1> {

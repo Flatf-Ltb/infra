@@ -1,4 +1,4 @@
-package io.flatf.common.concurrent.disruptor;
+package io.flatf.common.concurrent.disruptor.base;
 
 import java.util.function.BiConsumer;
 

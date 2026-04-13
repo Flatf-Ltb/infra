@@ -1,4 +1,4 @@
-package io.flatf.common.concurrent.disruptor.base;
+package io.flatf.common.concurrent.disruptor;
 
 import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.ExceptionHandler;
@@ -18,17 +18,17 @@ import static java.util.Objects.requireNonNullElse;
  *
  * @param <E> 事件类型
  */
-public final class HandlerManager<E> {
+public final class HandlerGraph<E> {
 
-    private static final Logger log = Log4j2LoggerFactory.getLogger(HandlerManager.class);
+    private static final Logger log = Log4j2LoggerFactory.getLogger(HandlerGraph.class);
 
     private final ExceptionHandler<E> exceptionHandler;
 
-    private final MutableList<EventHandler<E>[]> eventHandlersList;
+    private final MutableList<EventHandler<E>[]> handlersList;
 
-    private HandlerManager(@Nonnull MutableList<EventHandler<E>[]> eventHandlersList,
-                           @Nullable ExceptionHandler<E> exceptionHandler) {
-        this.eventHandlersList = eventHandlersList;
+    private HandlerGraph(@Nonnull MutableList<EventHandler<E>[]> handlersList,
+                         @Nullable ExceptionHandler<E> exceptionHandler) {
+        this.handlersList = handlersList;
         this.exceptionHandler = exceptionHandler;
     }
 
@@ -36,8 +36,8 @@ public final class HandlerManager<E> {
 
         @Override
         public void handleEventException(Throwable ex, long sequence, E event) {
-            log.error("handleEventException -> event==[{}], sequence==[{}], exception message==[{}]",
-                    event, sequence, ex.getMessage(), ex);
+            log.error("handleEventException -> sequence==[{}], event==[{}], exception message==[{}]",
+                    sequence, event, ex.getMessage(), ex);
         }
 
         @Override
@@ -53,23 +53,28 @@ public final class HandlerManager<E> {
 
     public void deploy(Disruptor<E> disruptor) {
         disruptor.setDefaultExceptionHandler(requireNonNullElse(exceptionHandler, new ExceptionLogger<>()));
-        if (eventHandlersList.size() > 1) {
-            var handlerGroup = disruptor.handleEventsWith(eventHandlersList.getFirst());
-            for (int i = 1; 1 < eventHandlersList.size(); i++)
-                handlerGroup.then(eventHandlersList.get(i));
+        if (handlersList.size() > 1) {
+            var handlerGroup = disruptor.handleEventsWith(handlersList.getFirst());
+            for (int i = 1; 1 < handlersList.size(); i++)
+                handlerGroup.then(handlersList.get(i));
         } else {
             // With set single event
-            disruptor.handleEventsWith(eventHandlersList.getFirst());
+            disruptor.handleEventsWith(handlersList.getFirst());
         }
     }
 
 
     @SafeVarargs
-    public static <E> HandlerManager.EventHandlerWizard<E> firstWith(@Nonnull EventHandler<E>... handlers) {
+    public static <E> EventHandlerWizard<E> firstWith(@Nonnull EventHandler<E>... handlers) {
         return new EventHandlerWizard<E>()
                 .then(handlers);
     }
 
+    /**
+     *
+     *
+     * @param <E> Event type
+     */
     public static class EventHandlerWizard<E> {
 
         protected ExceptionHandler<E> exceptionHandler;
@@ -84,13 +89,13 @@ public final class HandlerManager<E> {
             return this;
         }
 
-        public EventHandlerWizard<E> exceptionHandler(ExceptionHandler<E> exceptionHandler) {
+        public EventHandlerWizard<E> whenException(ExceptionHandler<E> exceptionHandler) {
             this.exceptionHandler = exceptionHandler;
             return this;
         }
 
-        public HandlerManager<E> build() {
-            return new HandlerManager<>(eventHandlers, exceptionHandler);
+        public HandlerGraph<E> build() {
+            return new HandlerGraph<>(eventHandlers, exceptionHandler);
         }
 
     }

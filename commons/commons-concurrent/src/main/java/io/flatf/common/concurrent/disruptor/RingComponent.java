@@ -1,10 +1,11 @@
-package io.flatf.common.concurrent.disruptor.base;
+package io.flatf.common.concurrent.disruptor;
 
 import com.lmax.disruptor.EventFactory;
 import com.lmax.disruptor.EventTranslatorOneArg;
 import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
+import io.flatf.common.concurrent.disruptor.base.EventPublisherArg1;
 import io.flatf.common.thread.RunnableComponent;
 import org.slf4j.Logger;
 
@@ -59,7 +60,7 @@ public abstract class RingComponent<E, I> extends RunnableComponent {
                 ofPlatform(this.name + "-worker").priority(MAX).build(),
                 // 生产者策略, Waiting策略
                 producerType,
-                requireNonNullElse(strategy, SimpleWaitStrategyOption.SLEEPING.getInstance())
+                requireNonNullElse(strategy, SimpleWaitStrategy.SLEEPING.getInstance())
         );
         this.isMultiProducer = producerType == MULTI;
         this.publisher = new EventPublisherArg1<>(disruptor.getRingBuffer(), translator);

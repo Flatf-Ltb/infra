@@ -9,8 +9,7 @@ import com.lmax.disruptor.dsl.ProducerType;
 import io.flatf.common.collections.MutableLists;
 import io.flatf.common.collections.MutableMaps;
 import io.flatf.common.concurrent.disruptor.base.EventHandlerWrapper;
-import io.flatf.common.concurrent.disruptor.base.RingComponent;
-import io.flatf.common.concurrent.disruptor.base.SimpleWaitStrategyOption;
+import io.flatf.common.concurrent.disruptor.base.RingEventPublisher;
 import io.flatf.common.functional.Processor;
 import io.flatf.common.lang.ThrowsUtil;
 import io.flatf.common.log4j2.Log4j2LoggerFactory;
@@ -25,8 +24,8 @@ import java.util.List;
 
 import static io.flatf.common.collections.CollectionUtil.toArray;
 import static io.flatf.common.concurrent.disruptor.base.ReflectionEventFactory.newFactory;
-import static io.flatf.common.concurrent.disruptor.base.SimpleWaitStrategyOption.SLEEPING;
-import static io.flatf.common.concurrent.disruptor.base.SimpleWaitStrategyOption.YIELDING;
+import static io.flatf.common.concurrent.disruptor.SimpleWaitStrategy.SLEEPING;
+import static io.flatf.common.concurrent.disruptor.SimpleWaitStrategy.YIELDING;
 import static io.flatf.common.datetime.pattern.impl.DateTimePattern.YYYYMMDD_L_HHMMSSSSS;
 import static io.flatf.common.lang.Validator.nonNull;
 import static io.flatf.common.sys.CurrentRuntime.availableProcessors;
@@ -103,7 +102,7 @@ public class RingProcessChain<E, I> extends RingComponent<E, I> {
                                                       @Nonnull RingEventPublisher<E, I> publisher) {
         return singleProducer(eventFactory,
                 // EventTranslator实现函数, 负责调用处理In对象到Event对象之间的转换
-                (event, sequence, in) -> publisher.accept(event, in));
+                (event, _, in) -> publisher.accept(event, in));
     }
 
     public static <E, I> Builder<E, I> singleProducer(@Nonnull EventFactory<E> eventFactory,
@@ -131,7 +130,7 @@ public class RingProcessChain<E, I> extends RingComponent<E, I> {
                                                      @Nonnull RingEventPublisher<E, I> publisher) {
         return multiProducer(eventFactory,
                 // EventTranslator实现函数, 负责调用处理In对象到Event对象之间的转换
-                (event, sequence, in) -> publisher.accept(event, in));
+                (event, _, in) -> publisher.accept(event, in));
     }
 
     public static <E, I> Builder<E, I> multiProducer(@Nonnull EventFactory<E> eventFactory,
@@ -200,7 +199,7 @@ public class RingProcessChain<E, I> extends RingComponent<E, I> {
             return this;
         }
 
-        public Builder<E, I> waitStrategy(SimpleWaitStrategyOption waitStrategy) {
+        public Builder<E, I> waitStrategy(SimpleWaitStrategy waitStrategy) {
             return waitStrategy(waitStrategy.getInstance());
         }
 

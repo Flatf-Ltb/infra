@@ -6,11 +6,8 @@ import com.lmax.disruptor.EventTranslatorOneArg;
 import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.dsl.ProducerType;
 import io.flatf.common.collections.MutableLists;
-import io.flatf.common.concurrent.disruptor.base.SimpleWaitStrategyOption;
-import io.flatf.common.concurrent.disruptor.base.EventHandlerWrapper;
 import io.flatf.common.concurrent.disruptor.base.ReflectionEventFactory;
-import io.flatf.common.concurrent.disruptor.base.RingComponent;
-import io.flatf.common.functional.Processor;
+import io.flatf.common.concurrent.disruptor.base.RingEventPublisher;
 import io.flatf.common.lang.ThrowsUtil;
 import io.flatf.common.log4j2.Log4j2LoggerFactory;
 import io.flatf.common.util.StringSupport;
@@ -20,9 +17,8 @@ import javax.annotation.Nonnull;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static io.flatf.common.collections.CollectionUtil.toArray;
-import static io.flatf.common.concurrent.disruptor.base.SimpleWaitStrategyOption.SLEEPING;
-import static io.flatf.common.concurrent.disruptor.base.SimpleWaitStrategyOption.YIELDING;
+import static io.flatf.common.concurrent.disruptor.SimpleWaitStrategy.SLEEPING;
+import static io.flatf.common.concurrent.disruptor.SimpleWaitStrategy.YIELDING;
 import static io.flatf.common.datetime.pattern.impl.DateTimePattern.YYYYMMDD_L_HHMMSSSSS;
 import static io.flatf.common.lang.Validator.nonNull;
 import static io.flatf.common.lang.Validator.requiredLength;
@@ -47,18 +43,18 @@ public final class RingMulticaster<E, I> extends RingComponent<E, I> {
      * @param translator EventTranslatorOneArg<E, I>
      * @param handlers   List<EventHandler<E>>
      */
-    @SuppressWarnings("unchecked")
+    @SafeVarargs
     private RingMulticaster(String name, int size, StartMode mode, ProducerType type,
                             WaitStrategy strategy, EventFactory<E> factory,
                             EventTranslatorOneArg<E, I> translator,
-                            List<EventHandler<E>> handlers) {
+                            EventHandler<E>... handlers) {
         super(name, size, type, strategy, factory, translator);
         requiredLength(handlers, 1, "handlers");
         // 将处理器添加进Disruptor中, 各个处理器进行并行处理
-        disruptor.handleEventsWith(toArray(handlers, EventHandler[]::new));
+        disruptor.handleEventsWith(handlers);
         log.info("Initialized RingMulticaster -> {}, size -> {}, ProducerType -> {}, " +
-                        "WaitStrategy -> {}, StartMode -> {}, EventHandler count -> {}",
-                this.name, size, type, strategy, mode, handlers.size());
+                 "WaitStrategy -> {}, StartMode -> {}, EventHandler count -> {}",
+                this.name, size, type, strategy, mode, handlers.length);
         startWith(mode);
     }
 
@@ -79,7 +75,7 @@ public final class RingMulticaster<E, I> extends RingComponent<E, I> {
                                                       @Nonnull RingEventPublisher<E, I> publisher) {
         return singleProducer(eventFactory,
                 // EventTranslator实现函数, 负责调用处理In对象到Event对象之间的转换
-                (event, sequence, in) -> publisher.accept(event, in));
+                (event, _, in) -> publisher.accept(event, in));
     }
 
     public static <E, I> Builder<E, I> singleProducer(@Nonnull EventFactory<E> eventFactory,
@@ -104,7 +100,7 @@ public final class RingMulticaster<E, I> extends RingComponent<E, I> {
                                                      @Nonnull RingEventPublisher<E, I> publisher) {
         return multiProducer(eventFactory,
                 // EventTranslator实现函数, 负责调用处理In对象到Event对象之间的转换
-                (event, sequence, in) -> publisher.accept(event, in));
+                (event, _, in) -> publisher.accept(event, in));
     }
 
     public static <E, I> Builder<E, I> multiProducer(@Nonnull EventFactory<E> eventFactory,
@@ -132,13 +128,6 @@ public final class RingMulticaster<E, I> extends RingComponent<E, I> {
             this.eventTranslator = translator;
         }
 
-        public Builder<E, I> addProcessor(@Nonnull Processor<E> processor) {
-            nonNull(processor, "processor");
-            return addHandler(
-                    // 将Processor实现加载到HandlerWrapper中
-                    new EventHandlerWrapper<>(processor, log));
-        }
-
         public Builder<E, I> addHandler(@Nonnull EventHandler<E> handler) {
             nonNull(handler, "handler");
             this.handlers.add(handler);
@@ -150,7 +139,7 @@ public final class RingMulticaster<E, I> extends RingComponent<E, I> {
             return this;
         }
 
-        public Builder<E, I> setWaitStrategy(SimpleWaitStrategyOption waitStrategy) {
+        public Builder<E, I> setWaitStrategy(SimpleWaitStrategy waitStrategy) {
             return setWaitStrategy(waitStrategy.getInstance());
         }
 

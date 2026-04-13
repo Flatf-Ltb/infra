@@ -1,4 +1,4 @@
-package io.flatf.common.concurrent.disruptor.base;
+package io.flatf.common.concurrent.disruptor;
 
 import com.lmax.disruptor.BlockingWaitStrategy;
 import com.lmax.disruptor.BusySpinWaitStrategy;
@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 /**
  *
  */
-public enum SimpleWaitStrategyOption {
+public enum SimpleWaitStrategy {
 
     /**
      * Blocking strategy that uses a lock and condition variable for
@@ -68,7 +68,7 @@ public enum SimpleWaitStrategyOption {
 
     private final Supplier<WaitStrategy> supplier;
 
-    SimpleWaitStrategyOption(Supplier<WaitStrategy> supplier) {
+    SimpleWaitStrategy(Supplier<WaitStrategy> supplier) {
         this.supplier = supplier;
     }
 

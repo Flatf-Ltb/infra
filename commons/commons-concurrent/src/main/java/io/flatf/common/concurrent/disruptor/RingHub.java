@@ -10,14 +10,10 @@ import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
-import io.flatf.common.concurrent.disruptor.RingEventbus.MultiProducerRingEventbus.MultiProducerWizard;
-import io.flatf.common.concurrent.disruptor.RingEventbus.SingleProducerRingEventbus.SingleProducerWizard;
-import io.flatf.common.concurrent.disruptor.base.EventHandlerWrapper;
 import io.flatf.common.concurrent.disruptor.base.EventPublisherArg1;
 import io.flatf.common.concurrent.disruptor.base.EventPublisherArg2;
 import io.flatf.common.concurrent.disruptor.base.EventPublisherArg3;
-import io.flatf.common.concurrent.disruptor.base.HandlerManager;
-import io.flatf.common.functional.Processor;
+import io.flatf.common.concurrent.disruptor.base.ReflectionEventFactory;
 import io.flatf.common.thread.RunnableComponent;
 import org.slf4j.Logger;
 
@@ -27,9 +23,9 @@ import java.time.LocalDateTime;
 
 import static com.lmax.disruptor.dsl.ProducerType.MULTI;
 import static com.lmax.disruptor.dsl.ProducerType.SINGLE;
-import static io.flatf.common.concurrent.disruptor.base.SimpleWaitStrategyOption.YIELDING;
-import static io.flatf.common.concurrent.disruptor.base.ReflectionEventFactory.newFactory;
+import static io.flatf.common.concurrent.disruptor.SimpleWaitStrategy.YIELDING;
 import static io.flatf.common.datetime.pattern.impl.DateTimePattern.YYMMDD_L_HHMMSSSSS;
+import static io.flatf.common.lang.Validator.nonNull;
 import static io.flatf.common.log4j2.Log4j2LoggerFactory.getLogger;
 import static io.flatf.common.thread.ThreadFactoryImpl.ofPlatform;
 import static io.flatf.common.thread.ThreadPriority.MAX;
@@ -42,26 +38,25 @@ import static java.util.Objects.requireNonNullElse;
  * <p>
  * 扩展多写和单写 [DONE]
  */
-public abstract sealed class RingEventbus<E> extends RunnableComponent
-        permits RingEventbus.MultiProducerRingEventbus, RingEventbus.SingleProducerRingEventbus {
+public final class RingHub<E> extends RunnableComponent {
 
-    private static final Logger log = getLogger(RingEventbus.class);
+    private static final Logger log = getLogger(RingHub.class);
 
-    protected final Disruptor<E> disruptor;
+    private final Disruptor<E> disruptor;
 
-    protected final HandlerManager<E> manager;
+    private final RingBuffer<E> ringBuffer;
 
-    protected final RingBuffer<E> ringBuffer;
+    private final boolean isMultiProducer;
 
-    protected final boolean isMultiProducer;
+    
 
-    protected RingEventbus(@Nullable String name, int size,
-                           @Nonnull StartMode mode, @Nonnull ProducerType type,
-                           @Nonnull EventFactory<E> factory,
-                           @Nonnull WaitStrategy strategy,
-                           @Nonnull HandlerManager<E> manager) {
+    private RingHub(@Nullable String name, int size,
+                    @Nonnull StartMode mode, @Nonnull ProducerType type,
+                    @Nonnull EventFactory<E> factory,
+                    @Nonnull WaitStrategy strategy,
+                    @Nonnull HandlerGraph<E> graph) {
         this.name = requireNonNullElse(name,
-                "RingEventbus-[" + YYMMDD_L_HHMMSSSSS.fmt(LocalDateTime.now()) + "]");
+                "RingHub-[" + YYMMDD_L_HHMMSSSSS.fmt(LocalDateTime.now()) + "]");
         this.disruptor = new Disruptor<>(
                 // EventFactory, 队列容量
                 factory, adjustSize(size),
@@ -69,8 +64,7 @@ public abstract sealed class RingEventbus<E> extends RunnableComponent
                 ofPlatform(this.name + "-worker").priority(MAX).build(),
                 // 生产者类型, Waiting策略
                 type, strategy);
-        this.manager = manager;
-        this.manager.deploy(this.disruptor);
+        graph.deploy(this.disruptor);
         this.ringBuffer = this.disruptor.getRingBuffer();
         this.isMultiProducer = (type == MULTI);
         startWith(mode);
@@ -108,8 +102,8 @@ public abstract sealed class RingEventbus<E> extends RunnableComponent
      * @param <E>       Class type
      * @return Wizard<E>
      */
-    public static <E> MultiProducerWizard<E> multiProducer(Class<E> eventType) {
-        return multiProducer(newFactory(eventType, log));
+    public static <E> Wizard<E> mpHub(Class<E> eventType) {
+        return mpHub(ReflectionEventFactory.newFactory(eventType, log));
     }
 
     /**
@@ -117,8 +111,8 @@ public abstract sealed class RingEventbus<E> extends RunnableComponent
      * @param <E>     Class type
      * @return Wizard<E>
      */
-    public static <E> MultiProducerWizard<E> multiProducer(EventFactory<E> factory) {
-        return new MultiProducerWizard<>(factory);
+    public static <E> Wizard<E> mpHub(EventFactory<E> factory) {
+        return new Wizard<>(MULTI, factory);
     }
 
     /**
@@ -126,8 +120,8 @@ public abstract sealed class RingEventbus<E> extends RunnableComponent
      * @param <E>       Class type
      * @return Wizard<E>
      */
-    public static <E> SingleProducerWizard<E> singleProducer(Class<E> eventType) {
-        return singleProducer(newFactory(eventType, log));
+    public static <E> Wizard<E> spHub(Class<E> eventType) {
+        return spHub(ReflectionEventFactory.newFactory(eventType, log));
     }
 
     /**
@@ -135,8 +129,8 @@ public abstract sealed class RingEventbus<E> extends RunnableComponent
      * @param <E>     Class type
      * @return Wizard<E>
      */
-    public static <E> SingleProducerWizard<E> singleProducer(EventFactory<E> factory) {
-        return new SingleProducerWizard<>(factory);
+    public static <E> Wizard<E> spHub(EventFactory<E> factory) {
+        return new Wizard<>(SINGLE, factory);
     }
 
     /**
@@ -225,127 +219,52 @@ public abstract sealed class RingEventbus<E> extends RunnableComponent
         ringBuffer.publishEvent(translator, arg0, arg1, arg2);
     }
 
-    protected static sealed class Wizard<E> permits MultiProducerWizard, SingleProducerWizard {
+    public static class Wizard<E> {
 
         protected final EventFactory<E> factory;
+        protected final ProducerType type;
 
         protected String name;
         protected int size = 256;
         protected StartMode startMode = StartMode.auto();
         protected WaitStrategy strategy = YIELDING.getInstance();
 
-        private Wizard(EventFactory<E> factory) {
+        private Wizard(ProducerType type, EventFactory<E> factory) {
+            this.type = type;
             this.factory = factory;
         }
 
+        public Wizard<E> name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Wizard<E> size(int size) {
+            this.size = size;
+            return this;
+        }
+
+        public Wizard<E> waitStrategy(WaitStrategy strategy) {
+            this.strategy = strategy;
+            return this;
+        }
+
+        public Wizard<E> startMode(StartMode startMode) {
+            this.startMode = startMode;
+            return this;
+        }
+
+        public RingHub<E> build(EventHandler<E> handler) {
+            nonNull(handler, "handler");
+            return new RingHub<>(name, size, startMode, type, factory, strategy, HandlerGraph.firstWith(handler).build());
+        }
+
+        public RingHub<E> build(HandlerGraph<E> graph) {
+            nonNull(graph, "graph");
+            return new RingHub<>(name, size, startMode, type, factory, strategy, graph);
+        }
+
     }
 
-    /**
-     * 多生产者实现
-     *
-     * @param <E>
-     */
-    public static final class MultiProducerRingEventbus<E> extends RingEventbus<E> {
-
-        private MultiProducerRingEventbus(String name, int size, StartMode startMode,
-                                          EventFactory<E> factory, WaitStrategy strategy,
-                                          HandlerManager<E> handlerManager) {
-            super(name, size, startMode, MULTI, factory, strategy, handlerManager);
-        }
-
-        public static final class MultiProducerWizard<E> extends Wizard<E> {
-
-            private MultiProducerWizard(EventFactory<E> factory) {
-                super(factory);
-            }
-
-            public MultiProducerWizard<E> name(String name) {
-                this.name = name;
-                return this;
-            }
-
-            public MultiProducerWizard<E> size(int size) {
-                this.size = size;
-                return this;
-            }
-
-            public MultiProducerWizard<E> waitStrategy(WaitStrategy strategy) {
-                this.strategy = strategy;
-                return this;
-            }
-
-            public MultiProducerWizard<E> startMode(StartMode startMode) {
-                this.startMode = startMode;
-                return this;
-            }
-
-            public MultiProducerRingEventbus<E> process(Processor<E> processor) {
-                return process(new EventHandlerWrapper<>(processor, log));
-            }
-
-            public MultiProducerRingEventbus<E> process(EventHandler<E> handler) {
-                return process(HandlerManager.firstWith(handler).build());
-            }
-
-            public MultiProducerRingEventbus<E> process(HandlerManager<E> manager) {
-                return new MultiProducerRingEventbus<>(name, size, startMode, factory, strategy, manager);
-            }
-
-        }
-    }
-
-    /**
-     * 单生产者实现
-     *
-     * @param <E>
-     */
-    public static final class SingleProducerRingEventbus<E> extends RingEventbus<E> {
-
-        private SingleProducerRingEventbus(String name, int size, StartMode startMode,
-                                           EventFactory<E> factory, WaitStrategy strategy,
-                                           HandlerManager<E> manager) {
-            super(name, size, startMode, SINGLE, factory, strategy, manager);
-        }
-
-        public static final class SingleProducerWizard<E> extends Wizard<E> {
-
-            private SingleProducerWizard(EventFactory<E> factory) {
-                super(factory);
-            }
-
-            public SingleProducerWizard<E> name(String name) {
-                this.name = name;
-                return this;
-            }
-
-            public SingleProducerWizard<E> size(int size) {
-                this.size = size;
-                return this;
-            }
-
-            public SingleProducerWizard<E> waitStrategy(WaitStrategy strategy) {
-                this.strategy = strategy;
-                return this;
-            }
-
-            public SingleProducerWizard<E> startMode(StartMode startMode) {
-                this.startMode = startMode;
-                return this;
-            }
-
-            public SingleProducerRingEventbus<E> process(Processor<E> processor) {
-                return process(new EventHandlerWrapper<>(processor, log));
-            }
-
-            public SingleProducerRingEventbus<E> process(EventHandler<E> handler) {
-                return process(HandlerManager.firstWith(handler).build());
-            }
-
-            public SingleProducerRingEventbus<E> process(HandlerManager<E> manager) {
-                return new SingleProducerRingEventbus<>(name, size,
-                        startMode, factory, strategy, manager);
-            }
-        }
-    }
 
 }

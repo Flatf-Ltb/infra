@@ -17,11 +17,7 @@ public final class EventHandlerWrapper<E> implements EventHandler<E> {
 
     private final boolean canCrash;
 
-    public EventHandlerWrapper(Processor<E> processor, Logger log) {
-        this(processor, log, true);
-    }
-
-    public EventHandlerWrapper(Processor<E> processor, Logger log, boolean canCrash) {
+    private EventHandlerWrapper(Processor<E> processor, Logger log, boolean canCrash) {
         this.processor = processor;
         this.log = log;
         this.canCrash = canCrash;
@@ -38,5 +34,35 @@ public final class EventHandlerWrapper<E> implements EventHandler<E> {
                 throw e;
         }
     }
+
+    public static <E> Builder<E> newBuilder() {
+        return new Builder<>();
+    }
+
+    /**
+     * @param <E>
+     */
+    public static class Builder<E> {
+
+        private Logger logger = null;
+        private boolean canCrash = false;
+
+        public Builder<E> logger(Logger logger) {
+            this.logger = logger;
+            return this;
+
+        }
+
+        public Builder<E> canCrash(boolean canCrash) {
+            this.canCrash = canCrash;
+            return this;
+        }
+
+        public EventHandlerWrapper<E> build(Processor<E> processor) {
+            return new EventHandlerWrapper<>(processor, logger, canCrash);
+        }
+
+    }
+
 
 }

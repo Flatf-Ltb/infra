@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import java.util.concurrent.atomic.LongAdder;
 
-import static io.flatf.common.concurrent.disruptor.base.SimpleWaitStrategyOption.YIELDING;
+import static io.flatf.common.concurrent.disruptor.SimpleWaitStrategy.YIELDING;
 import static org.junit.Assert.assertEquals;
 
 public class RingProcessChainTest {
