@@ -7,10 +7,8 @@ import javax.annotation.concurrent.ThreadSafe;
 import java.io.Serial;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static io.flatf.common.datetime.pattern.impl.DateTimePattern.YYYYMMDD_L_HHMMSSSSS;
 import static io.flatf.common.log4j2.Log4j2LoggerFactory.getLogger;
 import static io.flatf.common.thread.Threads.startNewMaxPriorityThread;
-import static java.time.LocalDateTime.now;
 
 @ThreadSafe
 public abstract class RunnableComponent {
@@ -30,10 +28,7 @@ public abstract class RunnableComponent {
     /**
      * name
      */
-    protected String name = "Component-[" + YYYYMMDD_L_HHMMSSSSS.fmt(now()) + "]";
-
-    protected RunnableComponent() {
-    }
+    protected final String name;
 
     protected RunnableComponent(String name) {
         this.name = name;

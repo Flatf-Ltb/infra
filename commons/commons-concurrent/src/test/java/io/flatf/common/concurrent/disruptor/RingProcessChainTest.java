@@ -17,22 +17,29 @@ public class RingProcessChainTest {
         LongAdder p0 = new LongAdder();
         LongAdder p1 = new LongAdder();
         LongAdder p2 = new LongAdder();
-        RingProcessChain<LongEvent, Long> processChain = RingProcessChain
-                .singleProducer(LongEvent.class, LongEvent::set)
-                .firstHandler((event, sequence, endOfBatch) -> {
-                    System.out.println("sequence -> " + sequence + " p0 - " + event.get() + " : " + endOfBatch);
-                    p0.increment();
-                }).addHandler(1, (event, sequence, endOfBatch) -> {
-                    System.out.println("sequence -> " + sequence + " p1 - " + event.get() + " : " + endOfBatch);
-                    p1.increment();
-                }).addHandler(2, (event, sequence, endOfBatch) -> {
-                    System.out.println("sequence -> " + sequence + " p2 - " + event.get() + " : " + endOfBatch);
-                    p2.increment();
-                }).name("Test-RingProcessChain").size(32).waitStrategy(YIELDING.getInstance()).create();
+        RingComponent<LongEvent> processChain = RingComponent
+                .singleProducer(LongEvent.class).
+                name("Test-RingProcessChain").size(32).waitStrategy(YIELDING.getInstance())
+                .withPipeline(
+                        (event, sequence, endOfBatch) -> {
+                            System.out.println("sequence -> " + sequence + " p0 - " + event.get() + " : " + endOfBatch);
+                            p0.increment();
+                        },
+                        (event, sequence, endOfBatch) -> {
+                            System.out.println("sequence -> " + sequence + " p1 - " + event.get() + " : " + endOfBatch);
+                            p1.increment();
+                        },
+                        (event, sequence, endOfBatch) -> {
+                            System.out.println("sequence -> " + sequence + " p2 - " + event.get() + " : " + endOfBatch);
+                            p2.increment();
+                        });
+
+        var publisher = processChain.newPublisher((LongEvent event, long _, Long l) -> event.set(l));
 
         Thread thread = Threads.startNewThread(() -> {
-            for (long l = 0L; l < 1000; l++)
-                processChain.publishEvent(l);
+            for (long l = 0L; l < 1000; l++) {
+                publisher.publish(l);
+            }
         });
 
         Sleep.millis(2000);

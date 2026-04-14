@@ -22,7 +22,7 @@ public final class AsyncSwap<E> extends RunnableComponent implements Runnable {
     }
 
     public AsyncSwap(String name, Consumer<E> consumer) {
-        this.name = name;
+        super(name);
         this.consumer = consumer;
     }
 

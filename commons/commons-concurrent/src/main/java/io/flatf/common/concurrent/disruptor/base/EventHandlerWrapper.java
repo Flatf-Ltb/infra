@@ -2,6 +2,7 @@ package io.flatf.common.concurrent.disruptor.base;
 
 import com.lmax.disruptor.EventHandler;
 import io.flatf.common.functional.Processor;
+import io.flatf.common.log4j2.Log4j2LoggerFactory;
 import org.slf4j.Logger;
 
 /**
@@ -11,16 +12,18 @@ import org.slf4j.Logger;
  */
 public final class EventHandlerWrapper<E> implements EventHandler<E> {
 
+    private static final Logger LOG = Log4j2LoggerFactory.getLogger(EventHandlerWrapper.class);
+
     private final Processor<E> processor;
 
-    private final Logger log;
+    private final Logger logger;
 
-    private final boolean canCrash;
+    private final boolean crashOnFailure;
 
-    private EventHandlerWrapper(Processor<E> processor, Logger log, boolean canCrash) {
+    private EventHandlerWrapper(Processor<E> processor, Logger logger, boolean crashOnFailure) {
         this.processor = processor;
-        this.log = log;
-        this.canCrash = canCrash;
+        this.logger = logger == null ? LOG : logger;
+        this.crashOnFailure = crashOnFailure;
     }
 
     @Override
@@ -28,38 +31,38 @@ public final class EventHandlerWrapper<E> implements EventHandler<E> {
         try {
             processor.process(event);
         } catch (Exception e) {
-            log.error("EventHandler process event -> {}, sequence==[{}], endOfBatch==[{}], Throw exception -> [{}]",
-                    event, sequence, endOfBatch, e.getMessage(), e);
-            if (canCrash)
+            logger.error("EventHandler process event -> {}, sequence==[{}], endOfBatch==[{}], Processor -> {}, Throw exception -> [{}]",
+                    event, sequence, endOfBatch, processor.getClass().getSimpleName(), e.getMessage(), e);
+            if (crashOnFailure)
                 throw e;
         }
     }
 
-    public static <E> Builder<E> newBuilder() {
+    public static <E> Builder<E> builder() {
         return new Builder<>();
     }
+
 
     /**
      * @param <E>
      */
     public static class Builder<E> {
 
-        private Logger logger = null;
-        private boolean canCrash = false;
+        private Logger logger;
+        private boolean crashOnFailure = false;
 
         public Builder<E> logger(Logger logger) {
             this.logger = logger;
             return this;
-
         }
 
-        public Builder<E> canCrash(boolean canCrash) {
-            this.canCrash = canCrash;
+        public Builder<E> crashOnFailure(boolean crashOnFailure) {
+            this.crashOnFailure = crashOnFailure;
             return this;
         }
 
         public EventHandlerWrapper<E> build(Processor<E> processor) {
-            return new EventHandlerWrapper<>(processor, logger, canCrash);
+            return new EventHandlerWrapper<>(processor, logger, crashOnFailure);
         }
 
     }

@@ -13,19 +13,19 @@ import org.slf4j.Logger;
 import java.util.Queue;
 
 import static io.flatf.common.thread.Threads.getCurrentThreadName;
-import static io.flatf.common.util.StringSupport.isNullOrEmpty;
+import static io.flatf.common.util.StringSupport.requireNonEmptyElse;
 import static java.lang.Math.max;
 
 /**
  * @param <E> Single consumer queue use jctools implements
  * @author yellow013
  */
-public abstract class SingleConsumerQueueWithJCT<E> extends SingleConsumerQueue<E> implements Runnable {
+public abstract class JctSingleConsumerQueue<E> extends SingleConsumerQueue<E> implements Runnable {
 
     /**
      * Logger
      */
-    private static final Logger log = Log4j2LoggerFactory.getLogger(SingleConsumerQueueWithJCT.class);
+    private static final Logger log = Log4j2LoggerFactory.getLogger(JctSingleConsumerQueue.class);
 
     /**
      * internal queue
@@ -52,8 +52,8 @@ public abstract class SingleConsumerQueueWithJCT<E> extends SingleConsumerQueue<
      *
      * @return Builder
      */
-    public static QueueBuilder spscQueue() {
-        return spscQueue(null);
+    public static QueueBuilder spsc() {
+        return spsc(null);
     }
 
     /**
@@ -62,7 +62,7 @@ public abstract class SingleConsumerQueueWithJCT<E> extends SingleConsumerQueue<
      * @param name String
      * @return Builder
      */
-    public static QueueBuilder spscQueue(String name) {
+    public static QueueBuilder spsc(String name) {
         return new QueueBuilder(QueueType.SPSC, name);
     }
 
@@ -71,8 +71,8 @@ public abstract class SingleConsumerQueueWithJCT<E> extends SingleConsumerQueue<
      *
      * @return Builder
      */
-    public static QueueBuilder mpscQueue() {
-        return mpscQueue(null);
+    public static QueueBuilder mpsc() {
+        return mpsc(null);
     }
 
     /**
@@ -81,19 +81,20 @@ public abstract class SingleConsumerQueueWithJCT<E> extends SingleConsumerQueue<
      * @param name String
      * @return Builder
      */
-    public static QueueBuilder mpscQueue(String name) {
+    public static QueueBuilder mpsc(String name) {
         return new QueueBuilder(QueueType.MPSC, name);
     }
 
     /**
+     * @param name        String
      * @param processor   Processor<E>
      * @param capacity    int
      * @param strategy    WaitingStrategy
      * @param sleepMillis long
      */
-    protected SingleConsumerQueueWithJCT(Processor<E> processor, int capacity,
-                                         WaitingStrategy strategy, long sleepMillis) {
-        super(processor);
+    protected JctSingleConsumerQueue(String name, Processor<E> processor, int capacity,
+                                     WaitingStrategy strategy, long sleepMillis) {
+        super(name, processor);
         this.queue = createQueue(capacity);
         this.strategy = strategy;
         this.sleepMillis = sleepMillis;
@@ -165,15 +166,13 @@ public abstract class SingleConsumerQueueWithJCT<E> extends SingleConsumerQueue<
      * @param <E> Single Producer Single Consumer Queue
      * @author yellow013
      */
-    private static final class SpscQueueWithJCT<E> extends SingleConsumerQueueWithJCT<E> {
+    private static final class JctSPSCQueue<E> extends JctSingleConsumerQueue<E> {
 
-        private SpscQueueWithJCT(String queueName, int capacity, StartMode mode,
-                                 WaitingStrategy strategy, long sleepMillis,
-                                 Processor<E> processor) {
-            super(processor, max(capacity, 16), strategy, sleepMillis);
-            super.name = isNullOrEmpty(queueName)
-                    ? "JCT-SPSC-Q[" + getCurrentThreadName() + "]"
-                    : queueName;
+        private JctSPSCQueue(String queueName, int capacity, StartMode mode,
+                             WaitingStrategy strategy, long sleepMillis,
+                             Processor<E> processor) {
+            super(requireNonEmptyElse(queueName, "jct-spsc-q[" + getCurrentThreadName() + "]"),
+                    processor, max(capacity, 16), strategy, sleepMillis);
             startWith(mode);
         }
 
@@ -193,15 +192,13 @@ public abstract class SingleConsumerQueueWithJCT<E> extends SingleConsumerQueue<
      * @param <E> Multiple Producer Single Consumer Queue
      * @author yellow013
      */
-    private static final class MpscQueueWithJCT<E> extends SingleConsumerQueueWithJCT<E> {
+    private static final class JctMPSCQueue<E> extends JctSingleConsumerQueue<E> {
 
-        private MpscQueueWithJCT(String queueName, int capacity, StartMode mode,
-                                 WaitingStrategy strategy, long sleepMillis,
-                                 Processor<E> processor) {
-            super(processor, max(capacity, 16), strategy, sleepMillis);
-            super.name = isNullOrEmpty(queueName)
-                    ? "JCT-MPSC-Q[" + getCurrentThreadName() + "]"
-                    : queueName;
+        private JctMPSCQueue(String queueName, int capacity, StartMode mode,
+                             WaitingStrategy strategy, long sleepMillis,
+                             Processor<E> processor) {
+            super(requireNonEmptyElse(queueName, "jct-mpsc-q[" + getCurrentThreadName() + "]"),
+                    processor, max(capacity, 16), strategy, sleepMillis);
             startWith(mode);
         }
 
@@ -260,10 +257,10 @@ public abstract class SingleConsumerQueueWithJCT<E> extends SingleConsumerQueue<
             return this;
         }
 
-        public final <E> SingleConsumerQueueWithJCT<E> process(Processor<E> processor) {
+        public final <E> JctSingleConsumerQueue<E> process(Processor<E> processor) {
             return switch (type) {
-                case SPSC -> new SpscQueueWithJCT<>(queueName, capacity, mode, strategy, sleepMillis, processor);
-                case MPSC -> new MpscQueueWithJCT<>(queueName, capacity, mode, strategy, sleepMillis, processor);
+                case SPSC -> new JctSPSCQueue<>(queueName, capacity, mode, strategy, sleepMillis, processor);
+                case MPSC -> new JctMPSCQueue<>(queueName, capacity, mode, strategy, sleepMillis, processor);
                 default -> throw new IllegalArgumentException("Error QueueType value[ " + type + "]");
             };
         }

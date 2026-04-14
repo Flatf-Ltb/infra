@@ -9,7 +9,7 @@ import org.eclipse.collections.api.map.primitive.MutableLongObjectMap;
 import javax.annotation.concurrent.ThreadSafe;
 import java.util.function.Consumer;
 
-import static io.flatf.common.concurrent.queue.SingleConsumerQueueWithJCT.mpscQueue;
+import static io.flatf.common.concurrent.queue.JctSingleConsumerQueue.mpsc;
 import static io.flatf.common.util.StringSupport.isNullOrEmpty;
 
 /**
@@ -61,9 +61,9 @@ public final class AsyncCacheMap<K, V> {
      */
     public AsyncCacheMap(String cacheName) {
         this.cacheName = isNullOrEmpty(cacheName) ? "AsyncCacheMap-" + hashCode() : cacheName;
-        this.execQueue = mpscQueue(this.cacheName + "-ExecQueue")
+        this.execQueue = mpsc(this.cacheName + "-ExecQueue")
                 .capacity(64).process(this::asyncExec);
-        this.queryQueue = mpscQueue(this.cacheName + "-QueryQueue")
+        this.queryQueue = mpsc(this.cacheName + "-QueryQueue")
                 .capacity(64).process(result -> consumerMap.remove(result.nanoTime).accept(result.value));
     }
 

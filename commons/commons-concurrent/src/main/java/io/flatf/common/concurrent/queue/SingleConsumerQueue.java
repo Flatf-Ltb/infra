@@ -5,10 +5,6 @@ import io.flatf.common.functional.Processor;
 import io.flatf.common.lang.Validator;
 import io.flatf.common.thread.RunnableComponent;
 
-import java.time.LocalDateTime;
-
-import static io.flatf.common.datetime.pattern.impl.DateTimePattern.YYYYMMDD_L_HHMMSSSSS;
-
 /**
  * @param <E> Single Consumer Queue base implements
  * @author yellow013
@@ -20,10 +16,10 @@ public abstract class SingleConsumerQueue<E> extends RunnableComponent implement
      */
     protected final Processor<E> processor;
 
-    protected SingleConsumerQueue(Processor<E> processor) {
+    protected SingleConsumerQueue(String name, Processor<E> processor) {
+        super(name);
         Validator.nonNull(processor, "processor");
         this.processor = processor;
-        this.name = "queue-" + "[" + YYYYMMDD_L_HHMMSSSSS.fmt(LocalDateTime.now()) + "]";
     }
 
     @Override

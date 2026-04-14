@@ -55,7 +55,7 @@ public final class HandlerGraph<E> {
         disruptor.setDefaultExceptionHandler(requireNonNullElse(exceptionHandler, new ExceptionLogger<>()));
         if (handlersList.size() > 1) {
             var handlerGroup = disruptor.handleEventsWith(handlersList.getFirst());
-            for (int i = 1; 1 < handlersList.size(); i++)
+            for (int i = 1; i < handlersList.size(); i++)
                 handlerGroup.then(handlersList.get(i));
         } else {
             // With set single event
@@ -63,11 +63,9 @@ public final class HandlerGraph<E> {
         }
     }
 
-
     @SafeVarargs
-    public static <E> EventHandlerWizard<E> firstWith(@Nonnull EventHandler<E>... handlers) {
-        return new EventHandlerWizard<E>()
-                .then(handlers);
+    public static <E> HandlerGraphWizard<E> with(@Nonnull EventHandler<E>... handlers) {
+        return new HandlerGraphWizard<E>().then(handlers);
     }
 
     /**
@@ -75,21 +73,21 @@ public final class HandlerGraph<E> {
      *
      * @param <E> Event type
      */
-    public static class EventHandlerWizard<E> {
+    public static class HandlerGraphWizard<E> {
 
         protected ExceptionHandler<E> exceptionHandler;
         private final MutableList<EventHandler<E>[]> eventHandlers = newFastList();
 
-        private EventHandlerWizard() {
+        private HandlerGraphWizard() {
         }
 
         @SafeVarargs
-        public final EventHandlerWizard<E> then(EventHandler<E>... handlers) {
+        public final HandlerGraphWizard<E> then(EventHandler<E>... handlers) {
             this.eventHandlers.add(handlers);
             return this;
         }
 
-        public EventHandlerWizard<E> whenException(ExceptionHandler<E> exceptionHandler) {
+        public HandlerGraphWizard<E> whenException(ExceptionHandler<E> exceptionHandler) {
             this.exceptionHandler = exceptionHandler;
             return this;
         }

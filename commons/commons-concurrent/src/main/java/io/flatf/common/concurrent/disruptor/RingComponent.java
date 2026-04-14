@@ -1,69 +1,87 @@
 package io.flatf.common.concurrent.disruptor;
 
 import com.lmax.disruptor.EventFactory;
+import com.lmax.disruptor.EventHandler;
+import com.lmax.disruptor.EventTranslator;
 import com.lmax.disruptor.EventTranslatorOneArg;
+import com.lmax.disruptor.EventTranslatorThreeArg;
+import com.lmax.disruptor.EventTranslatorTwoArg;
+import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
-import io.flatf.common.concurrent.disruptor.base.EventPublisherArg1;
+import io.flatf.common.concurrent.disruptor.base.EventPublisher;
+import io.flatf.common.concurrent.disruptor.base.EventPublisher.EventPublisherArg1;
+import io.flatf.common.concurrent.disruptor.base.EventPublisher.EventPublisherArg2;
+import io.flatf.common.concurrent.disruptor.base.EventPublisher.EventPublisherArg3;
+import io.flatf.common.concurrent.disruptor.base.ReflectionEventFactory;
 import io.flatf.common.thread.RunnableComponent;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.slf4j.Logger;
 
+import java.time.LocalDateTime;
+
 import static com.lmax.disruptor.dsl.ProducerType.MULTI;
-import static io.flatf.common.datetime.pattern.impl.DateTimePattern.YYYYMMDD_L_HHMMSSSSS;
+import static com.lmax.disruptor.dsl.ProducerType.SINGLE;
+import static io.flatf.common.concurrent.disruptor.SimpleWaitStrategy.YIELDING;
+import static io.flatf.common.datetime.pattern.impl.DateTimePattern.YYMMDD_L_HHMMSSSSS;
 import static io.flatf.common.lang.Validator.nonNull;
+import static io.flatf.common.lang.Validator.requiredLength;
 import static io.flatf.common.log4j2.Log4j2LoggerFactory.getLogger;
 import static io.flatf.common.thread.ThreadFactoryImpl.ofPlatform;
 import static io.flatf.common.thread.ThreadPriority.MAX;
 import static io.flatf.common.util.BitOperator.minPow2;
 import static io.flatf.common.util.StringSupport.requireNonEmptyElse;
-import static java.time.LocalDateTime.now;
-import static java.util.Objects.requireNonNullElse;
 
 /**
- * 抽象Disruptor实现
- *
- * @param <E> 事件处理类型
- * @param <I> 发布类型
+ * @param <E>
  * @author yellow013
+ * <p>
+ * 扩展多写和单写 [DONE]
  */
-public abstract class RingComponent<E, I> extends RunnableComponent {
+public final class RingComponent<E> extends RunnableComponent {
 
     private static final Logger log = getLogger(RingComponent.class);
 
-    protected final Disruptor<E> disruptor;
+    private final Disruptor<E> disruptor;
 
-    protected final EventPublisherArg1<E, I> publisher;
+    private final RingBuffer<E> buffer;
 
-    protected final boolean isMultiProducer;
+    private final boolean isMultiProducer;
+
+    private RingComponent(@Nullable String name, int size,
+                          @Nonnull StartMode mode, @Nonnull ProducerType type,
+                          @Nonnull EventFactory<E> factory,
+                          @Nonnull WaitStrategy strategy,
+                          @Nonnull HandlerGraph<E> graph) {
+        super(requireNonEmptyElse(name, "RingHub-[" + YYMMDD_L_HHMMSSSSS.fmt(LocalDateTime.now()) + "]"));
+        this.disruptor = new Disruptor<>(
+                // EventFactory, 队列容量
+                factory, adjustSize(size),
+                // ThreadFactory
+                ofPlatform(this.name + "-worker").priority(MAX).build(),
+                // 生产者类型, Waiting策略
+                type, strategy);
+        graph.deploy(this.disruptor);
+        this.buffer = this.disruptor.getRingBuffer();
+        this.isMultiProducer = (type == MULTI);
+        startWith(mode);
+    }
 
     /**
-     * @param name       String
-     * @param size       int
-     * @param type       ProducerType
-     * @param strategy   WaitStrategy
-     * @param factory    EventFactory<E>
-     * @param translator EventTranslatorOneArg<E, I>
+     * 调整队列容量, 最小16, 最大65536, 其他输入参数自动调整为最接近的2次幂
+     *
+     * @param size buffer size
+     * @return int
      */
-    protected RingComponent(String name, int size, ProducerType type,
-                            WaitStrategy strategy, EventFactory<E> factory,
-                            EventTranslatorOneArg<E, I> translator) {
-        super(requireNonEmptyElse(name,
-                "RingBuf-[" + YYYYMMDD_L_HHMMSSSSS.fmt(now()) + "]"));
-        nonNull(factory, "EventFactory");
-        nonNull(translator, "EventTranslator");
-        final ProducerType producerType = requireNonNullElse(type, MULTI);
-        this.disruptor = new Disruptor<>(
-                // 设置事件工厂, 调整并设置队列容量
-                factory, adjustSize(size),
-                // 使用最高优先级的线程工厂, 使用平台线程
-                ofPlatform(this.name + "-worker").priority(MAX).build(),
-                // 生产者策略, Waiting策略
-                producerType,
-                requireNonNullElse(strategy, SimpleWaitStrategy.SLEEPING.getInstance())
-        );
-        this.isMultiProducer = producerType == MULTI;
-        this.publisher = new EventPublisherArg1<>(disruptor.getRingBuffer(), translator);
+    private int adjustSize(int size) {
+        if (size < 16)
+            return 16;
+        if (size > 65536)
+            return 65536;
+        else
+            return minPow2(size);
     }
 
     @Override
@@ -79,27 +97,39 @@ public abstract class RingComponent<E, I> extends RunnableComponent {
     }
 
     /**
-     * @param in input event
-     * @return boolean
+     * @param eventType EventFactory<E>
+     * @param <E>       Class type
+     * @return Wizard<E>
      */
-    public boolean publishEvent(I in) {
-        try {
-            if (isClosed.get())
-                return false;
-            publisher.publish(in);
-            return true;
-        } catch (Exception e) {
-            log.error("{} -> EventPublisher::handle(in) func throws exception -> [{}]",
-                    name, e.getMessage(), e);
-            return false;
-        }
+    public static <E> Wizard<E> multiProducer(Class<E> eventType) {
+        return multiProducer(ReflectionEventFactory.newFactory(eventType, log));
     }
 
     /**
-     * @return EventPublisher<E, I>
+     * @param factory EventFactory<E>
+     * @param <E>     Class type
+     * @return Wizard<E>
      */
-    public EventPublisherArg1<E, I> getPublisher() {
-        return publisher;
+    public static <E> Wizard<E> multiProducer(EventFactory<E> factory) {
+        return new Wizard<>(MULTI, factory);
+    }
+
+    /**
+     * @param eventType EventFactory<E>
+     * @param <E>       Class type
+     * @return Wizard<E>
+     */
+    public static <E> Wizard<E> singleProducer(Class<E> eventType) {
+        return singleProducer(ReflectionEventFactory.newFactory(eventType, log));
+    }
+
+    /**
+     * @param factory EventFactory<E>
+     * @param <E>     Class type
+     * @return Wizard<E>
+     */
+    public static <E> Wizard<E> singleProducer(EventFactory<E> factory) {
+        return new Wizard<>(SINGLE, factory);
     }
 
     /**
@@ -107,24 +137,143 @@ public abstract class RingComponent<E, I> extends RunnableComponent {
      * @param <A>        another object type
      * @return the new EventPublisher<E, A> object
      */
-    public <A> EventPublisherArg1<E, A> newPublisher(EventTranslatorOneArg<E, A> translator)
-            throws IllegalStateException {
-        if (isMultiProducer)
-            return new EventPublisherArg1<>(disruptor.getRingBuffer(), translator);
-        else {
-            log.error("RingBuffer -> {} is not multi producer mode", name);
-            throw new IllegalStateException("isMultiProducer == false");
-        }
+    public <A> EventPublisherArg1<E, A> newPublisher(
+            @Nonnull EventTranslatorOneArg<E, A> translator) {
+        return EventPublisher.newPublisher(buffer, translator);
     }
 
     /**
-     * 调整队列容量, 最小16, 最大65536, 其他输入参数自动调整为最接近的2次幂
-     *
-     * @param size buffer size
-     * @return int
+     * @param translator EventTranslatorTwoArg<E, A0, A1>
+     * @param <A0>       another 0 object type
+     * @param <A1>       another 1 object type
+     * @return EventPublisherArg2<E, A0, A1>
+
      */
-    private int adjustSize(int size) {
-        return size < 16 ? 16 : size > 65536 ? 65536 : minPow2(size);
+    public <A0, A1> EventPublisherArg2<E, A0, A1> newPublisher(
+            @Nonnull EventTranslatorTwoArg<E, A0, A1> translator) {
+        return EventPublisher.newPublisher(buffer, translator);
     }
+
+    /**
+     * @param translator EventTranslatorThreeArg<E, A0, A1, A2>
+     * @param <A0>       another 0 object type
+     * @param <A1>       another 1 object type
+     * @param <A2>       another 2 object type
+     * @return EventPublisherArg3<E, A0, A1, A2>
+     * @throws IllegalStateException ise
+     */
+    public <A0, A1, A2> EventPublisherArg3<E, A0, A1, A2> newPublisher(
+            @Nonnull EventTranslatorThreeArg<E, A0, A1, A2> translator)
+            throws IllegalStateException {
+        return EventPublisher.newPublisher(this.buffer, translator);
+    }
+
+
+    /**
+     * @param translator EventTranslator<E>
+     */
+    public void publish(EventTranslator<E> translator) {
+        buffer.publishEvent(translator);
+    }
+
+    /**
+     * @param translator EventTranslatorOneArg<E, A>
+     * @param arg        A
+     * @param <A>        Arg type
+     */
+    public <A> void publish(EventTranslatorOneArg<E, A> translator, A arg) {
+        buffer.publishEvent(translator, arg);
+    }
+
+    /**
+     * @param translator EventTranslatorTwoArg<E, A0, A1>
+     * @param arg0       A0
+     * @param arg1       A1
+     * @param <A0>       A0 Type
+     * @param <A1>       A1 Type
+     */
+    public <A0, A1> void publish(EventTranslatorTwoArg<E, A0, A1> translator, A0 arg0, A1 arg1) {
+        buffer.publishEvent(translator, arg0, arg1);
+    }
+
+    /**
+     * @param translator EventTranslatorThreeArg<E, A0, A1, A2>
+     * @param arg0       A0
+     * @param arg1       A1
+     * @param arg2       A2
+     * @param <A0>       A0 Type
+     * @param <A1>       A1 Type
+     * @param <A2>       A2 Type
+     */
+    public <A0, A1, A2> void publish(EventTranslatorThreeArg<E, A0, A1, A2> translator, A0 arg0, A1 arg1, A2 arg2) {
+        buffer.publishEvent(translator, arg0, arg1, arg2);
+    }
+
+    public static class Wizard<E> {
+
+        protected final EventFactory<E> factory;
+        protected final ProducerType type;
+
+        protected String name;
+        protected int size = 256;
+        protected StartMode startMode = StartMode.auto();
+        protected WaitStrategy strategy = YIELDING.getInstance();
+
+        private Wizard(ProducerType type, EventFactory<E> factory) {
+            this.type = type;
+            this.factory = factory;
+        }
+
+        public Wizard<E> name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Wizard<E> size(int size) {
+            this.size = size;
+            return this;
+        }
+
+        public Wizard<E> waitStrategy(SimpleWaitStrategy strategy) {
+            return waitStrategy(strategy.getInstance());
+        }
+
+        public Wizard<E> waitStrategy(WaitStrategy strategy) {
+            this.strategy = strategy;
+            return this;
+        }
+
+        public Wizard<E> startMode(StartMode startMode) {
+            this.startMode = startMode;
+            return this;
+        }
+
+        @SafeVarargs
+        public final RingComponent<E> withBroadcast(EventHandler<E>... handlers) {
+            requiredLength(handlers, 1, "handlers");
+            return new RingComponent<>(name, size, startMode, type, factory, strategy, HandlerGraph.with(handlers).build());
+        }
+
+        @SafeVarargs
+        public final RingComponent<E> withPipeline(EventHandler<E>... handlers) {
+            requiredLength(handlers, 1, "handlers");
+            HandlerGraph.HandlerGraphWizard<E> wizard = HandlerGraph.with(handlers[0]);
+            for (int i = 1; i < handlers.length; i++)
+                wizard.then(handlers[i]);
+            return new RingComponent<>(name, size, startMode, type, factory, strategy, wizard.build());
+        }
+
+        public RingComponent<E> withHandler(EventHandler<E> handler) {
+            nonNull(handler, "handler");
+            return new RingComponent<>(name, size, startMode, type, factory, strategy, HandlerGraph.with(handler).build());
+        }
+
+        public RingComponent<E> withHandlerGraph(HandlerGraph<E> graph) {
+            nonNull(graph, "graph");
+            return new RingComponent<>(name, size, startMode, type, factory, strategy, graph);
+        }
+
+    }
+
 
 }

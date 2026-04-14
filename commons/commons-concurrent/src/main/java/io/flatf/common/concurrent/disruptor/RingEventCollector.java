@@ -12,21 +12,21 @@ import com.lmax.disruptor.WaitStrategy;
  */
 public abstract class RingEventCollector<E> implements EventHandler<E> {
 
-    protected final RingHub<E> eventbus;
+    protected final RingComponent<E> eventbus;
 
     protected RingEventCollector(Builder builder, EventFactory<E> factory) {
         if (builder.isSingleProducer) {
-            this.eventbus = RingHub.spHub(factory)
+            this.eventbus = RingComponent.singleProducer(factory)
                     .size(builder.size)
                     .name(builder.name)
                     .waitStrategy(builder.waitStrategy)
-                    .b(this);
+                    .withHandler(this);
         } else {
-            this.eventbus = RingHub.mpHub(factory)
+            this.eventbus = RingComponent.multiProducer(factory)
                     .size(builder.size)
                     .name(builder.name)
                     .waitStrategy(builder.waitStrategy)
-                    .process(this);
+                    .withHandler(this);
         }
     }
 
