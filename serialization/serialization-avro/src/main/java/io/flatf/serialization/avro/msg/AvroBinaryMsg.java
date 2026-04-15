@@ -12,10 +12,10 @@ import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
 public class AvroBinaryMsg extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -6880100571120899769L;
+  private static final long serialVersionUID = 3164766390962753757L;
 
 
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"AvroBinaryMsg\",\"namespace\":\"io.mercury.serialization.avro.msg\",\"fields\":[{\"name\":\"envelope\",\"type\":{\"type\":\"record\",\"name\":\"Envelope\",\"fields\":[{\"name\":\"code\",\"type\":\"int\"},{\"name\":\"version\",\"type\":\"int\"},{\"name\":\"contentType\",\"type\":{\"type\":\"enum\",\"name\":\"ContentType\",\"symbols\":[\"NULL\",\"BOOLEAN\",\"BYTE\",\"CHAR\",\"INT\",\"LONG\",\"DOUBLE\",\"STRING\",\"OBJECT\",\"LIST\",\"MAP\"]}}]}},{\"name\":\"sequence\",\"type\":\"long\"},{\"name\":\"epoch\",\"type\":\"long\"},{\"name\":\"content\",\"type\":\"bytes\"}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"AvroBinaryMsg\",\"namespace\":\"io.flatf.serialization.avro.msg\",\"fields\":[{\"name\":\"envelope\",\"type\":{\"type\":\"record\",\"name\":\"Envelope\",\"fields\":[{\"name\":\"code\",\"type\":\"int\"},{\"name\":\"version\",\"type\":\"int\"},{\"name\":\"contentType\",\"type\":{\"type\":\"enum\",\"name\":\"ContentType\",\"symbols\":[\"NULL\",\"BOOLEAN\",\"BYTE\",\"CHAR\",\"INT\",\"LONG\",\"DOUBLE\",\"STRING\",\"OBJECT\",\"LIST\",\"MAP\"]}}]}},{\"name\":\"sequence\",\"type\":\"long\"},{\"name\":\"epoch\",\"type\":\"long\"},{\"name\":\"content\",\"type\":\"bytes\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static final SpecificData MODEL$ = new SpecificData();
@@ -71,7 +71,7 @@ public class AvroBinaryMsg extends org.apache.avro.specific.SpecificRecordBase i
     return DECODER.decode(b);
   }
 
-  private Envelope envelope;
+  private io.flatf.serialization.avro.msg.Envelope envelope;
   private long sequence;
   private long epoch;
   private java.nio.ByteBuffer content;
@@ -90,7 +90,7 @@ public class AvroBinaryMsg extends org.apache.avro.specific.SpecificRecordBase i
    * @param epoch The new value for epoch
    * @param content The new value for content
    */
-  public AvroBinaryMsg(Envelope envelope, java.lang.Long sequence, java.lang.Long epoch, java.nio.ByteBuffer content) {
+  public AvroBinaryMsg(io.flatf.serialization.avro.msg.Envelope envelope, java.lang.Long sequence, java.lang.Long epoch, java.nio.ByteBuffer content) {
     this.envelope = envelope;
     this.sequence = sequence;
     this.epoch = epoch;
@@ -113,7 +113,7 @@ public class AvroBinaryMsg extends org.apache.avro.specific.SpecificRecordBase i
   // Used by DatumReader.  Applications should not call.
   public void put(int field$, java.lang.Object value$) {
     switch (field$) {
-    case 0: envelope = (Envelope)value$; break;
+    case 0: envelope = (io.flatf.serialization.avro.msg.Envelope)value$; break;
     case 1: sequence = (java.lang.Long)value$; break;
     case 2: epoch = (java.lang.Long)value$; break;
     case 3: content = (java.nio.ByteBuffer)value$; break;
@@ -125,7 +125,7 @@ public class AvroBinaryMsg extends org.apache.avro.specific.SpecificRecordBase i
    * Gets the value of the 'envelope' field.
    * @return The value of the 'envelope' field.
    */
-  public Envelope getEnvelope() {
+  public io.flatf.serialization.avro.msg.Envelope getEnvelope() {
     return envelope;
   }
 
@@ -134,7 +134,7 @@ public class AvroBinaryMsg extends org.apache.avro.specific.SpecificRecordBase i
    * Sets the value of the 'envelope' field.
    * @param value the value to set.
    */
-  public AvroBinaryMsg setEnvelope(Envelope value) {
+  public AvroBinaryMsg setEnvelope(io.flatf.serialization.avro.msg.Envelope value) {
     this.envelope = value;
     return this;
   }
@@ -197,8 +197,8 @@ public class AvroBinaryMsg extends org.apache.avro.specific.SpecificRecordBase i
    * Creates a new AvroBinaryMsg RecordBuilder.
    * @return A new AvroBinaryMsg RecordBuilder
    */
-  public static AvroBinaryMsg.Builder newBuilder() {
-    return new AvroBinaryMsg.Builder();
+  public static io.flatf.serialization.avro.msg.AvroBinaryMsg.Builder newBuilder() {
+    return new io.flatf.serialization.avro.msg.AvroBinaryMsg.Builder();
   }
 
   /**
@@ -206,11 +206,11 @@ public class AvroBinaryMsg extends org.apache.avro.specific.SpecificRecordBase i
    * @param other The existing builder to copy.
    * @return A new AvroBinaryMsg RecordBuilder
    */
-  public static AvroBinaryMsg.Builder newBuilder(AvroBinaryMsg.Builder other) {
+  public static io.flatf.serialization.avro.msg.AvroBinaryMsg.Builder newBuilder(io.flatf.serialization.avro.msg.AvroBinaryMsg.Builder other) {
     if (other == null) {
-      return new AvroBinaryMsg.Builder();
+      return new io.flatf.serialization.avro.msg.AvroBinaryMsg.Builder();
     } else {
-      return new AvroBinaryMsg.Builder(other);
+      return new io.flatf.serialization.avro.msg.AvroBinaryMsg.Builder(other);
     }
   }
 
@@ -219,11 +219,11 @@ public class AvroBinaryMsg extends org.apache.avro.specific.SpecificRecordBase i
    * @param other The existing instance to copy.
    * @return A new AvroBinaryMsg RecordBuilder
    */
-  public static AvroBinaryMsg.Builder newBuilder(AvroBinaryMsg other) {
+  public static io.flatf.serialization.avro.msg.AvroBinaryMsg.Builder newBuilder(io.flatf.serialization.avro.msg.AvroBinaryMsg other) {
     if (other == null) {
-      return new AvroBinaryMsg.Builder();
+      return new io.flatf.serialization.avro.msg.AvroBinaryMsg.Builder();
     } else {
-      return new AvroBinaryMsg.Builder(other);
+      return new io.flatf.serialization.avro.msg.AvroBinaryMsg.Builder(other);
     }
   }
 
@@ -234,8 +234,8 @@ public class AvroBinaryMsg extends org.apache.avro.specific.SpecificRecordBase i
   public static class Builder extends org.apache.avro.specific.SpecificRecordBuilderBase<AvroBinaryMsg>
     implements org.apache.avro.data.RecordBuilder<AvroBinaryMsg> {
 
-    private Envelope envelope;
-    private Envelope.Builder envelopeBuilder;
+    private io.flatf.serialization.avro.msg.Envelope envelope;
+    private io.flatf.serialization.avro.msg.Envelope.Builder envelopeBuilder;
     private long sequence;
     private long epoch;
     private java.nio.ByteBuffer content;
@@ -249,14 +249,14 @@ public class AvroBinaryMsg extends org.apache.avro.specific.SpecificRecordBase i
      * Creates a Builder by copying an existing Builder.
      * @param other The existing Builder to copy.
      */
-    private Builder(AvroBinaryMsg.Builder other) {
+    private Builder(io.flatf.serialization.avro.msg.AvroBinaryMsg.Builder other) {
       super(other);
       if (isValidValue(fields()[0], other.envelope)) {
         this.envelope = data().deepCopy(fields()[0].schema(), other.envelope);
         fieldSetFlags()[0] = other.fieldSetFlags()[0];
       }
       if (other.hasEnvelopeBuilder()) {
-        this.envelopeBuilder = Envelope.newBuilder(other.getEnvelopeBuilder());
+        this.envelopeBuilder = io.flatf.serialization.avro.msg.Envelope.newBuilder(other.getEnvelopeBuilder());
       }
       if (isValidValue(fields()[1], other.sequence)) {
         this.sequence = data().deepCopy(fields()[1].schema(), other.sequence);
@@ -276,7 +276,7 @@ public class AvroBinaryMsg extends org.apache.avro.specific.SpecificRecordBase i
      * Creates a Builder by copying an existing AvroBinaryMsg instance
      * @param other The existing instance to copy.
      */
-    private Builder(AvroBinaryMsg other) {
+    private Builder(io.flatf.serialization.avro.msg.AvroBinaryMsg other) {
       super(SCHEMA$, MODEL$);
       if (isValidValue(fields()[0], other.envelope)) {
         this.envelope = data().deepCopy(fields()[0].schema(), other.envelope);
@@ -301,7 +301,7 @@ public class AvroBinaryMsg extends org.apache.avro.specific.SpecificRecordBase i
       * Gets the value of the 'envelope' field.
       * @return The value.
       */
-    public Envelope getEnvelope() {
+    public io.flatf.serialization.avro.msg.Envelope getEnvelope() {
       return envelope;
     }
 
@@ -311,7 +311,7 @@ public class AvroBinaryMsg extends org.apache.avro.specific.SpecificRecordBase i
       * @param value The value of 'envelope'.
       * @return This builder.
       */
-    public AvroBinaryMsg.Builder setEnvelope(Envelope value) {
+    public io.flatf.serialization.avro.msg.AvroBinaryMsg.Builder setEnvelope(io.flatf.serialization.avro.msg.Envelope value) {
       validate(fields()[0], value);
       this.envelopeBuilder = null;
       this.envelope = value;
@@ -331,12 +331,12 @@ public class AvroBinaryMsg extends org.apache.avro.specific.SpecificRecordBase i
      * Gets the Builder instance for the 'envelope' field and creates one if it doesn't exist yet.
      * @return This builder.
      */
-    public Envelope.Builder getEnvelopeBuilder() {
+    public io.flatf.serialization.avro.msg.Envelope.Builder getEnvelopeBuilder() {
       if (envelopeBuilder == null) {
         if (hasEnvelope()) {
-          setEnvelopeBuilder(Envelope.newBuilder(envelope));
+          setEnvelopeBuilder(io.flatf.serialization.avro.msg.Envelope.newBuilder(envelope));
         } else {
-          setEnvelopeBuilder(Envelope.newBuilder());
+          setEnvelopeBuilder(io.flatf.serialization.avro.msg.Envelope.newBuilder());
         }
       }
       return envelopeBuilder;
@@ -348,7 +348,7 @@ public class AvroBinaryMsg extends org.apache.avro.specific.SpecificRecordBase i
      * @return This builder.
      */
 
-    public AvroBinaryMsg.Builder setEnvelopeBuilder(Envelope.Builder value) {
+    public io.flatf.serialization.avro.msg.AvroBinaryMsg.Builder setEnvelopeBuilder(io.flatf.serialization.avro.msg.Envelope.Builder value) {
       clearEnvelope();
       envelopeBuilder = value;
       return this;
@@ -366,7 +366,7 @@ public class AvroBinaryMsg extends org.apache.avro.specific.SpecificRecordBase i
       * Clears the value of the 'envelope' field.
       * @return This builder.
       */
-    public AvroBinaryMsg.Builder clearEnvelope() {
+    public io.flatf.serialization.avro.msg.AvroBinaryMsg.Builder clearEnvelope() {
       envelope = null;
       envelopeBuilder = null;
       fieldSetFlags()[0] = false;
@@ -387,7 +387,7 @@ public class AvroBinaryMsg extends org.apache.avro.specific.SpecificRecordBase i
       * @param value The value of 'sequence'.
       * @return This builder.
       */
-    public AvroBinaryMsg.Builder setSequence(long value) {
+    public io.flatf.serialization.avro.msg.AvroBinaryMsg.Builder setSequence(long value) {
       validate(fields()[1], value);
       this.sequence = value;
       fieldSetFlags()[1] = true;
@@ -407,7 +407,7 @@ public class AvroBinaryMsg extends org.apache.avro.specific.SpecificRecordBase i
       * Clears the value of the 'sequence' field.
       * @return This builder.
       */
-    public AvroBinaryMsg.Builder clearSequence() {
+    public io.flatf.serialization.avro.msg.AvroBinaryMsg.Builder clearSequence() {
       fieldSetFlags()[1] = false;
       return this;
     }
@@ -426,7 +426,7 @@ public class AvroBinaryMsg extends org.apache.avro.specific.SpecificRecordBase i
       * @param value The value of 'epoch'.
       * @return This builder.
       */
-    public AvroBinaryMsg.Builder setEpoch(long value) {
+    public io.flatf.serialization.avro.msg.AvroBinaryMsg.Builder setEpoch(long value) {
       validate(fields()[2], value);
       this.epoch = value;
       fieldSetFlags()[2] = true;
@@ -446,7 +446,7 @@ public class AvroBinaryMsg extends org.apache.avro.specific.SpecificRecordBase i
       * Clears the value of the 'epoch' field.
       * @return This builder.
       */
-    public AvroBinaryMsg.Builder clearEpoch() {
+    public io.flatf.serialization.avro.msg.AvroBinaryMsg.Builder clearEpoch() {
       fieldSetFlags()[2] = false;
       return this;
     }
@@ -465,7 +465,7 @@ public class AvroBinaryMsg extends org.apache.avro.specific.SpecificRecordBase i
       * @param value The value of 'content'.
       * @return This builder.
       */
-    public AvroBinaryMsg.Builder setContent(java.nio.ByteBuffer value) {
+    public io.flatf.serialization.avro.msg.AvroBinaryMsg.Builder setContent(java.nio.ByteBuffer value) {
       validate(fields()[3], value);
       this.content = value;
       fieldSetFlags()[3] = true;
@@ -485,7 +485,7 @@ public class AvroBinaryMsg extends org.apache.avro.specific.SpecificRecordBase i
       * Clears the value of the 'content' field.
       * @return This builder.
       */
-    public AvroBinaryMsg.Builder clearContent() {
+    public io.flatf.serialization.avro.msg.AvroBinaryMsg.Builder clearContent() {
       content = null;
       fieldSetFlags()[3] = false;
       return this;
@@ -503,7 +503,7 @@ public class AvroBinaryMsg extends org.apache.avro.specific.SpecificRecordBase i
             throw e;
           }
         } else {
-          record.envelope = fieldSetFlags()[0] ? this.envelope : (Envelope) defaultValue(fields()[0]);
+          record.envelope = fieldSetFlags()[0] ? this.envelope : (io.flatf.serialization.avro.msg.Envelope) defaultValue(fields()[0]);
         }
         record.sequence = fieldSetFlags()[1] ? this.sequence : (java.lang.Long) defaultValue(fields()[1]);
         record.epoch = fieldSetFlags()[2] ? this.epoch : (java.lang.Long) defaultValue(fields()[2]);
@@ -556,7 +556,7 @@ public class AvroBinaryMsg extends org.apache.avro.specific.SpecificRecordBase i
     org.apache.avro.Schema.Field[] fieldOrder = in.readFieldOrderIfDiff();
     if (fieldOrder == null) {
       if (this.envelope == null) {
-        this.envelope = new Envelope();
+        this.envelope = new io.flatf.serialization.avro.msg.Envelope();
       }
       this.envelope.customDecode(in);
 
@@ -571,7 +571,7 @@ public class AvroBinaryMsg extends org.apache.avro.specific.SpecificRecordBase i
         switch (fieldOrder[i].pos()) {
         case 0:
           if (this.envelope == null) {
-            this.envelope = new Envelope();
+            this.envelope = new io.flatf.serialization.avro.msg.Envelope();
           }
           this.envelope.customDecode(in);
           break;

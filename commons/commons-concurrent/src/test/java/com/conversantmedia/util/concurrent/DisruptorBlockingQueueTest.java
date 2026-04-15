@@ -838,7 +838,7 @@ public class DisruptorBlockingQueueTest {
                             Thread.yield();
                         nFed.incrementAndGet();
                     }
-                } catch (InterruptedException _) {
+                } catch (InterruptedException ignored) {
 
                 }
             }).start();
@@ -864,7 +864,7 @@ public class DisruptorBlockingQueueTest {
                             nRead.incrementAndGet();
                         }
                     }
-                } catch (InterruptedException _) {
+                } catch (InterruptedException ignored) {
 
                 }
             });

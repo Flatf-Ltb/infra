@@ -5,6 +5,10 @@ import io.flatf.common.functional.Processor;
 import io.flatf.common.log4j2.Log4j2LoggerFactory;
 import org.slf4j.Logger;
 
+import java.util.function.BiConsumer;
+
+import static java.util.Objects.requireNonNullElse;
+
 /**
  * 事件处理器的包装
  *
@@ -16,14 +20,15 @@ public final class EventHandlerWrapper<E> implements EventHandler<E> {
 
     private final Processor<E> processor;
 
-    private final Logger logger;
-
+    private final Logger log;
     private final boolean crashOnFailure;
+    private final BiConsumer<E, Throwable> exceptionHandler;
 
-    private EventHandlerWrapper(Processor<E> processor, Logger logger, boolean crashOnFailure) {
+    private EventHandlerWrapper(Processor<E> processor, Builder<E> builder) {
         this.processor = processor;
-        this.logger = logger == null ? LOG : logger;
-        this.crashOnFailure = crashOnFailure;
+        this.log = requireNonNullElse(builder.logger, LOG);
+        this.exceptionHandler = builder.exceptionHandler;
+        this.crashOnFailure = builder.crashOnFailure && builder.exceptionHandler == null;
     }
 
     @Override
@@ -31,17 +36,18 @@ public final class EventHandlerWrapper<E> implements EventHandler<E> {
         try {
             processor.process(event);
         } catch (Exception e) {
-            logger.error("EventHandler process event -> {}, sequence==[{}], endOfBatch==[{}], Processor -> {}, Throw exception -> [{}]",
+            log.error("EventHandler process event -> {}, sequence==[{}], endOfBatch==[{}], Processor -> {}, Throw exception -> [{}]",
                     event, sequence, endOfBatch, processor.getClass().getSimpleName(), e.getMessage(), e);
             if (crashOnFailure)
                 throw e;
+            if (exceptionHandler != null)
+                exceptionHandler.accept(event, e);
         }
     }
 
     public static <E> Builder<E> builder() {
         return new Builder<>();
     }
-
 
     /**
      * @param <E>
@@ -50,19 +56,26 @@ public final class EventHandlerWrapper<E> implements EventHandler<E> {
 
         private Logger logger;
         private boolean crashOnFailure = false;
+        private BiConsumer<E, Throwable> exceptionHandler;
 
         public Builder<E> logger(Logger logger) {
             this.logger = logger;
             return this;
         }
 
-        public Builder<E> crashOnFailure(boolean crashOnFailure) {
-            this.crashOnFailure = crashOnFailure;
+        public Builder<E> crashOnFailure() {
+            this.crashOnFailure = true;
+            return this;
+        }
+
+        public Builder<E> whenException(BiConsumer<E, Throwable> exceptionHandler) {
+            this.exceptionHandler = exceptionHandler;
+            this.crashOnFailure = false;
             return this;
         }
 
         public EventHandlerWrapper<E> build(Processor<E> processor) {
-            return new EventHandlerWrapper<>(processor, logger, crashOnFailure);
+            return new EventHandlerWrapper<>(processor, this);
         }
 
     }

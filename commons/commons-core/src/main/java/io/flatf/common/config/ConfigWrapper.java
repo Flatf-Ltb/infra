@@ -1,11 +1,8 @@
 package io.flatf.common.config;
 
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigException.BadValue;
-import com.typesafe.config.ConfigException.Missing;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Properties;
 import java.util.function.DoublePredicate;
 import java.util.function.IntPredicate;
 import java.util.function.LongPredicate;
@@ -15,24 +12,28 @@ import static io.flatf.common.functional.Functions.getOrDefault;
 import static io.flatf.common.functional.Functions.getOrThrows;
 import static io.flatf.common.lang.Validator.nonNull;
 import static io.flatf.common.util.StringSupport.nonEmpty;
+import static java.lang.Boolean.parseBoolean;
+import static java.lang.Double.parseDouble;
+import static java.lang.Integer.parseInt;
+import static java.lang.Long.parseLong;
 
 public final class ConfigWrapper<O extends ConfigOption> {
 
     private final String module;
 
-    private final Config config;
+    private final Properties properties;
 
-    public ConfigWrapper(@Nonnull Config config) {
-        this("", config);
+    public ConfigWrapper(@Nonnull Properties properties) {
+        this("", properties);
     }
 
-    public ConfigWrapper(@Nullable String module, @Nonnull Config config) {
-        nonNull(config, "config");
-        this.config = config;
+    public ConfigWrapper(@Nullable String module, @Nonnull Properties properties) {
+        nonNull(properties, "config");
+        this.properties = properties;
         this.module = nonEmpty(module)
                 ? module.endsWith(".")
-                ? module
-                : module + "."
+                  ? module
+                  : module + "."
                 : "";
     }
 
@@ -43,7 +44,7 @@ public final class ConfigWrapper<O extends ConfigOption> {
      * @return boolean
      */
     public boolean hasOption(@Nonnull O option) {
-        return config.hasPath(option.getConfigName(module));
+        return properties.containsKey(option.getConfigName(module));
     }
 
     /**
@@ -53,7 +54,7 @@ public final class ConfigWrapper<O extends ConfigOption> {
      * @return boolean
      */
     public boolean hasOptionOrNull(@Nonnull O option) {
-        return config.hasPathOrNull(option.getConfigName(module));
+        return properties.containsKey(option.getConfigName(module));
     }
 
     /**
@@ -75,10 +76,23 @@ public final class ConfigWrapper<O extends ConfigOption> {
      */
     public boolean getBoolean(@Nonnull O option, boolean defaultVal) {
         return getOrDefault(
-                () -> config.hasPath(option.getConfigName(module)),
-                () -> config.getBoolean(option.getConfigName(module)),
+                () -> properties.containsKey(option.getConfigName(module)),
+                () -> parseBoolean(properties.getProperty(option.getConfigName(module))),
                 defaultVal);
     }
+
+    /**
+     * @param option OP
+     * @return boolean
+     * @throws NullPointerException e
+     */
+    public boolean getBooleanOrThrows(@Nonnull O option) throws NullPointerException {
+        return getOrThrows(
+                () -> properties.containsKey(option.getConfigName(module)),
+                () -> parseBoolean(properties.getProperty(option.getConfigName(module))),
+                new NullPointerException(option.getConfigName(module)));
+    }
+
 
     /**
      * 获取[int]配置值, 如果未配置, 默认值[0]
@@ -99,10 +113,39 @@ public final class ConfigWrapper<O extends ConfigOption> {
      */
     public int getInt(@Nonnull O option, int defaultVal) {
         return getOrDefault(
-                () -> config.hasPath(option.getConfigName(module)),
-                () -> config.getInt(option.getConfigName(module)),
+                () -> properties.containsKey(option.getConfigName(module)),
+                () -> parseInt(properties.getProperty(option.getConfigName(module))),
                 defaultVal);
     }
+
+    /**
+     * @param option OP
+     * @return int
+     * @throws NullPointerException e
+     */
+    public int getIntOrThrows(@Nonnull O option) throws NullPointerException {
+        return getOrThrows(
+                () -> properties.containsKey(option.getConfigName(module)),
+                () -> parseInt(properties.getProperty(option.getConfigName(module))),
+                new NullPointerException(option.getConfigName(module)));
+    }
+
+    /**
+     * @param option OP
+     * @param predicate IntPredicate
+     * @return int
+     * @throws NullPointerException e
+     * @throws IllegalArgumentException e
+     */
+    public int getIntOrThrows(@Nonnull O option, IntPredicate predicate)
+            throws NullPointerException, IllegalArgumentException {
+        int value = getIntOrThrows(option);
+        if (predicate.test(value))
+            return value;
+        else
+            throw new IllegalArgumentException("Illegal argument -> " + option.getConfigName(module));
+    }
+
 
     /**
      * 获取[long]配置值, 如果未配置, 默认值[0L]
@@ -123,9 +166,37 @@ public final class ConfigWrapper<O extends ConfigOption> {
      */
     public long getLong(@Nonnull O option, long defaultVal) {
         return getOrDefault(
-                () -> config.hasPath(option.getConfigName(module)),
-                () -> config.getLong(option.getConfigName(module)),
+                () -> properties.containsKey(option.getConfigName(module)),
+                () -> parseLong(properties.getProperty(option.getConfigName(module))),
                 defaultVal);
+    }
+
+    /**
+     * @param option OP
+     * @return long
+     * @throws NullPointerException e
+     */
+    public long getLongOrThrows(@Nonnull O option) throws NullPointerException {
+        return getOrThrows(
+                () -> properties.containsKey(option.getConfigName(module)),
+                () -> parseLong(properties.getProperty(option.getConfigName(module))),
+                new NullPointerException(option.getConfigName(module)));
+    }
+
+    /**
+     * @param option OP
+     * @param verify LongPredicate
+     * @return long
+     * @throws NullPointerException  exception
+     * @throws IllegalArgumentException exception
+     */
+    public long getLongOrThrows(@Nonnull O option, LongPredicate verify)
+            throws NullPointerException, IllegalArgumentException {
+        long value = getLongOrThrows(option);
+        if (verify.test(value))
+            return value;
+        else
+            throw new IllegalArgumentException("Illegal argument -> " + option.getConfigName(module));
     }
 
     /**
@@ -147,9 +218,37 @@ public final class ConfigWrapper<O extends ConfigOption> {
      */
     public double getDouble(@Nonnull O option, double defaultVal) {
         return getOrDefault(
-                () -> config.hasPath(option.getConfigName(module)),
-                () -> config.getDouble(option.getConfigName(module)),
+                () -> properties.containsKey(option.getConfigName(module)),
+                () -> parseDouble(properties.getProperty(option.getConfigName(module))),
                 defaultVal);
+    }
+
+    /**
+     * @param option OP
+     * @return double
+     * @throws NullPointerException e
+     */
+    public double getDoubleOrThrows(@Nonnull O option) throws NullPointerException {
+        return getOrThrows(
+                () -> properties.containsKey(option.getConfigName(module)),
+                () -> parseDouble(properties.getProperty(option.getConfigName(module))),
+                new NullPointerException(option.getConfigName(module)));
+    }
+
+    /**
+     * @param option OP
+     * @param verify DoublePredicate
+     * @return double
+     * @throws NullPointerException  e
+     * @throws IllegalArgumentException e
+     */
+    public double getDoubleOrThrows(@Nonnull O option, DoublePredicate verify)
+            throws NullPointerException, IllegalArgumentException {
+        double value = getDoubleOrThrows(option);
+        if (verify.test(value))
+            return value;
+        else
+            throw new IllegalArgumentException("Illegal argument -> " + option.getConfigName(module));
     }
 
     /**
@@ -171,190 +270,37 @@ public final class ConfigWrapper<O extends ConfigOption> {
      */
     public String getString(@Nonnull O option, @Nonnull String defaultVal) {
         return getOrDefault(
-                () -> config.hasPath(option.getConfigName(module)),
-                () -> config.getString(option.getConfigName(module)),
+                () -> properties.containsKey(option.getConfigName(module)),
+                () -> properties.getProperty(option.getConfigName(module)),
                 defaultVal);
     }
 
     /**
      * @param option OP
-     * @return boolean
-     * @throws Missing exception
-     */
-    public boolean getBooleanOrThrows(@Nonnull O option) throws Missing {
-        return getOrThrows(
-                () -> config.hasPath(option.getConfigName(module)),
-                () -> config.getBoolean(option.getConfigName(module)),
-                new Missing(option.getConfigName(module)));
-    }
-
-    /**
-     * @param option OP
-     * @return int
-     * @throws Missing exception
-     */
-    public int getIntOrThrows(@Nonnull O option) throws Missing {
-        return getOrThrows(
-                () -> config.hasPath(option.getConfigName(module)),
-                () -> config.getInt(option.getConfigName(module)),
-                new Missing(option.getConfigName(module)));
-    }
-
-    /**
-     * @param option OP
-     * @param verify IntPredicate
-     * @return int
-     * @throws Missing  exception
-     * @throws BadValue exception
-     */
-    public int getIntOrThrows(@Nonnull O option, IntPredicate verify)
-            throws Missing, BadValue {
-        return getIntOrThrows(option, verify,
-                new IllegalArgumentException("Illegal argument -> " + option.getConfigName(module)));
-    }
-
-    /**
-     * @param option OP
-     * @param verify IntPredicate
-     * @param ex     Exception
-     * @return int
-     * @throws Missing  exception
-     * @throws BadValue exception
-     */
-    public int getIntOrThrows(@Nonnull O option, IntPredicate verify, Exception ex)
-            throws Missing, BadValue {
-        int value = getIntOrThrows(option);
-        if (verify.test(value))
-            return value;
-        else
-            throw new BadValue(option.getConfigName(module), "value == " + value, ex);
-    }
-
-    /**
-     * @param option OP
-     * @return long
-     * @throws Missing exception
-     */
-    public long getLongOrThrows(@Nonnull O option) throws Missing {
-        return getOrThrows(
-                () -> config.hasPath(option.getConfigName(module)),
-                () -> config.getLong(option.getConfigName(module)),
-                new Missing(option.getConfigName(module)));
-    }
-
-    /**
-     * @param option OP
-     * @param verify LongPredicate
-     * @return long
-     * @throws Missing  exception
-     * @throws BadValue exception
-     */
-    public long getLongOrThrows(@Nonnull O option, LongPredicate verify)
-            throws Missing, BadValue {
-        return getLongOrThrows(option, verify,
-                new IllegalArgumentException("Illegal argument -> " + option.getConfigName(module)));
-    }
-
-    /**
-     * @param option OP
-     * @param verify LongPredicate
-     * @param ex     Exception
-     * @return long
-     * @throws Missing  exception
-     * @throws BadValue exception
-     */
-    public long getLongOrThrows(@Nonnull O option, LongPredicate verify, Exception ex)
-            throws Missing, BadValue {
-        long value = getLongOrThrows(option);
-        if (verify.test(value))
-            return value;
-        else
-            throw new BadValue(option.getConfigName(module), "value == " + value, ex);
-    }
-
-    /**
-     * @param option OP
-     * @return double
-     * @throws Missing exception
-     */
-    public double getDoubleOrThrows(@Nonnull O option) throws Missing {
-        return getOrThrows(
-                () -> config.hasPath(option.getConfigName(module)),
-                () -> config.getDouble(option.getConfigName(module)),
-                new Missing(option.getConfigName(module)));
-    }
-
-    /**
-     * @param option OP
-     * @param verify DoublePredicate
-     * @return double
-     * @throws Missing  exception
-     * @throws BadValue exception
-     */
-    public double getDoubleOrThrows(@Nonnull O option, DoublePredicate verify)
-            throws Missing, BadValue {
-        return getDoubleOrThrows(option, verify,
-                new IllegalArgumentException("Illegal argument -> " + option.getConfigName(module)));
-    }
-
-    /**
-     * @param option OP
-     * @param verify DoublePredicate
-     * @param ex     Exception
-     * @return double
-     * @throws Missing  exception
-     * @throws BadValue exception
-     */
-    public double getDoubleOrThrows(@Nonnull O option, DoublePredicate verify, Exception ex)
-            throws Missing, BadValue {
-        double value = getDoubleOrThrows(option);
-        if (verify.test(value))
-            return value;
-        else
-            throw new BadValue(option.getConfigName(module), "value == " + value, ex);
-    }
-
-    /**
-     * @param option OP
      * @return String
-     * @throws Missing exception
+     * @throws NullPointerException e
      */
-    public String getStringOrThrows(@Nonnull O option) throws Missing {
+    public String getStringOrThrows(@Nonnull O option) throws NullPointerException {
         return getOrThrows(
-                () -> config.hasPath(option.getConfigName(module)),
-                () -> config.getString(option.getConfigName(module)),
-                new Missing(option.getConfigName(module)));
+                () -> properties.containsKey(option.getConfigName(module)),
+                () -> properties.getProperty(option.getConfigName(module)),
+                new NullPointerException(option.getConfigName(module)));
     }
 
     /**
      * @param option OP
      * @param verify Predicate<String>
      * @return String
-     * @throws Missing  exception
-     * @throws BadValue exception
+     * @throws NullPointerException  e
+     * @throws IllegalArgumentException e
      */
     public String getStringOrThrows(@Nonnull O option, Predicate<String> verify)
-            throws Missing, BadValue {
-        return getStringOrThrows(option, verify,
-                new IllegalArgumentException("Illegal argument -> " + option.getConfigName(module)));
-    }
-
-    /**
-     * @param option OP
-     * @param verify Predicate<String>
-     * @param ex     Exception
-     * @return String
-     * @throws Missing  exception
-     * @throws BadValue exception
-     */
-    public String getStringOrThrows(@Nonnull O option, Predicate<String> verify, Exception ex)
-            throws Missing, BadValue {
+            throws NullPointerException, IllegalArgumentException {
         String value = getStringOrThrows(option);
         if (verify.test(value))
             return value;
         else
-            throw new BadValue(
-                    option.getConfigName(module), "value == " + value, ex);
+            throw new IllegalArgumentException("Illegal argument -> " + option.getConfigName(module));
     }
 
 }

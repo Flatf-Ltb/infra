@@ -35,7 +35,7 @@ public class AbstractConditionTest {
 		new Thread(() -> {
             try {
                 Thread.sleep(500);
-            } catch (InterruptedException _) {
+            } catch (InterruptedException ignored) {
 
             }
             isCondition = false;
@@ -58,7 +58,7 @@ public class AbstractConditionTest {
 		new Thread(() -> {
             try {
                 Thread.sleep(500);
-            } catch (InterruptedException _) {
+            } catch (InterruptedException ignored) {
 
             }
             isCondition = false;

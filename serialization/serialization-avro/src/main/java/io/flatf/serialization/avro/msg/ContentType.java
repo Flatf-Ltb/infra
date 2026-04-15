@@ -7,7 +7,7 @@ package io.flatf.serialization.avro.msg;
 @org.apache.avro.specific.AvroGenerated
 public enum ContentType implements org.apache.avro.generic.GenericEnumSymbol<ContentType> {
   NULL, BOOLEAN, BYTE, CHAR, INT, LONG, DOUBLE, STRING, OBJECT, LIST, MAP  ;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"enum\",\"name\":\"ContentType\",\"namespace\":\"io.mercury.serialization.avro.msg\",\"symbols\":[\"NULL\",\"BOOLEAN\",\"BYTE\",\"CHAR\",\"INT\",\"LONG\",\"DOUBLE\",\"STRING\",\"OBJECT\",\"LIST\",\"MAP\"]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"enum\",\"name\":\"ContentType\",\"namespace\":\"io.flatf.serialization.avro.msg\",\"symbols\":[\"NULL\",\"BOOLEAN\",\"BYTE\",\"CHAR\",\"INT\",\"LONG\",\"DOUBLE\",\"STRING\",\"OBJECT\",\"LIST\",\"MAP\"]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
   public org.apache.avro.Schema getSchema() { return SCHEMA$; }
 }

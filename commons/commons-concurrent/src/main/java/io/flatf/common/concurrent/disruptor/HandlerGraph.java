@@ -14,7 +14,7 @@ import static io.flatf.common.collections.MutableLists.newFastList;
 import static java.util.Objects.requireNonNullElse;
 
 /**
- * [事件处理器] 管理器
+ * [事件处理器] GRAPH
  *
  * @param <E> 事件类型
  */
@@ -69,13 +69,12 @@ public final class HandlerGraph<E> {
     }
 
     /**
-     *
-     *
+     * [事件处理器] GRAPH构建器
      * @param <E> Event type
      */
     public static class HandlerGraphWizard<E> {
 
-        protected ExceptionHandler<E> exceptionHandler;
+        private ExceptionHandler<E> exceptionHandler;
         private final MutableList<EventHandler<E>[]> eventHandlers = newFastList();
 
         private HandlerGraphWizard() {

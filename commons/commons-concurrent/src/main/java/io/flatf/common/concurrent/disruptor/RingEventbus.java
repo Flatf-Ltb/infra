@@ -40,22 +40,20 @@ import static io.flatf.common.util.StringSupport.requireNonEmptyElse;
  * <p>
  * 扩展多写和单写 [DONE]
  */
-public final class RingComponent<E> extends RunnableComponent {
+public final class RingEventbus<E> extends RunnableComponent {
 
-    private static final Logger log = getLogger(RingComponent.class);
+    private static final Logger log = getLogger(RingEventbus.class);
 
     private final Disruptor<E> disruptor;
 
     private final RingBuffer<E> buffer;
 
-    private final boolean isMultiProducer;
-
-    private RingComponent(@Nullable String name, int size,
-                          @Nonnull StartMode mode, @Nonnull ProducerType type,
-                          @Nonnull EventFactory<E> factory,
-                          @Nonnull WaitStrategy strategy,
-                          @Nonnull HandlerGraph<E> graph) {
-        super(requireNonEmptyElse(name, "RingHub-[" + YYMMDD_L_HHMMSSSSS.fmt(LocalDateTime.now()) + "]"));
+    private RingEventbus(@Nullable String name, int size,
+                         @Nonnull StartMode mode, @Nonnull ProducerType type,
+                         @Nonnull EventFactory<E> factory,
+                         @Nonnull WaitStrategy strategy,
+                         @Nonnull HandlerGraph<E> graph) {
+        super(requireNonEmptyElse(name, "reb-[" + YYMMDD_L_HHMMSSSSS.fmt(LocalDateTime.now()) + "]"));
         this.disruptor = new Disruptor<>(
                 // EventFactory, 队列容量
                 factory, adjustSize(size),
@@ -65,7 +63,6 @@ public final class RingComponent<E> extends RunnableComponent {
                 type, strategy);
         graph.deploy(this.disruptor);
         this.buffer = this.disruptor.getRingBuffer();
-        this.isMultiProducer = (type == MULTI);
         startWith(mode);
     }
 
@@ -147,7 +144,6 @@ public final class RingComponent<E> extends RunnableComponent {
      * @param <A0>       another 0 object type
      * @param <A1>       another 1 object type
      * @return EventPublisherArg2<E, A0, A1>
-
      */
     public <A0, A1> EventPublisherArg2<E, A0, A1> newPublisher(
             @Nonnull EventTranslatorTwoArg<E, A0, A1> translator) {
@@ -249,28 +245,28 @@ public final class RingComponent<E> extends RunnableComponent {
         }
 
         @SafeVarargs
-        public final RingComponent<E> withBroadcast(EventHandler<E>... handlers) {
+        public final RingEventbus<E> withBroadcast(EventHandler<E>... handlers) {
             requiredLength(handlers, 1, "handlers");
-            return new RingComponent<>(name, size, startMode, type, factory, strategy, HandlerGraph.with(handlers).build());
+            return new RingEventbus<>(name, size, startMode, type, factory, strategy, HandlerGraph.with(handlers).build());
         }
 
         @SafeVarargs
-        public final RingComponent<E> withPipeline(EventHandler<E>... handlers) {
+        public final RingEventbus<E> withPipeline(EventHandler<E>... handlers) {
             requiredLength(handlers, 1, "handlers");
             HandlerGraph.HandlerGraphWizard<E> wizard = HandlerGraph.with(handlers[0]);
             for (int i = 1; i < handlers.length; i++)
                 wizard.then(handlers[i]);
-            return new RingComponent<>(name, size, startMode, type, factory, strategy, wizard.build());
+            return new RingEventbus<>(name, size, startMode, type, factory, strategy, wizard.build());
         }
 
-        public RingComponent<E> withHandler(EventHandler<E> handler) {
+        public RingEventbus<E> withHandler(EventHandler<E> handler) {
             nonNull(handler, "handler");
-            return new RingComponent<>(name, size, startMode, type, factory, strategy, HandlerGraph.with(handler).build());
+            return new RingEventbus<>(name, size, startMode, type, factory, strategy, HandlerGraph.with(handler).build());
         }
 
-        public RingComponent<E> withHandlerGraph(HandlerGraph<E> graph) {
+        public RingEventbus<E> withHandlerGraph(HandlerGraph<E> graph) {
             nonNull(graph, "graph");
-            return new RingComponent<>(name, size, startMode, type, factory, strategy, graph);
+            return new RingEventbus<>(name, size, startMode, type, factory, strategy, graph);
         }
 
     }

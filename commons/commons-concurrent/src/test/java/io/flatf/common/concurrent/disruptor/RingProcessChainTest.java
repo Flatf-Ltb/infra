@@ -17,7 +17,7 @@ public class RingProcessChainTest {
         LongAdder p0 = new LongAdder();
         LongAdder p1 = new LongAdder();
         LongAdder p2 = new LongAdder();
-        RingComponent<LongEvent> processChain = RingComponent
+        RingEventbus<LongEvent> pipeline = RingEventbus
                 .singleProducer(LongEvent.class).
                 name("Test-RingProcessChain").size(32).waitStrategy(YIELDING.getInstance())
                 .withPipeline(
@@ -34,7 +34,7 @@ public class RingProcessChainTest {
                             p2.increment();
                         });
 
-        var publisher = processChain.newPublisher((LongEvent event, long _, Long l) -> event.set(l));
+        var publisher = pipeline.newPublisher((LongEvent event, long sequence, Long l) -> event.set(l));
 
         Thread thread = Threads.startNewThread(() -> {
             for (long l = 0L; l < 1000; l++) {
@@ -53,7 +53,7 @@ public class RingProcessChainTest {
         System.out.println("p2 - " + p2.intValue());
         assertEquals(1000L, p2.intValue());
 
-        processChain.stop();
+        pipeline.stop();
         thread.interrupt();
     }
 

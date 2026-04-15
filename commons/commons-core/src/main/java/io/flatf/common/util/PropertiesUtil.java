@@ -150,7 +150,7 @@ public final class PropertiesUtil {
 
     }
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         System.out.println("---old---");
         PropertiesUtil.show(System.getProperties());
         try {

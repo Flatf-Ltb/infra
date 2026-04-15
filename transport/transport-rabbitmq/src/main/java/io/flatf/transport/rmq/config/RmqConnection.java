@@ -1,7 +1,6 @@
 package io.flatf.transport.rmq.config;
 
 import com.rabbitmq.client.ConnectionFactory;
-import com.typesafe.config.Config;
 import io.flatf.common.config.ConfigWrapper;
 import io.flatf.common.lang.Validator;
 import io.flatf.common.util.StringSupport;
@@ -15,6 +14,7 @@ import lombok.experimental.Accessors;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.net.ssl.SSLContext;
+import java.util.Properties;
 
 public final class RmqConnection implements TransportCfg {
 
@@ -89,7 +89,7 @@ public final class RmqConnection implements TransportCfg {
         this.requestedHeartbeat = builder.requestedHeartbeat;
         this.shutdownSignalHandler = builder.shutdownSignalHandler;
         this.connectionInfo = username + "@" + host + ":" + port
-                + (virtualHost.equals("/") ? virtualHost : "/" + virtualHost);
+                              + (virtualHost.equals("/") ? virtualHost : "/" + virtualHost);
     }
 
     /**
@@ -119,20 +119,20 @@ public final class RmqConnection implements TransportCfg {
     }
 
     /**
-     * @param config Config
+     * @param properties Properties
      * @return Builder
      */
-    public static Builder with(@Nonnull Config config) {
-        return with("", config);
+    public static Builder with(@Nonnull Properties properties) {
+        return with("", properties);
     }
 
     /**
      * @param module String
-     * @param config Config
+     * @param properties Properties
      * @return Builder
      */
-    public static Builder with(@Nonnull String module, @Nonnull Config config) {
-        ConfigWrapper<RmqConfigOption> wrapper = new ConfigWrapper<>(module, config);
+    public static Builder with(@Nonnull String module, @Nonnull Properties properties) {
+        ConfigWrapper<RmqConfigOption> wrapper = new ConfigWrapper<>(module, properties);
         return new Builder(wrapper.getString(RmqConfigOption.HOST),
                 wrapper.getInt(RmqConfigOption.PORT),
                 wrapper.getString(RmqConfigOption.USERNAME),

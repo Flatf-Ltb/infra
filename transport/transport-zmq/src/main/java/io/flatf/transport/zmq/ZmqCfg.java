@@ -1,6 +1,5 @@
 package io.flatf.transport.zmq;
 
-import com.typesafe.config.Config;
 import io.flatf.common.annotation.OnlyOverrideEquals;
 import io.flatf.common.config.ConfigWrapper;
 import io.flatf.common.lang.Validator;
@@ -22,6 +21,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.nio.charset.Charset;
 import java.util.Map;
+import java.util.Properties;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -41,21 +41,21 @@ public final class ZmqCfg implements TransportCfg,
     private static final Logger log = getLogger(ZmqCfg.class);
 
     /**
-     * @param config Config
+     * @param properties Config
      * @return ZmqConfigurator
      */
-    public static ZmqCfg config(@Nonnull Config config) {
-        return config("", config);
+    public static ZmqCfg config(@Nonnull Properties properties) {
+        return config("", properties);
     }
 
     /**
-     * @param config String
-     * @param module Config
+     * @param module String
+     * @param properties Properties
      * @return ZmqConfigurator
      */
-    public static ZmqCfg config(String module, @Nonnull Config config) {
-        nonNull(config, "config");
-        var wrapper = new ConfigWrapper<ZmqConfigOption>(module, config);
+    public static ZmqCfg config(String module, @Nonnull Properties properties) {
+        nonNull(properties, "properties");
+        var wrapper = new ConfigWrapper<ZmqConfigOption>(module, properties);
         var protocol = ZmqProtocol.of(wrapper.getStringOrThrows(PROTOCOL));
         ZmqCfg conf;
         switch (protocol) {

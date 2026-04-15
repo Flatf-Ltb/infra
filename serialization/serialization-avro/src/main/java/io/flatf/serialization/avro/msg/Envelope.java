@@ -12,10 +12,10 @@ import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
 public class Envelope extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -2256428233676866711L;
+  private static final long serialVersionUID = -602030178055940718L;
 
 
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Envelope\",\"namespace\":\"io.mercury.serialization.avro.msg\",\"fields\":[{\"name\":\"code\",\"type\":\"int\"},{\"name\":\"version\",\"type\":\"int\"},{\"name\":\"contentType\",\"type\":{\"type\":\"enum\",\"name\":\"ContentType\",\"symbols\":[\"NULL\",\"BOOLEAN\",\"BYTE\",\"CHAR\",\"INT\",\"LONG\",\"DOUBLE\",\"STRING\",\"OBJECT\",\"LIST\",\"MAP\"]}}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Envelope\",\"namespace\":\"io.flatf.serialization.avro.msg\",\"fields\":[{\"name\":\"code\",\"type\":\"int\"},{\"name\":\"version\",\"type\":\"int\"},{\"name\":\"contentType\",\"type\":{\"type\":\"enum\",\"name\":\"ContentType\",\"symbols\":[\"NULL\",\"BOOLEAN\",\"BYTE\",\"CHAR\",\"INT\",\"LONG\",\"DOUBLE\",\"STRING\",\"OBJECT\",\"LIST\",\"MAP\"]}}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static final SpecificData MODEL$ = new SpecificData();
@@ -73,7 +73,7 @@ public class Envelope extends org.apache.avro.specific.SpecificRecordBase implem
 
   private int code;
   private int version;
-  private ContentType contentType;
+  private io.flatf.serialization.avro.msg.ContentType contentType;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -88,7 +88,7 @@ public class Envelope extends org.apache.avro.specific.SpecificRecordBase implem
    * @param version The new value for version
    * @param contentType The new value for contentType
    */
-  public Envelope(java.lang.Integer code, java.lang.Integer version, ContentType contentType) {
+  public Envelope(java.lang.Integer code, java.lang.Integer version, io.flatf.serialization.avro.msg.ContentType contentType) {
     this.code = code;
     this.version = version;
     this.contentType = contentType;
@@ -111,7 +111,7 @@ public class Envelope extends org.apache.avro.specific.SpecificRecordBase implem
     switch (field$) {
     case 0: code = (java.lang.Integer)value$; break;
     case 1: version = (java.lang.Integer)value$; break;
-    case 2: contentType = (ContentType)value$; break;
+    case 2: contentType = (io.flatf.serialization.avro.msg.ContentType)value$; break;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -156,7 +156,7 @@ public class Envelope extends org.apache.avro.specific.SpecificRecordBase implem
    * Gets the value of the 'contentType' field.
    * @return The value of the 'contentType' field.
    */
-  public ContentType getContentType() {
+  public io.flatf.serialization.avro.msg.ContentType getContentType() {
     return contentType;
   }
 
@@ -165,7 +165,7 @@ public class Envelope extends org.apache.avro.specific.SpecificRecordBase implem
    * Sets the value of the 'contentType' field.
    * @param value the value to set.
    */
-  public Envelope setContentType(ContentType value) {
+  public Envelope setContentType(io.flatf.serialization.avro.msg.ContentType value) {
     this.contentType = value;
     return this;
   }
@@ -174,8 +174,8 @@ public class Envelope extends org.apache.avro.specific.SpecificRecordBase implem
    * Creates a new Envelope RecordBuilder.
    * @return A new Envelope RecordBuilder
    */
-  public static Envelope.Builder newBuilder() {
-    return new Envelope.Builder();
+  public static io.flatf.serialization.avro.msg.Envelope.Builder newBuilder() {
+    return new io.flatf.serialization.avro.msg.Envelope.Builder();
   }
 
   /**
@@ -183,11 +183,11 @@ public class Envelope extends org.apache.avro.specific.SpecificRecordBase implem
    * @param other The existing builder to copy.
    * @return A new Envelope RecordBuilder
    */
-  public static Envelope.Builder newBuilder(Envelope.Builder other) {
+  public static io.flatf.serialization.avro.msg.Envelope.Builder newBuilder(io.flatf.serialization.avro.msg.Envelope.Builder other) {
     if (other == null) {
-      return new Envelope.Builder();
+      return new io.flatf.serialization.avro.msg.Envelope.Builder();
     } else {
-      return new Envelope.Builder(other);
+      return new io.flatf.serialization.avro.msg.Envelope.Builder(other);
     }
   }
 
@@ -196,11 +196,11 @@ public class Envelope extends org.apache.avro.specific.SpecificRecordBase implem
    * @param other The existing instance to copy.
    * @return A new Envelope RecordBuilder
    */
-  public static Envelope.Builder newBuilder(Envelope other) {
+  public static io.flatf.serialization.avro.msg.Envelope.Builder newBuilder(io.flatf.serialization.avro.msg.Envelope other) {
     if (other == null) {
-      return new Envelope.Builder();
+      return new io.flatf.serialization.avro.msg.Envelope.Builder();
     } else {
-      return new Envelope.Builder(other);
+      return new io.flatf.serialization.avro.msg.Envelope.Builder(other);
     }
   }
 
@@ -213,7 +213,7 @@ public class Envelope extends org.apache.avro.specific.SpecificRecordBase implem
 
     private int code;
     private int version;
-    private ContentType contentType;
+    private io.flatf.serialization.avro.msg.ContentType contentType;
 
     /** Creates a new Builder */
     private Builder() {
@@ -224,7 +224,7 @@ public class Envelope extends org.apache.avro.specific.SpecificRecordBase implem
      * Creates a Builder by copying an existing Builder.
      * @param other The existing Builder to copy.
      */
-    private Builder(Envelope.Builder other) {
+    private Builder(io.flatf.serialization.avro.msg.Envelope.Builder other) {
       super(other);
       if (isValidValue(fields()[0], other.code)) {
         this.code = data().deepCopy(fields()[0].schema(), other.code);
@@ -244,7 +244,7 @@ public class Envelope extends org.apache.avro.specific.SpecificRecordBase implem
      * Creates a Builder by copying an existing Envelope instance
      * @param other The existing instance to copy.
      */
-    private Builder(Envelope other) {
+    private Builder(io.flatf.serialization.avro.msg.Envelope other) {
       super(SCHEMA$, MODEL$);
       if (isValidValue(fields()[0], other.code)) {
         this.code = data().deepCopy(fields()[0].schema(), other.code);
@@ -274,7 +274,7 @@ public class Envelope extends org.apache.avro.specific.SpecificRecordBase implem
       * @param value The value of 'code'.
       * @return This builder.
       */
-    public Envelope.Builder setCode(int value) {
+    public io.flatf.serialization.avro.msg.Envelope.Builder setCode(int value) {
       validate(fields()[0], value);
       this.code = value;
       fieldSetFlags()[0] = true;
@@ -294,7 +294,7 @@ public class Envelope extends org.apache.avro.specific.SpecificRecordBase implem
       * Clears the value of the 'code' field.
       * @return This builder.
       */
-    public Envelope.Builder clearCode() {
+    public io.flatf.serialization.avro.msg.Envelope.Builder clearCode() {
       fieldSetFlags()[0] = false;
       return this;
     }
@@ -313,7 +313,7 @@ public class Envelope extends org.apache.avro.specific.SpecificRecordBase implem
       * @param value The value of 'version'.
       * @return This builder.
       */
-    public Envelope.Builder setVersion(int value) {
+    public io.flatf.serialization.avro.msg.Envelope.Builder setVersion(int value) {
       validate(fields()[1], value);
       this.version = value;
       fieldSetFlags()[1] = true;
@@ -333,7 +333,7 @@ public class Envelope extends org.apache.avro.specific.SpecificRecordBase implem
       * Clears the value of the 'version' field.
       * @return This builder.
       */
-    public Envelope.Builder clearVersion() {
+    public io.flatf.serialization.avro.msg.Envelope.Builder clearVersion() {
       fieldSetFlags()[1] = false;
       return this;
     }
@@ -342,7 +342,7 @@ public class Envelope extends org.apache.avro.specific.SpecificRecordBase implem
       * Gets the value of the 'contentType' field.
       * @return The value.
       */
-    public ContentType getContentType() {
+    public io.flatf.serialization.avro.msg.ContentType getContentType() {
       return contentType;
     }
 
@@ -352,7 +352,7 @@ public class Envelope extends org.apache.avro.specific.SpecificRecordBase implem
       * @param value The value of 'contentType'.
       * @return This builder.
       */
-    public Envelope.Builder setContentType(ContentType value) {
+    public io.flatf.serialization.avro.msg.Envelope.Builder setContentType(io.flatf.serialization.avro.msg.ContentType value) {
       validate(fields()[2], value);
       this.contentType = value;
       fieldSetFlags()[2] = true;
@@ -372,7 +372,7 @@ public class Envelope extends org.apache.avro.specific.SpecificRecordBase implem
       * Clears the value of the 'contentType' field.
       * @return This builder.
       */
-    public Envelope.Builder clearContentType() {
+    public io.flatf.serialization.avro.msg.Envelope.Builder clearContentType() {
       contentType = null;
       fieldSetFlags()[2] = false;
       return this;
@@ -384,7 +384,7 @@ public class Envelope extends org.apache.avro.specific.SpecificRecordBase implem
         Envelope record = new Envelope();
         record.code = fieldSetFlags()[0] ? this.code : (java.lang.Integer) defaultValue(fields()[0]);
         record.version = fieldSetFlags()[1] ? this.version : (java.lang.Integer) defaultValue(fields()[1]);
-        record.contentType = fieldSetFlags()[2] ? this.contentType : (ContentType) defaultValue(fields()[2]);
+        record.contentType = fieldSetFlags()[2] ? this.contentType : (io.flatf.serialization.avro.msg.ContentType) defaultValue(fields()[2]);
         return record;
       } catch (org.apache.avro.AvroMissingFieldException e) {
         throw e;
@@ -434,7 +434,7 @@ public class Envelope extends org.apache.avro.specific.SpecificRecordBase implem
 
       this.version = in.readInt();
 
-      this.contentType = ContentType.values()[in.readEnum()];
+      this.contentType = io.flatf.serialization.avro.msg.ContentType.values()[in.readEnum()];
 
     } else {
       for (int i = 0; i < 3; i++) {
@@ -448,7 +448,7 @@ public class Envelope extends org.apache.avro.specific.SpecificRecordBase implem
           break;
 
         case 2:
-          this.contentType = ContentType.values()[in.readEnum()];
+          this.contentType = io.flatf.serialization.avro.msg.ContentType.values()[in.readEnum()];
           break;
 
         default:

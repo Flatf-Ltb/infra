@@ -18,7 +18,7 @@ public class RingMulticasterTest {
         LongAdder p0 = new LongAdder();
         LongAdder p1 = new LongAdder();
         LongAdder p2 = new LongAdder();
-        RingComponent<LongEvent> multicaster = RingComponent
+        RingEventbus<LongEvent> multicaster = RingEventbus
                 .singleProducer(LongEvent.class)
                 .name("Test-Multicaster").waitStrategy(YIELDING.getInstance()).size(32)
                 .withBroadcast((event, sequence, endOfBatch) -> {
@@ -32,7 +32,8 @@ public class RingMulticasterTest {
                     p2.increment();
                 });
 
-        EventPublisherArg1<LongEvent, Long> pub = multicaster.newPublisher((LongEvent event, long _, Long l) -> event.set(l));
+        EventPublisherArg1<LongEvent, Long> pub =
+                multicaster.newPublisher((LongEvent event, long sequence, Long l) -> event.set(l));
 
         Thread thread = Threads.startNewThread(() -> {
             for (long l = 0L; l < 1000; l++)
