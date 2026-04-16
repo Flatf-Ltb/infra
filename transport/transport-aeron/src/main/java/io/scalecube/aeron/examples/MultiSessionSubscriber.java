@@ -10,7 +10,6 @@ import io.aeron.driver.MediaDriver;
 import io.aeron.logbuffer.FragmentHandler;
 import org.agrona.CloseHelper;
 import org.agrona.concurrent.BackoffIdleStrategy;
-import org.agrona.concurrent.SigInt;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -37,7 +36,7 @@ public class MultiSessionSubscriber {
      * @param args args
      */
     public static void main(String[] args) {
-        SigInt.register(MultiSessionSubscriber::close);
+        //SigInt.register(MultiSessionSubscriber::close);
 
         mediaDriver = MediaDriver.launchEmbedded();
         String aeronDirectoryName = mediaDriver.aeronDirectoryName();

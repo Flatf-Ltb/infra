@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>io.mercury</groupId>
+        <groupId>io.flatf</groupId>
         <artifactId>persistence</artifactId>
         <version>1.0.1</version>
     </parent>
@@ -16,11 +16,31 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.mercury</groupId>
-            <artifactId>persistence-rdb</artifactId>
-            <version>${project.version}</version>
+            <groupId>io.flatf</groupId>
+            <artifactId>commons-core</artifactId>
         </dependency>
-
+        <!-- Java(TM) Persistence API -->
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+        </dependency>
+        <!-- The Apache Commons DbUtils package is a set of Java utility classes
+            for easing JDBC development. -->
+        <dependency>
+            <groupId>commons-dbutils</groupId>
+            <artifactId>commons-dbutils</artifactId>
+        </dependency>
+        <!-- Ultimate JDBC Connection Pool -->
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         <!-- H2 Database Engine -->
         <dependency>
             <groupId>com.h2database</groupId>

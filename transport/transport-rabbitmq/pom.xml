@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>io.mercury</groupId>
+        <groupId>io.flatf</groupId>
         <artifactId>transport</artifactId>
         <version>1.0.1</version>
     </parent>
@@ -18,11 +18,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>io.mercury</groupId>
+            <groupId>io.flatf</groupId>
             <artifactId>commons-concurrent</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.mercury</groupId>
+            <groupId>io.flatf</groupId>
             <artifactId>serialization-json</artifactId>
         </dependency>
 
@@ -31,7 +31,7 @@
         <dependency>
             <groupId>com.rabbitmq</groupId>
             <artifactId>amqp-client</artifactId>
-            <version>5.27.1</version>
+            <version>5.29.0</version>
             <exclusions>
                 <exclusion>
                     <artifactId>slf4j-api</artifactId>

@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>io.mercury</groupId>
+        <groupId>io.flatf</groupId>
         <artifactId>transport</artifactId>
         <version>1.0.1</version>
     </parent>
@@ -13,7 +13,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.mercury</groupId>
+            <groupId>io.flatf</groupId>
             <artifactId>commons-concurrent</artifactId>
         </dependency>
 
@@ -24,7 +24,7 @@
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
-            <version>1.21.2</version>
+            <version>1.22.1</version>
         </dependency>
 
         <!-- Netty Component -->
@@ -55,7 +55,7 @@
         <dependency>
             <groupId>org.asynchttpclient</groupId>
             <artifactId>async-http-client</artifactId>
-            <version>3.0.4</version>
+            <version>3.0.7</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>

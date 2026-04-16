@@ -1,6 +1,6 @@
 package org.zeromq.guide.envelope;
 
-import io.mercury.common.thread.Sleep;
+import io.flatf.common.thread.Sleep;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ.Socket;

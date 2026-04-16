@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>io.mercury</groupId>
+        <groupId>io.flatf</groupId>
         <artifactId>serialization</artifactId>
         <version>1.0.1</version>
     </parent>
@@ -12,12 +12,12 @@
     <name>serialization-fory</name>
 
     <properties>
-        <fory.version>0.14.0</fory.version>
+        <fory.version>0.15.0</fory.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>io.mercury</groupId>
+            <groupId>io.flatf</groupId>
             <artifactId>commons-concurrent</artifactId>
         </dependency>
 

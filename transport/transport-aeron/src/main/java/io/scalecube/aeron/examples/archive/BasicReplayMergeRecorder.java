@@ -15,7 +15,6 @@ import io.aeron.driver.status.SystemCounterDescriptor;
 import io.scalecube.aeron.examples.AeronHelper;
 import net.bytebuddy.agent.ByteBuddyAgent;
 import org.agrona.CloseHelper;
-import org.agrona.concurrent.SigInt;
 import org.agrona.concurrent.status.AtomicCounter;
 import org.agrona.concurrent.status.CountersReader;
 
@@ -56,7 +55,7 @@ public class BasicReplayMergeRecorder {
      * @param args args
      */
     public static void main(String[] args) throws InterruptedException {
-        SigInt.register(BasicReplayMergeRecorder::close);
+//        SigInt.register(BasicReplayMergeRecorder::close);
 
         System.setProperty("aeron.event.log", "admin");
         System.setProperty("aeron.event.archive.log", "all");

@@ -74,7 +74,7 @@ public class PercentileTest {
 	}
 
 	@Ignore
-	private final static boolean approximatelyEqual(final float a, final float b, final float eps) {
-		return Math.abs(a - b) <= ((Math.abs(a) < Math.abs(b) ? Math.abs(b) : Math.abs(a)) * eps);
+	private static boolean approximatelyEqual(final float a, final float b, final float eps) {
+		return Math.abs(a - b) <= ((Math.max(Math.abs(a), Math.abs(b))) * eps);
 	}
 }

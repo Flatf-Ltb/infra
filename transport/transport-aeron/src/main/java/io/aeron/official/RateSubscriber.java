@@ -19,7 +19,6 @@ import io.aeron.Aeron;
 import io.aeron.Subscription;
 import io.aeron.driver.MediaDriver;
 import org.agrona.CloseHelper;
-import org.agrona.concurrent.SigInt;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -60,10 +59,10 @@ public class RateSubscriber {
         final RateReporter reporter = new RateReporter(TimeUnit.SECONDS.toNanos(1), SamplesUtil::printRate);
         final AtomicBoolean running = new AtomicBoolean(true);
 
-        SigInt.register(() -> {
-            reporter.halt();
-            running.set(false);
-        });
+//        SigInt.register(() -> {
+//            reporter.halt();
+//            running.set(false);
+//        });
 
         try (Aeron aeron = Aeron.connect(ctx); Subscription subscription = aeron.addSubscription(CHANNEL, STREAM_ID)) {
             final Future<?> future = executor.submit(() -> SamplesUtil

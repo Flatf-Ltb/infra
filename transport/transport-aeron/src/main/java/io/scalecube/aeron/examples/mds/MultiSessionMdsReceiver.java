@@ -11,7 +11,6 @@ import io.aeron.logbuffer.FragmentHandler;
 import io.scalecube.aeron.examples.AeronHelper;
 import net.bytebuddy.agent.ByteBuddyAgent;
 import org.agrona.CloseHelper;
-import org.agrona.concurrent.SigInt;
 import org.agrona.concurrent.SleepingMillisIdleStrategy;
 
 import java.time.Instant;
@@ -51,7 +50,7 @@ public class MultiSessionMdsReceiver {
         System.setProperty("aeron.event.archive.log", "all");
         EventLogAgent.agentmain("", ByteBuddyAgent.install());
 
-        SigInt.register(MultiSessionMdsReceiver::close);
+//        SigInt.register(MultiSessionMdsReceiver::close);
 
         mediaDriver = MediaDriver.launchEmbedded(
                 new MediaDriver.Context()

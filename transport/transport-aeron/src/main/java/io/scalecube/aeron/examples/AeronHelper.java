@@ -92,22 +92,22 @@ public class AeronHelper {
                 (csid, cid, subscriptionId, streamId, strippedChannel) ->
                         System.out.printf(
                                 "[listRecordingSubscriptions] "
-                                        + "controlSessionId: %d, "
-                                        + "correlationId: %d, "
-                                        + "subscriptionId: %d, "
-                                        + "streamId: %d, "
-                                        + "strippedChannel: %s%n",
+                                + "controlSessionId: %d, "
+                                + "correlationId: %d, "
+                                + "subscriptionId: %d, "
+                                + "streamId: %d, "
+                                + "strippedChannel: %s%n",
                                 csid, cid, subscriptionId, streamId, strippedChannel));
 
         System.out.printf(
                 "Recorded publication, "
-                        + "channel: %s, "
-                        + "streamId: %d, "
-                        + "session: %d, "
-                        + "recordingId: %d, "
-                        + "recordingPosCounterId: %d, "
-                        + "recordingSubscriptions(per stream): %d"
-                        + "%n",
+                + "channel: %s, "
+                + "streamId: %d, "
+                + "session: %d, "
+                + "recordingId: %d, "
+                + "recordingPosCounterId: %d, "
+                + "recordingSubscriptions(per stream): %d"
+                + "%n",
                 publication.channel(),
                 publication.streamId(),
                 publication.sessionId(),
@@ -125,7 +125,7 @@ public class AeronHelper {
         try (final Subscription subscription = image.subscription()) {
             System.out.printf(
                     "### %s | [subscription:%d] Available image on %s "
-                            + "streamId=%d, sessionId=%d, subscription.imageCount=%d from %s%n",
+                    + "streamId=%d, sessionId=%d, subscription.imageCount=%d from %s%n",
                     System.nanoTime(),
                     subscription.registrationId(),
                     subscription.channel(),
@@ -145,9 +145,9 @@ public class AeronHelper {
         final Subscription subscription = image.subscription();
         System.out.printf(
                 "### %s | "
-                        + "[subscription:%d] "
-                        + "Unavailable image on %s "
-                        + "streamId=%d, sessionId=%d, isClosed=%s, subscription.imageCount=%d, isEndOfStream=%s%n",
+                + "[subscription:%d] "
+                + "Unavailable image on %s "
+                + "streamId=%d, sessionId=%d, isClosed=%s, subscription.imageCount=%d, isEndOfStream=%s%n",
                 System.nanoTime(),
                 subscription.registrationId(),
                 subscription.channel(),
@@ -216,11 +216,11 @@ public class AeronHelper {
     public static void printPublication(Publication publication) {
         System.out.printf(
                 "Publication, "
-                        + "channel: %s, "
-                        + "streamId: %d, "
-                        + "session: %d, "
-                        + "initialTermId: %d, "
-                        + "termLength: %d%n",
+                + "channel: %s, "
+                + "streamId: %d, "
+                + "session: %d, "
+                + "initialTermId: %d, "
+                + "termLength: %d%n",
                 publication.channel(),
                 publication.streamId(),
                 publication.sessionId(),
@@ -236,13 +236,13 @@ public class AeronHelper {
     public static void printPublication(ExclusivePublication publication) {
         System.out.printf(
                 "Publication, "
-                        + "channel: %s, "
-                        + "streamId: %d, "
-                        + "session: %d, "
-                        + "initialTermId: %d, "
-                        + "termId: %d, "
-                        + "termOffset: %d, "
-                        + "termLength: %d%n",
+                + "channel: %s, "
+                + "streamId: %d, "
+                + "session: %d, "
+                + "initialTermId: %d, "
+                + "termId: %d, "
+                + "termOffset: %d, "
+                + "termLength: %d%n",
                 publication.channel(),
                 publication.streamId(),
                 publication.sessionId(),
@@ -276,12 +276,12 @@ public class AeronHelper {
         return (buffer, offset, length, header) ->
                 System.out.printf(
                         "<<%s>> | "
-                                + "session: %d, "
-                                + "stream: %d, "
-                                + "position: %d, "
-                                + "initialTermId: %d, "
-                                + "termId: %d, "
-                                + "termOffset: %d%n",
+                        + "session: %d, "
+                        + "stream: %d, "
+                        + "position: %d, "
+                        + "initialTermId: %d, "
+                        + "termId: %d, "
+                        + "termOffset: %d%n",
                         buffer.getStringWithoutLengthAscii(offset, length),
                         header.sessionId(),
                         streamId,
@@ -302,12 +302,12 @@ public class AeronHelper {
         return (buffer, offset, length, header) ->
                 System.out.printf(
                         "<<%s>> '%s' | "
-                                + "session: %d, "
-                                + "stream: %d, "
-                                + "position: %d, "
-                                + "initialTermId: %d, "
-                                + "termId: %d, "
-                                + "termOffset: %d%n",
+                        + "session: %d, "
+                        + "stream: %d, "
+                        + "position: %d, "
+                        + "initialTermId: %d, "
+                        + "termId: %d, "
+                        + "termOffset: %d%n",
                         buffer.getStringWithoutLengthAscii(offset, length),
                         label,
                         header.sessionId(),

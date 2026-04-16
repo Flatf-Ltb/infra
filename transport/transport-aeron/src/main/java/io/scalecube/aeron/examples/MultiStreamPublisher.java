@@ -6,7 +6,6 @@ import io.aeron.ChannelUriStringBuilder;
 import io.aeron.Publication;
 import io.aeron.driver.MediaDriver;
 import org.agrona.CloseHelper;
-import org.agrona.concurrent.SigInt;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -30,7 +29,7 @@ public class MultiStreamPublisher {
      * @param args args
      */
     public static void main(String[] args) throws InterruptedException {
-        SigInt.register(MultiStreamPublisher::close);
+        //SigInt.register(MultiStreamPublisher::close);
 
         mediaDriver = MediaDriver.launchEmbedded();
         String aeronDirectoryName = mediaDriver.aeronDirectoryName();

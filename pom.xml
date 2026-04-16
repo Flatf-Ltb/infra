@@ -3,19 +3,19 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.mercury</groupId>
-    <artifactId>mercury</artifactId>
+    <groupId>io.flatf</groupId>
+    <artifactId>basic</artifactId>
     <version>1.0.1</version>
 
     <inceptionYear>2015</inceptionYear>
-    <url>https://github.com/yellow013/mercury.git</url>
+    <url>https://github.com/yellow013/basic.git</url>
     <developers>
         <developer>
             <name>yellow013</name>
         </developer>
     </developers>
 
-    <name>mercury</name>
+    <name>basic</name>
     <packaging>pom</packaging>
 
     <modules>
@@ -28,6 +28,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- Java 21 -->
         <java.version>21</java.version>
         <maven.compiler.target>21</maven.compiler.target>
@@ -35,9 +36,9 @@
         <!-- Common library version -->
         <slf4j.version>2.0.17</slf4j.version>
         <junit.version>4.13.2</junit.version>
-        <jupiter.version>5.14.1</jupiter.version>
-        <netty.version>4.2.9.Final</netty.version>
-        <jackson.version>2.19.4</jackson.version>
+        <jupiter.version>6.0.3</jupiter.version>
+        <netty.version>4.2.10.Final</netty.version>
+        <jackson.version>2.21.2</jackson.version>
         <guava.version>33.5.0-jre</guava.version>
     </properties>
 
@@ -47,7 +48,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.14.1</version>
+                    <version>3.15.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -82,12 +83,10 @@
             <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- Annotations for Error Prone,
-            a static analysis tool for Java that catches common programming mistakes at compile-time. -->
+        <!-- Annotations the SpotBugs tool supports -->
         <dependency>
-            <groupId>com.google.errorprone</groupId>
-            <artifactId>error_prone_annotations</artifactId>
-            <version>2.41.0</version>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-annotations</artifactId>
         </dependency>
     </dependencies>
 
@@ -105,24 +104,24 @@
                 <artifactId>junit-jupiter</artifactId>
                 <version>${jupiter.version}</version>
             </dependency>
-            <!-- JSR305 Annotations for Find bugs -->
+            <!-- Annotations the SpotBugs tool supports -->
             <dependency>
-                <groupId>com.google.code.findbugs</groupId>
-                <artifactId>jsr305</artifactId>
-                <version>3.0.2</version>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-annotations</artifactId>
+                <version>4.9.8</version>
             </dependency>
             <!-- A set of annotations used for code inspection support and code documentation. -->
             <dependency>
                 <groupId>org.jetbrains</groupId>
                 <artifactId>annotations</artifactId>
-                <version>26.0.2</version>
+                <version>26.1.0</version>
             </dependency>
             <!-- Lombok is a Java library that provides annotations to simplify Java development
                  by automating the generation of boilerplate code. -->
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>1.18.42</version>
+                <version>1.18.44</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

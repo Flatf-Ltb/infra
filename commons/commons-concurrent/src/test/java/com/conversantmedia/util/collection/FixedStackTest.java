@@ -10,7 +10,7 @@ public class FixedStackTest {
 
 	@Test
 	public void testCreate() {
-		FixedStack<Integer> intStack = new FixedStack<Integer>(10);
+		FixedStack<Integer> intStack = new FixedStack<>(10);
 
 		Assert.assertTrue(intStack.isEmpty());
 
@@ -20,7 +20,7 @@ public class FixedStackTest {
 
 		Assert.assertFalse(intStack.isEmpty());
 
-		Assert.assertEquals(intStack.size(), 10);
+		Assert.assertEquals(10, intStack.size());
 
 		for (int i = 9; i >= 0; i--) {
 			Assert.assertEquals(intStack.pop(), Integer.valueOf(i));
@@ -29,7 +29,7 @@ public class FixedStackTest {
 
 	@Test
 	public void testPush() {
-		FixedStack<Integer> intStack = new FixedStack<Integer>(16);
+		FixedStack<Integer> intStack = new FixedStack<>(16);
 		// okay to add more than 10
 		for (int i = 0; i < 16; i++) {
 			intStack.push(i);
@@ -47,7 +47,7 @@ public class FixedStackTest {
 
 	@Test
 	public void testPeek() {
-		FixedStack<Integer> intStack = new FixedStack<Integer>(1024);
+		FixedStack<Integer> intStack = new FixedStack<>(1024);
 		for (int i = 0; i < 1024; i++) {
 			intStack.push(i);
 		}
@@ -60,7 +60,7 @@ public class FixedStackTest {
 
 	@Test
 	public void testClear() {
-		FixedStack<Integer> intStack = new FixedStack<Integer>(20);
+		FixedStack<Integer> intStack = new FixedStack<>(20);
 		for (int i = 0; i < 20; i++) {
 			intStack.push(i);
 		}

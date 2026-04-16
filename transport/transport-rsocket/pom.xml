@@ -4,22 +4,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>io.mercury</groupId>
+        <groupId>io.flatf</groupId>
         <artifactId>transport</artifactId>
         <version>1.0.1</version>
     </parent>
 
     <artifactId>transport-rsocket</artifactId>
 
-    <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
     <dependencies>
         <dependency>
-            <groupId>io.mercury</groupId>
+            <groupId>io.flatf</groupId>
             <artifactId>commons-concurrent</artifactId>
         </dependency>
         <dependency>
@@ -49,7 +43,7 @@
         <dependency>
             <groupId>io.projectreactor</groupId>
             <artifactId>reactor-core</artifactId>
-            <version>3.7.9</version>
+            <version>3.8.3</version>
         </dependency>
     </dependencies>
 

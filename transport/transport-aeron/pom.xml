@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>io.mercury</groupId>
+        <groupId>io.flatf</groupId>
         <artifactId>transport</artifactId>
         <version>1.0.1</version>
     </parent>
@@ -12,21 +12,21 @@
     <name>transport-aeron</name>
 
     <properties>
-        <aeron.version>1.49.1</aeron.version>
-        <byte-buddy.version>1.17.7</byte-buddy.version>
+        <aeron.version>1.50.2</aeron.version>
+        <byte-buddy.version>1.18.7</byte-buddy.version>
     </properties>
 
     <repositories>
-<!--        <repository>-->
-<!--            <id>aeronic</id>-->
-<!--            <name>aeronic</name>-->
-<!--            <url>https://dl.cloudsmith.io/public/lob-software/aeronic/maven/</url>-->
-<!--        </repository>-->
+        <repository>
+            <id>aeronic</id>
+            <name>aeronic</name>
+            <url>https://dl.cloudsmith.io/public/lob-software/aeronic/maven/</url>
+        </repository>
     </repositories>
 
     <dependencies>
         <dependency>
-            <groupId>io.mercury</groupId>
+            <groupId>io.flatf</groupId>
             <artifactId>commons-concurrent</artifactId>
         </dependency>
 

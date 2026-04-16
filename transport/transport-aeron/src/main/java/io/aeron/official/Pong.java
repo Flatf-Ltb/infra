@@ -26,7 +26,6 @@ import org.agrona.CloseHelper;
 import org.agrona.DirectBuffer;
 import org.agrona.concurrent.BusySpinIdleStrategy;
 import org.agrona.concurrent.IdleStrategy;
-import org.agrona.concurrent.SigInt;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -74,7 +73,7 @@ public class Pong {
         System.out.println("Using exclusive publications " + EXCLUSIVE_PUBLICATIONS);
 
         final AtomicBoolean running = new AtomicBoolean(true);
-        SigInt.register(() -> running.set(false));
+        // SigInt.register(() -> running.set(false));
 
         try (Aeron aeron = Aeron.connect(ctx);
              Subscription subscription = aeron.addSubscription(PING_CHANNEL, PING_STREAM_ID);

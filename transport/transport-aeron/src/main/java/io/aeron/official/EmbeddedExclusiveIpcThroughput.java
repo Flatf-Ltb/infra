@@ -24,7 +24,6 @@ import io.aeron.driver.ThreadingMode;
 import org.agrona.BufferUtil;
 import org.agrona.DirectBuffer;
 import org.agrona.concurrent.IdleStrategy;
-import org.agrona.concurrent.SigInt;
 import org.agrona.concurrent.UnsafeBuffer;
 
 import java.nio.ByteBuffer;
@@ -56,7 +55,7 @@ public class EmbeddedExclusiveIpcThroughput {
         loadPropertiesFiles(args);
 
         final AtomicBoolean running = new AtomicBoolean(true);
-        SigInt.register(() -> running.set(false));
+//        SigInt.register(() -> running.set(false));
 
         final MediaDriver.Context ctx = new MediaDriver.Context().threadingMode(ThreadingMode.SHARED);
 

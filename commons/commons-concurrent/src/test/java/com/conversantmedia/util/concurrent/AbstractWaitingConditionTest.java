@@ -32,18 +32,15 @@ public class AbstractWaitingConditionTest {
 		final TestQueueCondition tqc = new TestQueueCondition();
 
 		final long startTime = System.nanoTime();
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					Thread.sleep(500);
-				} catch (InterruptedException e) {
+		new Thread(() -> {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException ignored) {
 
-				}
-				isCondition = false;
-				tqc.signal();
-			}
-		}).start();
+            }
+            isCondition = false;
+            tqc.signal();
+        }).start();
 
 		tqc.await();
 
@@ -58,18 +55,15 @@ public class AbstractWaitingConditionTest {
 		final TestQueueCondition tqc = new TestQueueCondition();
 
 		final long startTime = System.nanoTime();
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					Thread.sleep(500);
-				} catch (InterruptedException e) {
+		new Thread(() -> {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException ignored) {
 
-				}
-				isCondition = false;
-				tqc.signal();
-			}
-		}).start();
+            }
+            isCondition = false;
+            tqc.signal();
+        }).start();
 
 		tqc.awaitNanos(1_000_000_000L);
 

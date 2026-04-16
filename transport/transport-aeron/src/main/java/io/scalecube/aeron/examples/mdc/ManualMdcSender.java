@@ -7,7 +7,6 @@ import io.aeron.ExclusivePublication;
 import io.aeron.driver.MediaDriver;
 import io.scalecube.aeron.examples.AeronHelper;
 import org.agrona.CloseHelper;
-import org.agrona.concurrent.SigInt;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -33,7 +32,7 @@ public class ManualMdcSender {
      * @param args args
      */
     public static void main(String[] args) throws InterruptedException {
-        SigInt.register(ManualMdcSender::close);
+//        SigInt.register(ManualMdcSender::close);
 
         mediaDriver = MediaDriver.launchEmbedded();
         String aeronDirectoryName = mediaDriver.aeronDirectoryName();

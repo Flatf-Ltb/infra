@@ -607,7 +607,7 @@ public class MPMCBlockingQueueTest {
 		final BlockingQueue<Integer> dbq = new MPMCBlockingQueue<>(cap);
 
 		for (int i = 0; i < cap; i++) {
-			dbq.offer(Integer.valueOf(i));
+			dbq.offer(i);
 		}
 
 		int i = 0;
@@ -622,7 +622,7 @@ public class MPMCBlockingQueueTest {
 		final BlockingQueue<Integer> dbq = new MPMCBlockingQueue<>(cap);
 
 		for (int i = 0; i < cap; i++) {
-			dbq.offer(Integer.valueOf(i));
+			dbq.offer(i);
 		}
 
 		Integer[] t = new Integer[cap];
@@ -649,7 +649,7 @@ public class MPMCBlockingQueueTest {
 
 				for (int a = 0; a < cap; a++) {
 					Assert.assertEquals(dbq.size(), a);
-					dbq.offer(Integer.valueOf(a));
+					dbq.offer(a);
 					nIter++;
 				}
 

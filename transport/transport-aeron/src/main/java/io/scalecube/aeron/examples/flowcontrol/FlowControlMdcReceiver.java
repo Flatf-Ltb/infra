@@ -12,7 +12,6 @@ import io.scalecube.aeron.examples.meter.MeterRegistry;
 import io.scalecube.aeron.examples.meter.ThroughputMeter;
 import org.agrona.CloseHelper;
 import org.agrona.concurrent.BackoffIdleStrategy;
-import org.agrona.concurrent.SigInt;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -42,7 +41,7 @@ public class FlowControlMdcReceiver {
      * @param args args
      */
     public static void main(String[] args) throws InterruptedException {
-        SigInt.register(() -> running.set(false));
+        // SigInt.register(() -> running.set(false));
 
         try {
             if (receiverCategory == null)

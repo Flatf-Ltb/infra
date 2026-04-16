@@ -1,4 +1,4 @@
-@namespace ( "io.mercury.serialization.avro.msg" )
+@namespace ( "io.flatf.serialization.avro.msg" )
 protocol UselessProtocol {
 	
 	enum ContentType {

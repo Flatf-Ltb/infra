@@ -15,7 +15,6 @@ import io.aeron.logbuffer.FragmentHandler;
 import io.scalecube.aeron.examples.AeronHelper;
 import net.bytebuddy.agent.ByteBuddyAgent;
 import org.agrona.CloseHelper;
-import org.agrona.concurrent.SigInt;
 import org.agrona.concurrent.SleepingMillisIdleStrategy;
 
 import java.nio.file.Path;
@@ -45,7 +44,7 @@ public class BasicReplayMergeReceiver {
      * @param args args
      */
     public static void main(String[] args) {
-        SigInt.register(BasicReplayMergeReceiver::close);
+        // SigInt.register(BasicReplayMergeReceiver::close);
 
         System.setProperty("aeron.event.log", "admin");
         System.setProperty("aeron.event.archive.log", "all");

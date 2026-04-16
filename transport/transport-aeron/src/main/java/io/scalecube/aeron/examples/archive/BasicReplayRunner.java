@@ -12,7 +12,6 @@ import io.aeron.logbuffer.FragmentHandler;
 import io.scalecube.aeron.examples.AeronHelper;
 import org.agrona.CloseHelper;
 import org.agrona.concurrent.BackoffIdleStrategy;
-import org.agrona.concurrent.SigInt;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -38,7 +37,7 @@ public class BasicReplayRunner {
      * @param args args
      */
     public static void main(String[] args) {
-        SigInt.register(BasicReplayRunner::close);
+//        SigInt.register(BasicReplayRunner::close);
 
         Path aeronPath = Paths.get(CommonContext.generateRandomDirName());
 

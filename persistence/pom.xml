@@ -4,8 +4,8 @@
     <modelVersion>4.0.0</modelVersion>
     <!-- This is persistence pom.xml -->
     <parent>
-        <groupId>io.mercury</groupId>
-        <artifactId>mercury</artifactId>
+        <groupId>io.flatf</groupId>
+        <artifactId>basic</artifactId>
         <version>1.0.1</version>
     </parent>
 
@@ -16,27 +16,9 @@
     <modules>
         <module>persistence-chronicle</module>
         <module>persistence-h2</module>
-        <module>persistence-rdb</module>
         <module>persistence-rocksdb</module>
         <module>persistence-sqlite</module>
     </modules>
-
-    <properties>
-    </properties>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <compilerArgument>-parameters</compilerArgument>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
     <dependencies>
         <dependency>
@@ -49,17 +31,17 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>io.mercury</groupId>
+                <groupId>io.flatf</groupId>
                 <artifactId>commons-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.mercury</groupId>
+                <groupId>io.flatf</groupId>
                 <artifactId>commons-concurrent</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.mercury</groupId>
+                <groupId>io.flatf</groupId>
                 <artifactId>serialization-json</artifactId>
                 <version>${project.version}</version>
             </dependency>

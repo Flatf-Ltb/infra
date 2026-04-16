@@ -10,7 +10,6 @@ import io.aeron.logbuffer.FragmentHandler;
 import io.scalecube.aeron.examples.AeronHelper;
 import org.agrona.CloseHelper;
 import org.agrona.concurrent.BackoffIdleStrategy;
-import org.agrona.concurrent.SigInt;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -36,7 +35,7 @@ public class ManualMdsReceiver {
      * @param args args
      */
     public static void main(String[] args) {
-        SigInt.register(ManualMdsReceiver::close);
+        // SigInt.register(ManualMdsReceiver::close);
 
         mediaDriver = MediaDriver.launchEmbedded();
         String aeronDirectoryName = mediaDriver.aeronDirectoryName();

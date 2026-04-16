@@ -20,7 +20,6 @@ import io.aeron.Subscription;
 import io.aeron.logbuffer.FragmentHandler;
 import org.agrona.concurrent.BackoffIdleStrategy;
 import org.agrona.concurrent.IdleStrategy;
-import org.agrona.concurrent.SigInt;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -54,7 +53,7 @@ public class SimpleSubscriber {
 
         final AtomicBoolean running = new AtomicBoolean(true);
         // Register a SIGINT handler for graceful shutdown.
-        SigInt.register(() -> running.set(false));
+//        SigInt.register(() -> running.set(false));
 
         // dataHandler method is called for every new datagram received
         final FragmentHandler fragmentHandler = (buffer, offset, length, header) -> {

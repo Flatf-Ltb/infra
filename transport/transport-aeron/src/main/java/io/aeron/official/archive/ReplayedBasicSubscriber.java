@@ -23,7 +23,6 @@ import io.aeron.logbuffer.FragmentHandler;
 import io.aeron.official.SampleConfiguration;
 import io.aeron.official.SamplesUtil;
 import org.agrona.collections.MutableLong;
-import org.agrona.concurrent.SigInt;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -51,7 +50,7 @@ public class ReplayedBasicSubscriber {
         final FragmentHandler fragmentHandler = SamplesUtil.printAsciiMessage(STREAM_ID);
         final AtomicBoolean running = new AtomicBoolean(true);
 
-        SigInt.register(() -> running.set(false));
+//        SigInt.register(() -> running.set(false));
 
         // Create a unique response stream id so not to clash with other archive
         // clients.
