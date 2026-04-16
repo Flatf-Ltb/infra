@@ -39,7 +39,7 @@ public final class RmqChannel extends RmqTransport {
     /**
      * Create GeneralChannel of RmqConnection
      *
-     * @param connection io.mercury.transport.rmq.configurator.RmqConnection
+     * @param connection io.flatf.transport.rmq.configurator.RmqConnection
      * @return RmqChannel
      */
     public static RmqChannel with(RmqConnection connection) {
@@ -81,3 +81,4 @@ public final class RmqChannel extends RmqTransport {
     }
 
 }
+

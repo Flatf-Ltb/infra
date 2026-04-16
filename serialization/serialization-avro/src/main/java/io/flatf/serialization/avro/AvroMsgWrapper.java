@@ -14,7 +14,7 @@ public final class AvroMsgWrapper {
     }
 
     /**
-     * @param envelope io.mercury.serialization.avro.msg.Envelope
+     * @param envelope io.flatf.serialization.avro.msg.Envelope
      * @param content  ByteBuffer
      * @return AvroBinaryMsg
      */
@@ -24,7 +24,7 @@ public final class AvroMsgWrapper {
     }
 
     /**
-     * @param envelope io.mercury.serialization.avro.msg.Envelope
+     * @param envelope io.flatf.serialization.avro.msg.Envelope
      * @param sequence long
      * @param epoch    long
      * @param content  ByteBuffer
@@ -37,7 +37,7 @@ public final class AvroMsgWrapper {
     }
 
     /**
-     * @param envelope io.mercury.serialization.avro.msg.Envelope
+     * @param envelope io.flatf.serialization.avro.msg.Envelope
      * @param content  String
      * @return AvroTextMsg
      */
@@ -47,7 +47,7 @@ public final class AvroMsgWrapper {
     }
 
     /**
-     * @param envelope io.mercury.serialization.avro.msg.Envelope
+     * @param envelope io.flatf.serialization.avro.msg.Envelope
      * @param sequence long
      * @param epoch    long
      * @param content  String
@@ -60,7 +60,7 @@ public final class AvroMsgWrapper {
     }
 
     /**
-     * @param envelope    io.mercury.common.codec.Envelope
+     * @param envelope    io.flatf.common.codec.Envelope
      * @param contentType ContentType
      * @param content     ByteBuffer
      * @return AvroBinaryMsg
@@ -71,7 +71,7 @@ public final class AvroMsgWrapper {
     }
 
     /**
-     * @param envelope    io.mercury.common.codec.Envelope
+     * @param envelope    io.flatf.common.codec.Envelope
      * @param contentType ContentType
      * @param sequence    long
      * @param epoch       long
@@ -88,7 +88,7 @@ public final class AvroMsgWrapper {
     }
 
     /**
-     * @param envelope    io.mercury.common.codec.Envelope
+     * @param envelope    io.flatf.common.codec.Envelope
      * @param contentType ContentType
      * @param content     String
      * @return AvroTextMsg
@@ -99,7 +99,7 @@ public final class AvroMsgWrapper {
     }
 
     /**
-     * @param envelope    io.mercury.common.codec.Envelope
+     * @param envelope    io.flatf.common.codec.Envelope
      * @param contentType ContentType
      * @param sequence    long
      * @param epoch       long
@@ -116,3 +116,4 @@ public final class AvroMsgWrapper {
     }
 
 }
+
