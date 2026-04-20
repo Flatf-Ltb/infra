@@ -10,11 +10,11 @@ import com.lmax.disruptor.WaitStrategy;
  *
  * @param <E> Event Type
  */
-public abstract class RingEventCollector<E> implements EventHandler<E> {
+public abstract class RingEventAggregator<E> implements EventHandler<E> {
 
     protected final RingEventbus<E> eventbus;
 
-    protected RingEventCollector(Builder builder, EventFactory<E> factory) {
+    protected RingEventAggregator(Builder builder, EventFactory<E> factory) {
         if (builder.isSingleProducer) {
             this.eventbus = RingEventbus.singleProducer(factory)
                     .size(builder.size)
@@ -42,7 +42,7 @@ public abstract class RingEventCollector<E> implements EventHandler<E> {
 
         private final boolean isSingleProducer;
         private String name = "eventbus";
-        private int size = 64;
+        private int size = 128;
         private WaitStrategy waitStrategy = SimpleWaitStrategy.YIELDING.getInstance();
 
         private Builder(boolean isSingleProducer) {
