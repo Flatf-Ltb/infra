@@ -7,13 +7,12 @@ import io.flatf.common.codec.DecodeException;
 import io.flatf.common.lang.Validator;
 import io.flatf.common.log4j2.Log4j2LoggerFactory;
 import io.flatf.common.util.StringSupport;
-import io.flatf.transport.api.Receiver;
 import io.flatf.transport.api.Subscriber;
 import io.flatf.transport.exception.ConnectionBreakException;
 import io.flatf.transport.exception.ConnectionFailedException;
 import io.flatf.transport.exception.ReceiverStartException;
 import io.flatf.transport.rmq.config.RmqConnection;
-import io.flatf.transport.rmq.config.RmqReceiverConfig;
+import io.flatf.transport.rmq.config.RmqConsumerCfg;
 import io.flatf.transport.rmq.declare.ExchangeRelationship;
 import io.flatf.transport.rmq.declare.QueueRelationship;
 import io.flatf.transport.rmq.exception.DeclareException;
@@ -36,9 +35,9 @@ import static io.flatf.common.util.StringSupport.nonEmpty;
  * <p>
  * [已完成]改造升级, 使用共同的构建者建立Exchange, RoutingKey, Queue的绑定关系
  */
-public class RmqReceiver<T> extends RmqTransport implements Receiver, Subscriber, Runnable {
+public class RmqConsumer<T> extends RmqTransport implements Subscriber, Runnable {
 
-    private static final Logger log = Log4j2LoggerFactory.getLogger(RmqReceiver.class);
+    private static final Logger log = Log4j2LoggerFactory.getLogger(RmqConsumer.class);
 
     // 接收消息使用的反序列化器
     private final Function<byte[], T> deserializer;
@@ -96,7 +95,7 @@ public class RmqReceiver<T> extends RmqTransport implements Receiver, Subscriber
      * @param consumer Consumer<byte[]>
      * @return RmqReceiver<byte [ ]>
      */
-    public static RmqReceiver<byte[]> create(@Nonnull RmqReceiverConfig config,
+    public static RmqConsumer<byte[]> create(@Nonnull RmqConsumerCfg config,
                                              @Nonnull Consumer<byte[]> consumer) {
         return create(null, config, consumer);
     }
@@ -107,8 +106,8 @@ public class RmqReceiver<T> extends RmqTransport implements Receiver, Subscriber
      * @param consumer Consumer<byte[]>
      * @return RmqReceiver<byte [ ]>
      */
-    public static RmqReceiver<byte[]> create(@Nullable String tag,
-                                             @Nonnull RmqReceiverConfig config,
+    public static RmqConsumer<byte[]> create(@Nullable String tag,
+                                             @Nonnull RmqConsumerCfg config,
                                              @Nonnull Consumer<byte[]> consumer) {
         return create(tag, config, msg -> msg, consumer);
     }
@@ -120,7 +119,7 @@ public class RmqReceiver<T> extends RmqTransport implements Receiver, Subscriber
      * @param consumer     Consumer<T>
      * @return RmqReceiver<T>
      */
-    public static <T> RmqReceiver<T> create(@Nonnull RmqReceiverConfig config,
+    public static <T> RmqConsumer<T> create(@Nonnull RmqConsumerCfg config,
                                             @Nonnull Function<byte[], T> deserializer,
                                             @Nonnull Consumer<T> consumer) {
         return create(null, config, deserializer, consumer);
@@ -134,11 +133,11 @@ public class RmqReceiver<T> extends RmqTransport implements Receiver, Subscriber
      * @param consumer     Consumer<T>
      * @return RmqReceiver<T>
      */
-    public static <T> RmqReceiver<T> create(@Nullable String tag,
-                                            @Nonnull RmqReceiverConfig config,
+    public static <T> RmqConsumer<T> create(@Nullable String tag,
+                                            @Nonnull RmqConsumerCfg config,
                                             @Nonnull Function<byte[], T> deserializer,
                                             @Nonnull Consumer<T> consumer) {
-        return new RmqReceiver<>(tag, config, deserializer, consumer);
+        return new RmqConsumer<>(tag, config, deserializer, consumer);
     }
 
     /**
@@ -147,23 +146,23 @@ public class RmqReceiver<T> extends RmqTransport implements Receiver, Subscriber
      * @param deserializer Function<byte[], T>
      * @param consumer     Consumer<T>
      */
-    private RmqReceiver(@Nullable String tag, @Nonnull RmqReceiverConfig cfg,
+    private RmqConsumer(@Nullable String tag, @Nonnull RmqConsumerCfg cfg,
                         @Nonnull Function<byte[], T> deserializer,
                         @Nonnull Consumer<T> consumer)
-            throws ConnectionFailedException {
+        throws ConnectionFailedException {
         super(nonEmpty(tag) ? tag : "receiver-" + datetimeOfMillisecond(), cfg.getConnection());
-        this.receiveQueue = cfg.getReceiveQueue();
+        this.receiveQueue = cfg.queue();
         this.queueName = receiveQueue.getQueueName();
         this.deserializer = deserializer;
         this.consumer = consumer;
-        this.errMsgExchange = cfg.getErrMsgExchange();
-        this.errMsgRoutingKey = cfg.getErrMsgRoutingKey();
-        this.errMsgQueue = cfg.getErrMsgQueue();
-        this.autoAck = cfg.getAckOptions().isAutoAck();
-        this.multipleAck = cfg.getAckOptions().isMultipleAck();
-        this.maxAckTotal = cfg.getAckOptions().getMaxAckTotal();
-        this.maxAckReconnection = cfg.getAckOptions().getMaxAckReconnection();
-        this.qos = cfg.getAckOptions().getQos();
+        this.errMsgExchange = cfg.errMsgExchange();
+        this.errMsgRoutingKey = cfg.errMsgRoutingKey();
+        this.errMsgQueue = cfg.errMsgQueue();
+        this.autoAck = cfg.ackOptions().autoAck();
+        this.multipleAck = cfg.ackOptions().multipleAck();
+        this.maxAckTotal = cfg.ackOptions().maxAckTotal();
+        this.maxAckReconnection = cfg.ackOptions().maxAckReconnection();
+        this.qos = cfg.ackOptions().qos();
         this.receiverName = "receiver::" + rmqConnection.getConnectionInfo() + "$" + queueName;
         createConnection();
         declare();
@@ -175,7 +174,7 @@ public class RmqReceiver<T> extends RmqTransport implements Receiver, Subscriber
             this.receiveQueue.declare(operator);
         } catch (DeclareException e) {
             log.error("Queue declare throw exception -> connection configurator info : {}, error message : {}",
-                    rmqConnection.getConfigInfo(), e.getMessage(), e);
+                rmqConnection.getConfigInfo(), e.getMessage(), e);
             // 在定义Queue和进行绑定时抛出任何异常都需要终止程序
             closeIgnoreException();
             throw new DeclareRuntimeException(e);
@@ -195,8 +194,8 @@ public class RmqReceiver<T> extends RmqTransport implements Receiver, Subscriber
             this.errMsgExchange.declare(operator);
         } catch (DeclareException e) {
             log.error(
-                    "ErrorMsgExchange declare throw exception -> connection configurator info : {}, error message : {}",
-                    rmqConnection.getConfigInfo(), e.getMessage(), e);
+                "ErrorMsgExchange declare throw exception -> connection configurator info : {}, error message : {}",
+                rmqConnection.getConfigInfo(), e.getMessage(), e);
             // 在定义Queue和进行绑定时抛出任何异常都需要终止程序
             closeIgnoreException();
             throw new DeclareRuntimeException(e);
@@ -210,7 +209,7 @@ public class RmqReceiver<T> extends RmqTransport implements Receiver, Subscriber
             this.errMsgQueue.declare(operator);
         } catch (DeclareException e) {
             log.error("ErrorMsgQueue declare throw exception -> connection configurator info : {}, error message : {}",
-                    rmqConnection.getConfigInfo(), e.getMessage(), e);
+                rmqConnection.getConfigInfo(), e.getMessage(), e);
             // 在定义Queue和进行绑定时抛出任何异常都需要终止程序
             closeIgnoreException();
             throw new DeclareRuntimeException(e);
@@ -221,16 +220,11 @@ public class RmqReceiver<T> extends RmqTransport implements Receiver, Subscriber
 
     @Override
     public void run() {
-        receive();
+        subscribe();
     }
 
     @Override
     public void subscribe() {
-        receive();
-    }
-
-    @Override
-    public void receive() throws ReceiverStartException {
         Validator.nonNull(deserializer, "deserializer");
         Validator.nonNull(consumer, "consumer");
         // # Set QOS parameter start *****
@@ -246,51 +240,52 @@ public class RmqReceiver<T> extends RmqTransport implements Receiver, Subscriber
         // # Set Consume start *****
         try {
             channel.basicConsume(
-                    // param1: the name of the queue
-                    queueName,
-                    // param2: true if the server should consider messages acknowledged once
-                    // delivered; false if the server should expect explicit acknowledgement
-                    autoAck,
-                    // param3: a client-generated consumer tag to establish context
-                    tag,
-                    // param4: an interface to the consumer object
-                    new DefaultConsumer(channel) {
-                        @Override
-                        public void handleDelivery(String consumerTag, Envelope envelope, BasicProperties properties,
-                                                   byte[] body) throws IOException {
+                // param1: the name of the queue
+                queueName,
+                // param2: true if the server should consider messages acknowledged once
+                // delivered; false if the server should expect explicit acknowledgement
+                autoAck,
+                // param3: a client-generated consumer tag to establish context
+                tag,
+                // param4: an interface to the consumer object
+                new DefaultConsumer(channel) {
+                    @Override
+                    public void handleDelivery(String consumerTag, Envelope envelope, BasicProperties properties,
+                                               byte[] body) throws IOException {
+                        try {
+                            log.debug("Message handle start");
+                            log.debug("Callback handleDelivery, consumerTag==[{}], deliveryTag==[{}] body.length==[{}]",
+                                consumerTag, envelope.getDeliveryTag(), body.length);
+                            T apply;
                             try {
-                                log.debug("Message handle start");
-                                log.debug("Callback handleDelivery, consumerTag==[{}], deliveryTag==[{}] body.length==[{}]",
-                                        consumerTag, envelope.getDeliveryTag(), body.length);
-                                T apply;
-                                try {
-                                    apply = deserializer.apply(body);
-                                } catch (Exception e) {
-                                    throw new DecodeException(e);
-                                }
-                                consumer.accept(apply);
-                                log.debug("Callback handleDelivery() end");
+                                apply = deserializer.apply(body);
                             } catch (Exception e) {
-                                log.error("Consumer accept msg==[{}] throw Exception -> {}",
-                                        StringSupport.toString(body), e.getMessage(), e);
-                                dumpUnprocessableMsg(e, consumerTag, envelope, properties, body);
+                                throw new DecodeException(e);
                             }
-                            if (!autoAck) {
-                                if (ack(envelope.getDeliveryTag())) {
-                                    log.debug("Message handle and ack finished");
-                                } else {
-                                    log.info("Ack failure envelope.getDeliveryTag()==[{}], Reject message", envelope.getDeliveryTag());
-                                    channel.basicReject(envelope.getDeliveryTag(), true);
-                                }
+                            consumer.accept(apply);
+                            log.debug("Callback handleDelivery() end");
+                        } catch (Exception e) {
+                            log.error("Consumer accept msg==[{}] throw Exception -> {}",
+                                StringSupport.toString(body), e.getMessage(), e);
+                            dumpUnprocessableMsg(e, consumerTag, envelope, properties, body);
+                        }
+                        if (!autoAck) {
+                            if (ack(envelope.getDeliveryTag())) {
+                                log.debug("Message handle and ack finished");
+                            } else {
+                                log.info("Ack failure envelope.getDeliveryTag()==[{}], Reject message", envelope.getDeliveryTag());
+                                channel.basicReject(envelope.getDeliveryTag(), true);
                             }
                         }
-                    });
+                    }
+                });
         } catch (IOException e) {
             log.error("Func -> RabbitMqReceiver::basicConsume() IOException msg -> {}", e.getMessage(), e);
             throw new ReceiverStartException(e.getMessage(), e);
         }
         // # Set Consume end *****
     }
+
 
     /**
      * @param cause       Throwable
@@ -321,8 +316,8 @@ public class RmqReceiver<T> extends RmqTransport implements Receiver, Subscriber
             closeIgnoreException();
             log.error("RabbitMqReceiver: [{}] already closed", receiverName);
             throw new MsgHandleException(
-                    "The message could not handle, and could not delivered to the error dump address."
-                            + "\n The connection was closed.", cause);
+                "The message could not handle, and could not delivered to the error dump address."
+                + "\n The connection was closed.", cause);
         }
     }
 
@@ -368,7 +363,7 @@ public class RmqReceiver<T> extends RmqTransport implements Receiver, Subscriber
             }
         } catch (IOException e) {
             log.error("Call func Channel::basicAck(deliveryTag==[{}], multiple==[{}]) throw IOException -> {}",
-                    deliveryTag, multipleAck, e.getMessage(), e);
+                deliveryTag, multipleAck, e.getMessage(), e);
             return ack0(deliveryTag, ++retry);
         }
     }
@@ -387,16 +382,16 @@ public class RmqReceiver<T> extends RmqTransport implements Receiver, Subscriber
     @Override
     public void reconnect() throws ConnectionBreakException, ReceiverStartException {
         closeAndReconnection();
-        receive();
+        subscribe();
     }
 
     public static void main(String[] args) {
-        try (RmqReceiver<byte[]> receiver = RmqReceiver
-                .create("test",
-                        RmqReceiverConfig.configuration(RmqConnection.with("127.0.0.1", 5672, "user", "u_pass").build(),
-                                QueueRelationship.named("TEST")).build(),
-                        msg -> System.out.println(new String(msg, UTF8)))) {
-            receiver.receive();
+        try (RmqConsumer<byte[]> receiver = RmqConsumer
+            .create("test",
+                RmqConsumerCfg.with(RmqConnection.with("127.0.0.1", 5672, "user", "u_pass").build(),
+                    QueueRelationship.named("TEST")).build(),
+                msg -> System.out.println(new String(msg, UTF8)))) {
+            receiver.subscribe();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

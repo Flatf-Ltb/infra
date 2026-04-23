@@ -13,6 +13,7 @@ import io.flatf.transport.rmq.config.RmqConnection;
 import io.flatf.transport.rmq.declare.AmqpExchange;
 import io.flatf.transport.rmq.declare.QueueRelationship;
 import io.flatf.transport.rmq.exception.DeclareException;
+import lombok.Getter;
 import org.slf4j.Logger;
 
 import javax.annotation.Nonnull;
@@ -24,7 +25,9 @@ public class RmqBuffer<E> implements MultiConsumerQueue<E>, Closeable {
 
     private static final Logger log = Log4j2LoggerFactory.getLogger(RmqBuffer.class);
 
+    @Getter
     private final RmqConnection connection;
+    
     private final RmqChannel channel;
     private final String queueName;
     private final List<String> exchangeNames;
@@ -46,9 +49,9 @@ public class RmqBuffer<E> implements MultiConsumerQueue<E>, Closeable {
      */
     public static <E> RmqBuffer<E> newQueue(RmqConnection connection, String queueName,
                                             BytesSerializer<E> serializer, BytesDeserializer<E> deserializer)
-            throws DeclareException {
+        throws DeclareException {
         return new RmqBuffer<>(connection, queueName, MutableLists.newFastList(), MutableLists.newFastList(),
-                serializer, deserializer);
+            serializer, deserializer);
     }
 
     /**
@@ -65,7 +68,7 @@ public class RmqBuffer<E> implements MultiConsumerQueue<E>, Closeable {
     public static <E> RmqBuffer<E> newQueue(RmqConnection connection, String queueName,
                                             List<String> exchangeNames, List<String> routingKeys,
                                             BytesSerializer<E> serializer, BytesDeserializer<E> deserializer)
-            throws DeclareException {
+        throws DeclareException {
         return new RmqBuffer<>(connection, queueName, exchangeNames, routingKeys, serializer, deserializer);
     }
 
@@ -81,7 +84,7 @@ public class RmqBuffer<E> implements MultiConsumerQueue<E>, Closeable {
     private RmqBuffer(RmqConnection connection, String queueName,
                       List<String> exchangeNames, List<String> routingKeys,
                       BytesSerializer<E> serializer, BytesDeserializer<E> deserializer)
-            throws DeclareException {
+        throws DeclareException {
         this.connection = connection;
         this.queueName = queueName;
         this.exchangeNames = exchangeNames;
@@ -98,21 +101,14 @@ public class RmqBuffer<E> implements MultiConsumerQueue<E>, Closeable {
      */
     private void declareQueue() throws DeclareException {
         QueueRelationship relationship = QueueRelationship.named(queueName).binding(
-                // 如果routingKeys为空集合, 则创建fanout交换器, 否则创建直接交换器
-                exchangeNames.stream()
-                        .map(exchangeName -> routingKeys.isEmpty()
-                                ? AmqpExchange.fanout(exchangeName)
-                                : AmqpExchange.direct(exchangeName))
-                        .toList(),
-                routingKeys);
+            // 如果routingKeys为空集合, 则创建fanout交换器, 否则创建直接交换器
+            exchangeNames.stream()
+                .map(exchangeName -> routingKeys.isEmpty()
+                    ? AmqpExchange.fanout(exchangeName)
+                    : AmqpExchange.direct(exchangeName))
+                .toList(),
+            routingKeys);
         relationship.declare(RmqOperator.with(channel.internalChannel()));
-    }
-
-    /**
-     * @return RmqConnection
-     */
-    public RmqConnection getConnection() {
-        return connection;
     }
 
     @Override
@@ -206,9 +202,9 @@ public class RmqBuffer<E> implements MultiConsumerQueue<E>, Closeable {
         RmqConnection connection = RmqConnection.with("127.0.0.1", 5672, "user", "password").build();
 
         try (RmqBuffer<String> testQueue = newQueue(
-                connection, "rmq_test",
-                str -> JsonWriter.toJson(str).getBytes(Charsets.UTF8),
-                (bytes, reuse) -> new String(bytes, Charsets.UTF8))) {
+            connection, "rmq_test",
+            str -> JsonWriter.toJson(str).getBytes(Charsets.UTF8),
+            (bytes, reuse) -> new String(bytes, Charsets.UTF8))) {
 
             testQueue.pollAndApply(str -> {
                 System.out.println(str);

@@ -9,8 +9,8 @@ import io.flatf.common.datetime.DateTimeUtil;
 import io.flatf.common.lang.Validator;
 import io.flatf.common.log4j2.Log4j2LoggerFactory;
 import io.flatf.common.serialization.specific.BytesDeserializer;
-import io.flatf.transport.api.Receiver;
-import io.flatf.transport.rmq.config.RmqReceiverConfig;
+import io.flatf.transport.api.Subscriber;
+import io.flatf.transport.rmq.config.RmqConsumerCfg;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.eclipse.collections.api.list.MutableList;
 import org.slf4j.Logger;
@@ -35,7 +35,7 @@ import static io.flatf.common.util.StringSupport.nonEmpty;
  * <p>
  * 处理批量数据, 手动ACK
  */
-public class RmqBatchReceiver<T> extends RmqTransport implements Receiver, Runnable {
+public class RmqBatchReceiver<T> extends RmqTransport implements Subscriber, Runnable {
 
     private static final Logger log = Log4j2LoggerFactory.getLogger(RmqBatchReceiver.class);
 
@@ -71,26 +71,26 @@ public class RmqBatchReceiver<T> extends RmqTransport implements Receiver, Runna
 
     private final BatchProcessConsumer<T> consumer;
 
-    public RmqBatchReceiver(String tag, @Nonnull RmqReceiverConfig cfg, long autoFlushInterval,
+    public RmqBatchReceiver(String tag, @Nonnull RmqConsumerCfg cfg, long autoFlushInterval,
                             BytesDeserializer<T> deserializer, BatchHandler<T> batchHandler, RefreshNowEvent<T> refreshNowEvent) {
         super(nonEmpty(tag) ? tag : "batch-recv-" + DateTimeUtil.datetimeOfMillisecond(), cfg.getConnection());
-        this.receiveQueue = cfg.getReceiveQueue().getQueueName();
+        this.receiveQueue = cfg.queue().getQueueName();
         createConnection();
         queueDeclare();
-        this.consumer = new BatchProcessConsumer<>(channel, cfg.getAckOptions().getQos(), autoFlushInterval,
-                batchHandler, deserializer, refreshNowEvent, null);
+        this.consumer = new BatchProcessConsumer<>(channel, cfg.ackOptions().qos(), autoFlushInterval,
+            batchHandler, deserializer, refreshNowEvent, null);
     }
 
-    public RmqBatchReceiver(String tag, @Nonnull RmqReceiverConfig configurator, long autoFlushInterval,
+    public RmqBatchReceiver(String tag, @Nonnull RmqConsumerCfg configurator, long autoFlushInterval,
                             BytesDeserializer<T> deserializer, BatchHandler<T> batchHandler, RefreshNowEvent<T> refreshNowEvent,
                             Predicate<T> filter) {
         super(nonEmpty(tag) ? tag : "batch-receiver-" + DateTimeUtil.datetimeOfMillisecond(),
-                configurator.getConnection());
-        this.receiveQueue = configurator.getReceiveQueue().getQueueName();
+            configurator.getConnection());
+        this.receiveQueue = configurator.queue().getQueueName();
         createConnection();
         queueDeclare();
-        this.consumer = new BatchProcessConsumer<>(super.channel, configurator.getAckOptions().getQos(),
-                autoFlushInterval, batchHandler, deserializer, refreshNowEvent, filter);
+        this.consumer = new BatchProcessConsumer<>(super.channel, configurator.ackOptions().qos(),
+            autoFlushInterval, batchHandler, deserializer, refreshNowEvent, filter);
     }
 
     private void queueDeclare() {
@@ -99,19 +99,19 @@ public class RmqBatchReceiver<T> extends RmqTransport implements Receiver, Runna
             channel.queueDeclare(receiveQueue, durable, exclusive, autoDelete, null);
         } catch (IOException e) {
             log.error(
-                    "Function channel.queueDeclare(queue==[{}], durable==[{}], exclusive==[{}], autoDelete==[{}], arguments==null) IOException message -> {}",
-                    receiveQueue, durable, exclusive, autoDelete, e.getMessage(), e);
+                "Function channel.queueDeclare(queue==[{}], durable==[{}], exclusive==[{}], autoDelete==[{}], arguments==null) IOException message -> {}",
+                receiveQueue, durable, exclusive, autoDelete, e.getMessage(), e);
             closeIgnoreException();
         }
     }
 
     @Override
     public void run() {
-        receive();
+        subscribe();
     }
 
     @Override
-    public void receive() {
+    public void subscribe() {
         try {
             channel.basicConsume(receiveQueue, false, tag, consumer);
         } catch (IOException e) {
@@ -232,7 +232,7 @@ public class RmqBatchReceiver<T> extends RmqTransport implements Receiver, Runna
 
             lock = new ReentrantLock();
             ThreadFactory namedThreadFactory = new BasicThreadFactory.Builder()
-                    .namingPattern("BatchHandlerAutoFlush-pool-%d").build();
+                .namingPattern("BatchHandlerAutoFlush-pool-%d").build();
             schedule = new ScheduledThreadPoolExecutor(1, namedThreadFactory);
             automaticFlush();
         }
@@ -262,7 +262,7 @@ public class RmqBatchReceiver<T> extends RmqTransport implements Receiver, Runna
             }
             if (cacheSize.longValue() >= prefetchCount) {
                 log.info("The message to be stored reaches the threshold[{}] -> {} , local deliveryTag[{}] ",
-                        cacheSize.longValue(), prefetchCount, this.lastDeliveryTag);
+                    cacheSize.longValue(), prefetchCount, this.lastDeliveryTag);
                 flush();
             } else if (refreshNowEvent != null && refreshNowEvent.flushNow(t)) {
                 log.info("-----触发立刻刷新事件! tag -> {}-----", lastDeliveryTag);
@@ -284,7 +284,7 @@ public class RmqBatchReceiver<T> extends RmqTransport implements Receiver, Runna
                         bufferList.clear();
                         cacheSize.reset();
                         log.info("cache clear, current size -> {}, cache -> {} , local tag -> {}", bufferList.size(),
-                                cacheSize.longValue(), lastDeliveryTag);
+                            cacheSize.longValue(), lastDeliveryTag);
                     } else {
                         // TODO do failure handle
                         log.warn("ack tag -> {}", lastDeliveryTag);
@@ -310,9 +310,9 @@ public class RmqBatchReceiver<T> extends RmqTransport implements Receiver, Runna
             schedule.scheduleWithFixedDelay(() -> {
                 try {
                     if (cacheSize.longValue() == lastSize && cacheSize.longValue() > 0
-                            && cacheSize.longValue() != prefetchCount) {
+                        && cacheSize.longValue() != prefetchCount) {
                         log.info("automatic flush cache ...{} -> {} ,deliveryTag[{}]", cacheSize.longValue(), lastSize,
-                                this.lastDeliveryTag);
+                            this.lastDeliveryTag);
                         flush();
                     } else {
                         lastSize = cacheSize.longValue();

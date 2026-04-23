@@ -175,7 +175,7 @@ public final class RmqConnection implements TransportCfg {
     }
 
     @Setter
-    @Accessors(chain = true)
+    @Accessors(chain = true, fluent = true)
     public static class Builder {
 
         // 连接地址

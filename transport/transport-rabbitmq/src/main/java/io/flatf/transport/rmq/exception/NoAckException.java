@@ -16,14 +16,14 @@ public class NoAckException extends Exception {
     public NoAckException(String exchange, String routingKey,
                           int confirmRetry, long confirmTimeout) {
         super("Call confirmPublish failure -> "
-                + "exchange : "
-                + "[" + exchange + "], "
-                + "routingKey : "
-                + "[" + routingKey + "], "
-                + "confirmRetry : "
-                + "[" + confirmRetry + "], "
-                + "confirmTimeout : "
-                + "[" + confirmTimeout + "]");
+              + "exchange : "
+              + "[" + exchange + "], "
+              + "routingKey : "
+              + "[" + routingKey + "], "
+              + "confirmRetry : "
+              + "[" + confirmRetry + "], "
+              + "confirmTimeout : "
+              + "[" + confirmTimeout + "]");
     }
 
     /**
@@ -37,14 +37,14 @@ public class NoAckException extends Exception {
                           int confirmRetry, long confirmTimeout,
                           Throwable cause) {
         super("Call confirmPublish failure -> "
-                + "exchange : "
-                + "[" + exchange + "], "
-                + "routingKey : "
-                + "[" + routingKey + "], "
-                + "confirmRetry : "
-                + "[" + confirmRetry + "], "
-                + "confirmTimeout : "
-                + "[" + confirmTimeout + "]", cause);
+              + "exchange : "
+              + "[" + exchange + "], "
+              + "routingKey : "
+              + "[" + routingKey + "], "
+              + "confirmRetry : "
+              + "[" + confirmRetry + "], "
+              + "confirmTimeout : "
+              + "[" + confirmTimeout + "]", cause);
     }
 
     /**
@@ -58,16 +58,16 @@ public class NoAckException extends Exception {
                           int confirmRetry, long confirmTimeout,
                           byte[] msg) {
         super("Call confirmPublish failure -> "
-                + "exchange : "
-                + "[" + exchange + "], "
-                + "routingKey : "
-                + "[" + routingKey + "], "
-                + "confirmRetry : "
-                + "[" + confirmRetry + "], "
-                + "confirmTimeout : "
-                + "[" + confirmTimeout + "], "
-                + "msg : "
-                + "[" + new String(msg) + "]");
+              + "exchange : "
+              + "[" + exchange + "], "
+              + "routingKey : "
+              + "[" + routingKey + "], "
+              + "confirmRetry : "
+              + "[" + confirmRetry + "], "
+              + "confirmTimeout : "
+              + "[" + confirmTimeout + "], "
+              + "msg : "
+              + "[" + new String(msg) + "]");
     }
 
     /**
@@ -82,16 +82,16 @@ public class NoAckException extends Exception {
                           int confirmRetry, long confirmTimeout,
                           byte[] msg, Throwable cause) {
         super("Call confirmPublish failure -> "
-                + "exchange : "
-                + "[" + exchange + "], "
-                + "routingKey : "
-                + "[" + routingKey + "], "
-                + "confirmRetry : "
-                + "[" + confirmRetry + "], "
-                + "confirmTimeout : "
-                + "[" + confirmTimeout + "], "
-                + "msg : "
-                + "[" + new String(msg) + "]", cause);
+              + "exchange : "
+              + "[" + exchange + "], "
+              + "routingKey : "
+              + "[" + routingKey + "], "
+              + "confirmRetry : "
+              + "[" + confirmRetry + "], "
+              + "confirmTimeout : "
+              + "[" + confirmTimeout + "], "
+              + "msg : "
+              + "[" + new String(msg) + "]", cause);
     }
 
 }

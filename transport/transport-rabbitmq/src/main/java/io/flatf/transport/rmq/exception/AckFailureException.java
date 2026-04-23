@@ -16,7 +16,7 @@ public class AckFailureException extends Exception {
     public AckFailureException(String exchange, String routingKey,
                                int confirmRetry, long confirmTimeout) {
         super("Call confirmPublish failure -> exchange==[" + exchange + "], routingKey==[" + routingKey
-                + "], confirmRetry==[" + confirmRetry + "], confirmTimeout==[" + confirmTimeout + "]");
+              + "], confirmRetry==[" + confirmRetry + "], confirmTimeout==[" + confirmTimeout + "]");
     }
 
     /**
@@ -30,7 +30,7 @@ public class AckFailureException extends Exception {
                                int confirmRetry, long confirmTimeout,
                                Throwable cause) {
         super("Call confirmPublish failure -> exchange==[" + exchange + "], routingKey==[" + routingKey
-                + "], confirmRetry==[" + confirmRetry + "], confirmTimeout==[" + confirmTimeout + "]", cause);
+              + "], confirmRetry==[" + confirmRetry + "], confirmTimeout==[" + confirmTimeout + "]", cause);
     }
 
     /**
@@ -44,8 +44,8 @@ public class AckFailureException extends Exception {
                                int confirmRetry, long confirmTimeout,
                                byte[] msg) {
         super("Call confirmPublish failure -> exchange==[" + exchange + "], routingKey==[" + routingKey
-                + "], confirmRetry==[" + confirmRetry + "], confirmTimeout==[" + confirmTimeout + "], msg==["
-                + new String(msg) + "]");
+              + "], confirmRetry==[" + confirmRetry + "], confirmTimeout==[" + confirmTimeout + "], msg==["
+              + new String(msg) + "]");
     }
 
     /**
@@ -60,8 +60,8 @@ public class AckFailureException extends Exception {
                                int confirmRetry, long confirmTimeout,
                                byte[] msg, Throwable cause) {
         super("Call confirmPublish failure -> exchange==[" + exchange + "], routingKey==[" + routingKey
-                + "], confirmRetry==[" + confirmRetry + "], confirmTimeout==[" + confirmTimeout + "], msg==["
-                + new String(msg) + "]", cause);
+              + "], confirmRetry==[" + confirmRetry + "], confirmTimeout==[" + confirmTimeout + "], msg==["
+              + new String(msg) + "]", cause);
     }
 
 }

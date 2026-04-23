@@ -5,7 +5,7 @@ import lombok.Getter;
 /**
  * @author yellow013
  */
-public abstract class RmqConfig {
+public sealed abstract class RmqCfg permits RmqPublisherCfg, RmqConsumerCfg {
 
     /**
      * 连接配置信息
@@ -13,7 +13,7 @@ public abstract class RmqConfig {
     @Getter
     private final RmqConnection connection;
 
-    protected RmqConfig(RmqConnection connection) {
+    protected RmqCfg(RmqConnection connection) {
         this.connection = connection;
     }
 

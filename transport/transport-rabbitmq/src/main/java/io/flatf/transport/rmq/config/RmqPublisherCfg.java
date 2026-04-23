@@ -5,6 +5,8 @@ import io.flatf.serialization.json.JsonWriter;
 import io.flatf.transport.rmq.declare.AmqpQueue;
 import io.flatf.transport.rmq.declare.ExchangeRelationship;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -16,11 +18,12 @@ import static io.flatf.common.lang.Validator.nonNull;
 /**
  * @author yellow013
  */
-public final class RmqPublisherConfig extends RmqConfig {
+@Accessors(fluent = true)
+public final class RmqPublisherCfg extends RmqCfg {
 
     // 发布者ExchangeDeclare
     @Getter
-    private final ExchangeRelationship publishExchange;
+    private final ExchangeRelationship exchange;
 
     // 消息发布RoutingKey
     @Getter
@@ -41,9 +44,9 @@ public final class RmqPublisherConfig extends RmqConfig {
     /**
      * @param builder Builder
      */
-    private RmqPublisherConfig(Builder builder) {
+    private RmqPublisherCfg(Builder builder) {
         super(builder.connection);
-        this.publishExchange = builder.publishExchange;
+        this.exchange = builder.exchange;
         this.defaultRoutingKey = builder.defaultRoutingKey;
         this.defaultMsgProps = builder.defaultMsgProps;
         this.msgPropsSupplier = builder.msgPropsSupplier;
@@ -121,7 +124,7 @@ public final class RmqPublisherConfig extends RmqConfig {
                                         @Nonnull String username, @Nonnull String password,
                                         @Nullable String virtualHost, @Nonnull ExchangeRelationship publishExchange) {
         return configuration(RmqConnection.with(host, port, username, password, virtualHost).build(),
-                publishExchange);
+            publishExchange);
     }
 
     /**
@@ -134,7 +137,7 @@ public final class RmqPublisherConfig extends RmqConfig {
     public static Builder configuration(@Nonnull RmqConnection connection,
                                         @Nonnull ExchangeRelationship publishExchange) {
         return new Builder(nonNull(connection, "connection"),
-                nonNull(publishExchange, "publishExchange"));
+            nonNull(publishExchange, "publishExchange"));
     }
 
     private transient String toStringCache;
@@ -146,13 +149,15 @@ public final class RmqPublisherConfig extends RmqConfig {
         return toStringCache;
     }
 
+    @Setter
+    @Accessors(chain = true, fluent = true)
     public static class Builder {
 
         // 连接配置
         private final RmqConnection connection;
-        
+
         // 消息发布Exchange和相关绑定
-        private final ExchangeRelationship publishExchange;
+        private final ExchangeRelationship exchange;
 
         // 消息发布RoutingKey, 默认为空字符串
         private String defaultRoutingKey = "";
@@ -168,39 +173,19 @@ public final class RmqPublisherConfig extends RmqConfig {
 
         /**
          * @param connection      RmqConnection
-         * @param publishExchange ExchangeRelationship
+         * @param exchange ExchangeRelationship
          */
-        private Builder(RmqConnection connection, ExchangeRelationship publishExchange) {
+        private Builder(RmqConnection connection, ExchangeRelationship exchange) {
             this.connection = connection;
-            this.publishExchange = publishExchange;
-        }
-
-        public Builder setDefaultRoutingKey(String defaultRoutingKey) {
-            this.defaultRoutingKey = defaultRoutingKey;
-            return this;
-        }
-
-        public Builder setDefaultMsgProps(BasicProperties defaultMsgProps) {
-            this.defaultMsgProps = defaultMsgProps;
-            return this;
-        }
-
-        public Builder setMsgPropsSupplier(Supplier<BasicProperties> msgPropsSupplier) {
-            this.msgPropsSupplier = msgPropsSupplier;
-            return this;
-        }
-
-        public Builder setConfirmOptions(PublishConfirmOptions confirmOptions) {
-            this.confirmOptions = confirmOptions;
-            return this;
+            this.exchange = exchange;
         }
 
         /**
          * @param confirm boolean
          * @return Builder
          */
-        public Builder setConfirm(boolean confirm) {
-            this.confirmOptions.setConfirm(confirm);
+        public Builder confirm(boolean confirm) {
+            this.confirmOptions.confirm(confirm);
             return this;
         }
 
@@ -208,8 +193,8 @@ public final class RmqPublisherConfig extends RmqConfig {
          * @param confirmRetry int
          * @return Builder
          */
-        public Builder setConfirmRetry(int confirmRetry) {
-            this.confirmOptions.setConfirmRetry(confirmRetry);
+        public Builder confirmRetry(int confirmRetry) {
+            this.confirmOptions.confirmRetry(confirmRetry);
             return this;
         }
 
@@ -217,16 +202,16 @@ public final class RmqPublisherConfig extends RmqConfig {
          * @param confirmTimeout long
          * @return Builder
          */
-        public Builder setConfirmTimeout(long confirmTimeout) {
-            this.confirmOptions.setConfirmTimeout(confirmTimeout);
+        public Builder confirmTimeout(long confirmTimeout) {
+            this.confirmOptions.confirmTimeout(confirmTimeout);
             return this;
         }
 
         /**
          * @return RmqPublisherConfig
          */
-        public RmqPublisherConfig build() {
-            return new RmqPublisherConfig(this);
+        public RmqPublisherCfg build() {
+            return new RmqPublisherCfg(this);
         }
 
     }
@@ -234,6 +219,9 @@ public final class RmqPublisherConfig extends RmqConfig {
     /**
      * @author yellow013
      */
+    @Getter
+    @Setter
+    @Accessors(chain = true, fluent = true)
     public static final class PublishConfirmOptions {
 
         // 是否执行发布确认, 默认false
@@ -252,33 +240,6 @@ public final class RmqPublisherConfig extends RmqConfig {
             this.confirm = confirm;
             this.confirmTimeout = confirmTimeout;
             this.confirmRetry = confirmRetry;
-        }
-
-        public PublishConfirmOptions setConfirm(boolean confirm) {
-            this.confirm = confirm;
-            return this;
-        }
-
-        public PublishConfirmOptions setConfirmTimeout(long confirmTimeout) {
-            this.confirmTimeout = confirmTimeout;
-            return this;
-        }
-
-        public PublishConfirmOptions setConfirmRetry(int confirmRetry) {
-            this.confirmRetry = confirmRetry;
-            return this;
-        }
-
-        public boolean isConfirm() {
-            return confirm;
-        }
-
-        public long getConfirmTimeout() {
-            return confirmTimeout;
-        }
-
-        public int getConfirmRetry() {
-            return confirmRetry;
         }
 
         /**
@@ -303,13 +264,13 @@ public final class RmqPublisherConfig extends RmqConfig {
 
     public static void main(String[] args) {
         System.out.println(configuration(
-                RmqConnection
-                        .with("localhost", 5672, "user0", "password0")
-                        .build(),
-                ExchangeRelationship
-                        .direct("TEST")
-                        .bindingQueues(AmqpQueue.named("TEST_0")))
-                .build());
+            RmqConnection
+                .with("localhost", 5672, "user0", "password0")
+                .build(),
+            ExchangeRelationship
+                .direct("TEST")
+                .bindingQueues(AmqpQueue.named("TEST_0")))
+            .build());
     }
 
 }

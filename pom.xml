@@ -39,7 +39,7 @@
         <jupiter.version>6.0.3</jupiter.version>
         <netty.version>4.2.12.Final</netty.version>
         <jackson.version>2.21.2</jackson.version>
-        <guava.version>33.5.0-jre</guava.version>
+        <guava.version>33.6.0-jre</guava.version>
     </properties>
 
     <build>

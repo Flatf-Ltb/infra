@@ -38,7 +38,7 @@ public final class DeclareException extends Exception {
                                                      boolean exclusive, boolean autoDelete,
                                                      Map<String, Object> args, Throwable cause) {
         return new DeclareException("Declare queue error -> queue==[" + queue + "], durable==[" + durable
-                + "], exclusive==[" + exclusive + "], autoDelete==[" + autoDelete + "], args==[" + args + "]", cause);
+                                    + "], exclusive==[" + exclusive + "], autoDelete==[" + autoDelete + "], args==[" + args + "]", cause);
     }
 
     /**
@@ -55,9 +55,9 @@ public final class DeclareException extends Exception {
                                                         boolean durable, boolean autoDelete, boolean internal,
                                                         Map<String, Object> args, Throwable cause) {
         return new DeclareException(
-                "Declare exchange error -> exchange==[" + exchange + "], type==[" + type + "], durable==[" + durable
-                        + "], autoDelete==[" + autoDelete + "], internal==[" + internal + "], args==[" + args + "]",
-                cause);
+            "Declare exchange error -> exchange==[" + exchange + "], type==[" + type + "], durable==[" + durable
+            + "], autoDelete==[" + autoDelete + "], internal==[" + internal + "], args==[" + args + "]",
+            cause);
     }
 
     /**
@@ -70,7 +70,7 @@ public final class DeclareException extends Exception {
     public static DeclareException bindQueueError(String queue, String exchange,
                                                   String routingKey, Throwable cause) {
         return new DeclareException("Bind queue error -> queue==[" + queue + "], exchange==[" + exchange
-                + "], routingKey==[" + routingKey + "]", cause);
+                                    + "], routingKey==[" + routingKey + "]", cause);
     }
 
     /**
@@ -83,7 +83,7 @@ public final class DeclareException extends Exception {
     public static DeclareException bindExchangeError(String destExchange, String sourceExchange, String routingKey,
                                                      Throwable cause) {
         return new DeclareException("Bind exchange error -> destExchange==[" + destExchange + "], sourceExchange==["
-                + sourceExchange + "], routingKey==[" + routingKey + "]", cause);
+                                    + sourceExchange + "], routingKey==[" + routingKey + "]", cause);
     }
 
     /**

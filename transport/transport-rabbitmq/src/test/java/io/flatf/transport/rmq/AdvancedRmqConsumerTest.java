@@ -2,7 +2,7 @@ package io.flatf.transport.rmq;
 
 import org.junit.Test;
 
-public class AdvancedRmqReceiverTest {
+public class AdvancedRmqConsumerTest {
 
 	@Test
 	public void test() {
