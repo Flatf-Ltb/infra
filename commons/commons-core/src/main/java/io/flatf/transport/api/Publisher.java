@@ -24,6 +24,15 @@ public interface Publisher<T, M> extends Transport {
      * @param msg    M
      * @throws PublishFailedException e
      */
-    void publish(T target, M msg) throws PublishFailedException;
+    default void publish(T target, M msg) throws PublishFailedException {
+        throw new UnsupportedOperationException(getClass().getName() + " does not support targeted publish");
+    }
+
+    /**
+     * @return whether the publisher supports a caller-specified target.
+     */
+    default boolean supportsTargetedPublish() {
+        return true;
+    }
 
 }

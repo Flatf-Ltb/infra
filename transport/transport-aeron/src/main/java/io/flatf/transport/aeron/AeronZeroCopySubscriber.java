@@ -3,6 +3,7 @@ package io.flatf.transport.aeron;
 import io.aeron.FragmentAssembler;
 import io.aeron.Subscription;
 import io.aeron.logbuffer.FragmentHandler;
+import io.flatf.transport.api.IndexedMessageConsumer;
 import io.flatf.transport.api.Subscriber;
 import org.agrona.CloseHelper;
 import org.agrona.concurrent.IdleStrategy;
@@ -10,26 +11,26 @@ import org.slf4j.Logger;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
-import java.util.function.BiConsumer;
 
 import static io.flatf.common.lang.Validator.nonNull;
 import static io.flatf.common.log4j2.Log4j2LoggerFactory.getLogger;
 
 /**
- * Aeron subscriber capable of polling multiple streams on the same channel.
+ * Aeron subscriber variant that exposes payloads through a callback-scoped zero-copy view.
  */
-public final class AeronSubscriber extends AeronComponent implements Subscriber {
+public final class AeronZeroCopySubscriber extends AeronComponent implements Subscriber {
 
-    private static final Logger log = getLogger(AeronSubscriber.class);
+    private static final Logger log = getLogger(AeronZeroCopySubscriber.class);
 
     private final Subscription[] subscriptions;
-    private final BiConsumer<Integer, byte[]> consumer;
+    private final AeronMessageView[] messageViews;
+    private final IndexedMessageConsumer<AeronMessageView> consumer;
     private final IdleStrategy idleStrategy;
     private final int fragmentLimit;
 
-    AeronSubscriber(@Nonnull AeronCfg cfg,
-                    @Nonnull int[] streamIds,
-                    @Nonnull BiConsumer<Integer, byte[]> consumer) {
+    AeronZeroCopySubscriber(@Nonnull AeronCfg cfg,
+                            @Nonnull int[] streamIds,
+                            @Nonnull IndexedMessageConsumer<AeronMessageView> consumer) {
         super(cfg);
         nonNull(streamIds, "streamIds");
         nonNull(consumer, "consumer");
@@ -40,12 +41,14 @@ public final class AeronSubscriber extends AeronComponent implements Subscriber 
         this.fragmentLimit = cfg.getFragmentLimit();
         this.idleStrategy = cfg.newSubscriberIdleStrategy();
         this.subscriptions = new Subscription[streamIds.length];
+        this.messageViews = new AeronMessageView[streamIds.length];
         for (int i = 0; i < streamIds.length; i++) {
             subscriptions[i] = aeron.addSubscription(cfg.getChannel().uri(), streamIds[i]);
+            messageViews[i] = new AeronMessageView();
         }
-        this.name = "ASub$" + cfg.getChannel() + Arrays.toString(streamIds);
+        this.name = "AZSub$" + cfg.getChannel() + Arrays.toString(streamIds);
         newStartTime();
-        log.info("AeronSubscriber created -> {}", name);
+        log.info("AeronZeroCopySubscriber created -> {}", name);
     }
 
     @Override
@@ -80,12 +83,7 @@ public final class AeronSubscriber extends AeronComponent implements Subscriber 
             }
             idleStrategy.idle(workCount);
         }
-        log.info("AeronSubscriber -> [{}] stopped", name);
-    }
-
-    @Override
-    public void reconnect() {
-        throw new UnsupportedOperationException("AeronSubscriber does not support reconnect");
+        log.info("AeronZeroCopySubscriber -> [{}] stopped", name);
     }
 
     @Override
@@ -98,7 +96,7 @@ public final class AeronSubscriber extends AeronComponent implements Subscriber 
         try {
             subscribe();
         } catch (RuntimeException e) {
-            log.error("AeronSubscriber -> [{}] terminated unexpectedly", name, e);
+            log.error("AeronZeroCopySubscriber -> [{}] terminated unexpectedly", name, e);
             throw e;
         }
     }
@@ -106,12 +104,10 @@ public final class AeronSubscriber extends AeronComponent implements Subscriber 
     private FragmentAssembler[] buildAssemblers() {
         FragmentAssembler[] assemblers = new FragmentAssembler[subscriptions.length];
         for (int i = 0; i < subscriptions.length; i++) {
+            final int index = i;
             final int streamId = subscriptions[i].streamId();
-            final FragmentHandler handler = (buffer, offset, length, header) -> {
-                byte[] bytes = new byte[length];
-                buffer.getBytes(offset, bytes);
-                consumer.accept(streamId, bytes);
-            };
+            final FragmentHandler handler = (buffer, offset, length, header) ->
+                    consumer.accept(streamId, messageViews[index].wrap(buffer, offset, length));
             assemblers[i] = new FragmentAssembler(handler);
         }
         return assemblers;

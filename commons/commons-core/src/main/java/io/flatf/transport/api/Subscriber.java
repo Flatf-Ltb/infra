@@ -11,8 +11,22 @@ public interface Subscriber extends Transport, Runnable {
     void subscribe();
 
     /**
+     * @return whether reconnect is supported by this subscriber implementation
+     */
+    default boolean reconnectSupported() {
+        return false;
+    }
+
+    /**
      * Reconnect
      */
-    void reconnect();
+    default void reconnect() {
+        throw new UnsupportedOperationException(getClass().getName() + " does not support reconnect");
+    }
+
+    @Override
+    default void run() {
+        subscribe();
+    }
 
 }

@@ -15,12 +15,21 @@ public interface Receiver extends Transport, Runnable {
     void receive() throws ReceiverStartException;
 
     /**
+     * @return whether reconnect is supported by this receiver implementation
+     */
+    default boolean reconnectSupported() {
+        return false;
+    }
+
+    /**
      * Reconnect
      *
      * @throws ConnectionBreakException e0
      * @throws ReceiverStartException   e1
      */
-    void reconnect() throws ConnectionBreakException, ReceiverStartException;
+    default void reconnect() throws ConnectionBreakException, ReceiverStartException {
+        throw new UnsupportedOperationException(getClass().getName() + " does not support reconnect");
+    }
 
     @Override
     default void run() {

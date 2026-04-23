@@ -15,7 +15,7 @@ import static io.flatf.common.lang.Validator.nonEmpty;
  */
 public final class AeronChannel {
 
-    public enum Protocol { IPC, UDP }
+    public enum Protocol {IPC, UDP}
 
     private final Protocol protocol;
     private final String uri;
@@ -43,6 +43,9 @@ public final class AeronChannel {
      */
     public static AeronChannel udp(@Nonnull String host, int port) {
         nonEmpty(host, "host");
+        if (port <= 0 || port > 65_535) {
+            throw new IllegalArgumentException("port must be between 1 and 65535");
+        }
         return new AeronChannel(Protocol.UDP, "aeron:udp?endpoint=" + host + ":" + port);
     }
 
