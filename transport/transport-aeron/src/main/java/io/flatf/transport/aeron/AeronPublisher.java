@@ -93,8 +93,8 @@ public final class AeronPublisher<T> extends AeronComponent implements Publisher
 
     static boolean isRetryable(long result) {
         return result == Publication.BACK_PRESSURED
-                || result == Publication.ADMIN_ACTION
-                || result == Publication.NOT_CONNECTED;
+            || result == Publication.ADMIN_ACTION
+            || result == Publication.NOT_CONNECTED;
     }
 
     static String describeOfferResult(long result) {
@@ -108,9 +108,9 @@ public final class AeronPublisher<T> extends AeronComponent implements Publisher
 
     private String buildOfferFailureMessage(long result, int streamId, int messageLength, int attempts) {
         return "AeronPublisher offer failed -> name=" + name
-                + ", streamId=" + streamId
-                + ", bytes=" + messageLength
-                + ", attempts=" + attempts
-                + ", result=" + describeOfferResult(result);
+            + ", streamId=" + streamId
+            + ", bytes=" + messageLength
+            + ", attempts=" + attempts
+            + ", result=" + describeOfferResult(result);
     }
 }

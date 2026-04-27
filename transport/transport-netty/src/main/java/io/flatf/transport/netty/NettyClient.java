@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 
 public class NettyClient extends NettyTransport implements TransportClient {
 
-    private static final Logger log = Log4j2LoggerFactory.getLogger(NettySender.class);
+    private static final Logger log = Log4j2LoggerFactory.getLogger(NettyClient.class);
 
     private Bootstrap bootstrap;
 

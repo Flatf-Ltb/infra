@@ -107,7 +107,7 @@ public final class AeronZeroCopySubscriber extends AeronComponent implements Sub
             final int index = i;
             final int streamId = subscriptions[i].streamId();
             final FragmentHandler handler = (buffer, offset, length, header) ->
-                    consumer.accept(streamId, messageViews[index].wrap(buffer, offset, length));
+                consumer.accept(streamId, messageViews[index].wrap(buffer, offset, length));
             assemblers[i] = new FragmentAssembler(handler);
         }
         return assemblers;

@@ -38,12 +38,12 @@ public final class AeronConfig implements TransportConfig {
     public static AeronConfig ipc(int streamId) {
         validateStreamId(streamId);
         return new AeronConfig(
-                AeronChannel.ipc(),
-                streamId,
-                true,
-                DEFAULT_FRAGMENT_LIMIT,
-                DEFAULT_PUBLISH_RETRY_COUNT,
-                defaultIdleStrategyFactory()
+            AeronChannel.ipc(),
+            streamId,
+            true,
+            DEFAULT_FRAGMENT_LIMIT,
+            DEFAULT_PUBLISH_RETRY_COUNT,
+            defaultIdleStrategyFactory()
         );
     }
 
@@ -55,12 +55,12 @@ public final class AeronConfig implements TransportConfig {
         validatePort(port);
         validateStreamId(streamId);
         return new AeronConfig(
-                AeronChannel.udp(host, port),
-                streamId,
-                false,
-                DEFAULT_FRAGMENT_LIMIT,
-                DEFAULT_PUBLISH_RETRY_COUNT,
-                defaultIdleStrategyFactory()
+            AeronChannel.udp(host, port),
+            streamId,
+            false,
+            DEFAULT_FRAGMENT_LIMIT,
+            DEFAULT_PUBLISH_RETRY_COUNT,
+            defaultIdleStrategyFactory()
         );
     }
 
@@ -108,36 +108,36 @@ public final class AeronConfig implements TransportConfig {
     public AeronConfig withFragmentLimit(int fragmentLimit) {
         if (fragmentLimit <= 0) throw new IllegalArgumentException("fragmentLimit must be positive");
         return new AeronConfig(
-                channel,
-                streamId,
-                embeddedDriver,
-                fragmentLimit,
-                publishRetryCount,
-                subscriberIdleStrategyFactory
+            channel,
+            streamId,
+            embeddedDriver,
+            fragmentLimit,
+            publishRetryCount,
+            subscriberIdleStrategyFactory
         );
     }
 
     public AeronConfig withPublishRetryCount(int publishRetryCount) {
         if (publishRetryCount <= 0) throw new IllegalArgumentException("publishRetryCount must be positive");
         return new AeronConfig(
-                channel,
-                streamId,
-                embeddedDriver,
-                fragmentLimit,
-                publishRetryCount,
-                subscriberIdleStrategyFactory
+            channel,
+            streamId,
+            embeddedDriver,
+            fragmentLimit,
+            publishRetryCount,
+            subscriberIdleStrategyFactory
         );
     }
 
     public AeronConfig withSubscriberIdleStrategyFactory(@Nonnull Supplier<IdleStrategy> idleStrategyFactory) {
         nonNull(idleStrategyFactory, "idleStrategyFactory");
         return new AeronConfig(
-                channel,
-                streamId,
-                embeddedDriver,
-                fragmentLimit,
-                publishRetryCount,
-                idleStrategyFactory
+            channel,
+            streamId,
+            embeddedDriver,
+            fragmentLimit,
+            publishRetryCount,
+            idleStrategyFactory
         );
     }
 
@@ -170,8 +170,8 @@ public final class AeronConfig implements TransportConfig {
     }
 
     public AeronZeroCopySubscriber createZeroCopySubscriber(
-            @Nonnull int[] streamIds,
-            @Nonnull IndexedMessageConsumer<AeronMessageView> consumer) {
+        @Nonnull int[] streamIds,
+        @Nonnull IndexedMessageConsumer<AeronMessageView> consumer) {
         nonNull(streamIds, "streamIds");
         nonNull(consumer, "consumer");
         return new AeronZeroCopySubscriber(this, streamIds, consumer);
@@ -185,10 +185,10 @@ public final class AeronConfig implements TransportConfig {
     @Override
     public String getConfigInfo() {
         return "AeronCfg{channel=" + channel.uri()
-                + ", streamId=" + streamId
-                + ", embedded=" + embeddedDriver
-                + ", fragmentLimit=" + fragmentLimit
-                + ", publishRetryCount=" + publishRetryCount + "}";
+            + ", streamId=" + streamId
+            + ", embedded=" + embeddedDriver
+            + ", fragmentLimit=" + fragmentLimit
+            + ", publishRetryCount=" + publishRetryCount + "}";
     }
 
     @Override
