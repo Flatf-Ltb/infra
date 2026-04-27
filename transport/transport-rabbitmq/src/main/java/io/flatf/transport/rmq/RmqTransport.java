@@ -14,7 +14,7 @@ import io.flatf.common.util.StringSupport;
 import io.flatf.transport.TransportComponent;
 import io.flatf.transport.api.Transport;
 import io.flatf.transport.exception.ConnectionFailedException;
-import io.flatf.transport.rmq.config.RmqConnection;
+import io.flatf.transport.rmq.config.RmqConnectionConfig;
 import org.slf4j.Logger;
 
 import javax.annotation.Nonnull;
@@ -34,7 +34,7 @@ public abstract class RmqTransport extends TransportComponent implements Transpo
     protected volatile Channel channel;
 
     // 存储配置信息对象
-    protected RmqConnection rmqConnection;
+    protected RmqConnectionConfig connectionConfig;
 
     // 停机事件, 在监听到ShutdownSignalException时调用
     protected ShutdownSignalHandler shutdownSignalHandler;
@@ -52,19 +52,19 @@ public abstract class RmqTransport extends TransportComponent implements Transpo
 
     /**
      * @param tag           String
-     * @param rmqConnection RmqConnection
+     * @param connectionConfig RmqConnection
      */
-    protected RmqTransport(@Nonnull String tag, @Nonnull RmqConnection rmqConnection) {
-        Validator.nonNull(rmqConnection, "rabbitConnection");
+    protected RmqTransport(@Nonnull String tag, @Nonnull RmqConnectionConfig connectionConfig) {
+        Validator.nonNull(connectionConfig, "rabbitConnection");
         this.tag = tag;
-        this.rmqConnection = rmqConnection;
-        this.shutdownSignalHandler = rmqConnection.getShutdownSignalHandler();
+        this.connectionConfig = connectionConfig;
+        this.shutdownSignalHandler = connectionConfig.shutdownSignalHandler();
     }
 
     protected void createConnection() throws ConnectionFailedException {
         log.info("Create connection started");
         if (connectionFactory == null) {
-            connectionFactory = rmqConnection.createConnectionFactory();
+            connectionFactory = connectionConfig.createConnectionFactory();
         }
         try {
             connection = connectionFactory.newConnection();
@@ -91,9 +91,9 @@ public abstract class RmqTransport extends TransportComponent implements Transpo
     protected boolean closeAndReconnection() {
         log.info("Function closeAndReconnection()");
         closeConnection();
-        Sleep.millis(rmqConnection.getRecoveryInterval() / 2);
+        Sleep.millis(connectionConfig.recoveryInterval() / 2);
         createConnection();
-        Sleep.millis(rmqConnection.getRecoveryInterval() / 2);
+        Sleep.millis(connectionConfig.recoveryInterval() / 2);
         return isConnected();
     }
 

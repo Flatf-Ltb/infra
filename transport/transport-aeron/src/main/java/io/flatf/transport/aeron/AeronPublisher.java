@@ -25,7 +25,7 @@ public final class AeronPublisher<T> extends AeronComponent implements Publisher
     private final BytesSerializer<T> serializer;
     private final ExpandableArrayBuffer writeBuffer = new ExpandableArrayBuffer(4096);
 
-    AeronPublisher(@Nonnull AeronCfg cfg, @Nonnull BytesSerializer<T> serializer) {
+    AeronPublisher(@Nonnull AeronConfig cfg, @Nonnull BytesSerializer<T> serializer) {
         super(cfg);
         nonNull(serializer, "serializer");
         this.serializer = serializer;

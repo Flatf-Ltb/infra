@@ -21,12 +21,12 @@ abstract class AeronComponent extends TransportComponent implements Transport, C
 
     private static final Logger log = getLogger(AeronComponent.class);
 
-    protected final AeronCfg cfg;
+    protected final AeronConfig cfg;
     protected final Aeron aeron;
     protected final AtomicBoolean isRunning = new AtomicBoolean(true);
     protected String name;
 
-    AeronComponent(@Nonnull AeronCfg cfg) {
+    AeronComponent(@Nonnull AeronConfig cfg) {
         nonNull(cfg, "cfg");
         this.cfg = cfg;
         this.aeron = cfg.newAeron();

@@ -22,7 +22,7 @@ public class ZmqTcpPubSubTest {
         String topic = "tcp-test";
 
         Threads.startNewThread(() -> {
-            try (ZmqSubscriber subscriber = ZmqCfg.tcp("127.0.0.1", 13001).ioThreads(1)
+            try (ZmqSubscriber subscriber = ZmqConfig.tcp("127.0.0.1", 13001).ioThreads(1)
                     .createSubscriber(Topics.with(topic), this::handleMag)) {
                 subscriber.subscribe();
             } catch (IOException e) {
@@ -32,7 +32,7 @@ public class ZmqTcpPubSubTest {
 
         Sleep.millis(3000);
 
-        try (ZmqPublisher<String> publisher = ZmqCfg.tcp("127.0.0.1", 13001).ioThreads(1)
+        try (ZmqPublisher<String> publisher = ZmqConfig.tcp("127.0.0.1", 13001).ioThreads(1)
                 .createPublisherWithString(topic)) {
             Sleep.millis(2000);
             Random random = new Random();

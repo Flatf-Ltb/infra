@@ -3,10 +3,16 @@ package io.flatf.transport.rmq.declare;
 import io.flatf.common.collections.MapUtil;
 import io.flatf.common.lang.Validator;
 import io.flatf.serialization.json.JsonWriter;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
 
+@Getter
+@Setter
+@Accessors(chain = true, fluent = true)
 public final class AmqpExchange {
 
     /**
@@ -74,50 +80,6 @@ public final class AmqpExchange {
         return new AmqpExchange(ExchangeType.Topic, name);
     }
 
-    public AmqpExchange setDurable(boolean durable) {
-        this.durable = durable;
-        return this;
-    }
-
-    public AmqpExchange setAutoDelete(boolean autoDelete) {
-        this.autoDelete = autoDelete;
-        return this;
-    }
-
-    public AmqpExchange setInternal(boolean internal) {
-        this.internal = internal;
-        return this;
-    }
-
-    public AmqpExchange setArgs(Map<String, Object> args) {
-        this.args = args;
-        return this;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public ExchangeType getType() {
-        return type;
-    }
-
-    public boolean isDurable() {
-        return durable;
-    }
-
-    public boolean isAutoDelete() {
-        return autoDelete;
-    }
-
-    public boolean isInternal() {
-        return internal;
-    }
-
-    public Map<String, Object> getArgs() {
-        return args;
-    }
-
     @Override
     public String toString() {
         return JsonWriter.toJsonHasNulls(this);
@@ -131,11 +93,11 @@ public final class AmqpExchange {
         if (other == null)
             return false;
         return name.equals(other.name)
-                && type == other.type
-                && durable == other.durable
-                && autoDelete == other.autoDelete
-                && internal == other.internal
-                && MapUtil.isEquals(args, other.args);
+               && type == other.type
+               && durable == other.durable
+               && autoDelete == other.autoDelete
+               && internal == other.internal
+               && MapUtil.isEquals(args, other.args);
     }
 
     public enum ExchangeType {

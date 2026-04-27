@@ -3,7 +3,7 @@ package io.flatf.transport.aeron;
 import io.aeron.Aeron;
 import io.aeron.driver.MediaDriver;
 import io.flatf.common.serialization.specific.BytesSerializer;
-import io.flatf.transport.TransportCfg;
+import io.flatf.transport.TransportConfig;
 import io.flatf.transport.api.IndexedMessageConsumer;
 import org.agrona.CloseHelper;
 import org.agrona.concurrent.BackoffIdleStrategy;
@@ -21,9 +21,9 @@ import static io.flatf.common.log4j2.Log4j2LoggerFactory.getLogger;
 /**
  * Aeron transport configuration and factory.
  */
-public final class AeronCfg implements TransportCfg {
+public final class AeronConfig implements TransportConfig {
 
-    private static final Logger log = getLogger(AeronCfg.class);
+    private static final Logger log = getLogger(AeronConfig.class);
 
     private static final int DEFAULT_FRAGMENT_LIMIT = 10;
     private static final int DEFAULT_PUBLISH_RETRY_COUNT = 3;
@@ -35,9 +35,9 @@ public final class AeronCfg implements TransportCfg {
     /**
      * Same-host IPC transport backed by an embedded shared MediaDriver.
      */
-    public static AeronCfg ipc(int streamId) {
+    public static AeronConfig ipc(int streamId) {
         validateStreamId(streamId);
-        return new AeronCfg(
+        return new AeronConfig(
                 AeronChannel.ipc(),
                 streamId,
                 true,
@@ -50,11 +50,11 @@ public final class AeronCfg implements TransportCfg {
     /**
      * UDP unicast transport backed by an external MediaDriver.
      */
-    public static AeronCfg udp(@Nonnull String host, int port, int streamId) {
+    public static AeronConfig udp(@Nonnull String host, int port, int streamId) {
         nonEmpty(host, "host");
         validatePort(port);
         validateStreamId(streamId);
-        return new AeronCfg(
+        return new AeronConfig(
                 AeronChannel.udp(host, port),
                 streamId,
                 false,
@@ -71,12 +71,12 @@ public final class AeronCfg implements TransportCfg {
     private final int publishRetryCount;
     private final Supplier<IdleStrategy> subscriberIdleStrategyFactory;
 
-    private AeronCfg(AeronChannel channel,
-                     int streamId,
-                     boolean embeddedDriver,
-                     int fragmentLimit,
-                     int publishRetryCount,
-                     Supplier<IdleStrategy> subscriberIdleStrategyFactory) {
+    private AeronConfig(AeronChannel channel,
+                        int streamId,
+                        boolean embeddedDriver,
+                        int fragmentLimit,
+                        int publishRetryCount,
+                        Supplier<IdleStrategy> subscriberIdleStrategyFactory) {
         this.channel = channel;
         this.streamId = streamId;
         this.embeddedDriver = embeddedDriver;
@@ -105,9 +105,9 @@ public final class AeronCfg implements TransportCfg {
         return subscriberIdleStrategyFactory.get();
     }
 
-    public AeronCfg withFragmentLimit(int fragmentLimit) {
+    public AeronConfig withFragmentLimit(int fragmentLimit) {
         if (fragmentLimit <= 0) throw new IllegalArgumentException("fragmentLimit must be positive");
-        return new AeronCfg(
+        return new AeronConfig(
                 channel,
                 streamId,
                 embeddedDriver,
@@ -117,9 +117,9 @@ public final class AeronCfg implements TransportCfg {
         );
     }
 
-    public AeronCfg withPublishRetryCount(int publishRetryCount) {
+    public AeronConfig withPublishRetryCount(int publishRetryCount) {
         if (publishRetryCount <= 0) throw new IllegalArgumentException("publishRetryCount must be positive");
-        return new AeronCfg(
+        return new AeronConfig(
                 channel,
                 streamId,
                 embeddedDriver,
@@ -129,9 +129,9 @@ public final class AeronCfg implements TransportCfg {
         );
     }
 
-    public AeronCfg withSubscriberIdleStrategyFactory(@Nonnull Supplier<IdleStrategy> idleStrategyFactory) {
+    public AeronConfig withSubscriberIdleStrategyFactory(@Nonnull Supplier<IdleStrategy> idleStrategyFactory) {
         nonNull(idleStrategyFactory, "idleStrategyFactory");
-        return new AeronCfg(
+        return new AeronConfig(
                 channel,
                 streamId,
                 embeddedDriver,
@@ -178,7 +178,7 @@ public final class AeronCfg implements TransportCfg {
     }
 
     @Override
-    public String getConnectionInfo() {
+    public String connectionInfo() {
         return channel.uri() + "#" + streamId;
     }
 

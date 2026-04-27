@@ -5,7 +5,7 @@ import io.flatf.common.lang.Validator;
 import io.flatf.common.log4j2.Log4j2LoggerFactory;
 import io.flatf.transport.TransportComponent;
 import io.flatf.transport.api.Sender;
-import io.flatf.transport.socket.configurator.SocketCfg;
+import io.flatf.transport.socket.configurator.SocketConfig;
 import org.slf4j.Logger;
 
 import java.io.DataOutputStream;
@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public final class SocketSender extends TransportComponent implements Sender<byte[]> {
 
-    private final SocketCfg configurator;
+    private final SocketConfig configurator;
 
     private Socket socket;
 
@@ -26,7 +26,7 @@ public final class SocketSender extends TransportComponent implements Sender<byt
     private final Queue<byte[]> innerQueue;
 
 
-    public SocketSender(SocketCfg configurator, Queue<byte[]> queue) {
+    public SocketSender(SocketConfig configurator, Queue<byte[]> queue) {
         Validator.nonNull(configurator, "configurator");
         this.configurator = configurator;
         this.innerQueue = queue;
@@ -87,7 +87,7 @@ public final class SocketSender extends TransportComponent implements Sender<byt
 
 
     public static void main(String[] args) throws IOException {
-        SocketCfg configurator = SocketCfg.builder().host("192.168.1.138").port(7901).build();
+        SocketConfig configurator = SocketConfig.builder().host("192.168.1.138").port(7901).build();
         try (SocketSender sender = new SocketSender(configurator, null)) {
             sender.send("hello".getBytes());
         }

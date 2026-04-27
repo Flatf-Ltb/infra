@@ -5,6 +5,7 @@ import io.flatf.common.lang.Validator;
 import io.flatf.serialization.json.JsonWriter;
 import io.flatf.transport.rmq.RmqOperator;
 import io.flatf.transport.rmq.exception.DeclareException;
+import lombok.Getter;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.Collection;
@@ -15,6 +16,7 @@ import java.util.Map;
  *
  * @author yellow013
  */
+@Getter
 public final class QueueRelationship extends Relationship {
 
     /**
@@ -53,15 +55,11 @@ public final class QueueRelationship extends Relationship {
         }
     }
 
-    public AmqpQueue getQueue() {
-        return queue;
-    }
-
     /**
      * @return the queue name
      */
-    public String getQueueName() {
-        return queue.getName();
+    public String queueName() {
+        return queue.name();
     }
 
     /**
@@ -70,8 +68,8 @@ public final class QueueRelationship extends Relationship {
      * @param durable boolean
      * @return QueueRelationship
      */
-    public QueueRelationship setDurable(boolean durable) {
-        queue.setDurable(durable);
+    public QueueRelationship durable(boolean durable) {
+        queue.durable(durable);
         return this;
     }
 
@@ -81,8 +79,8 @@ public final class QueueRelationship extends Relationship {
      * @param autoDelete boolean
      * @return QueueRelationship
      */
-    public QueueRelationship setAutoDelete(boolean autoDelete) {
-        queue.setAutoDelete(autoDelete);
+    public QueueRelationship autoDelete(boolean autoDelete) {
+        queue.autoDelete(autoDelete);
         return this;
     }
 
@@ -92,8 +90,8 @@ public final class QueueRelationship extends Relationship {
      * @param exclusive boolean
      * @return QueueRelationship
      */
-    public QueueRelationship setExclusive(boolean exclusive) {
-        queue.setExclusive(exclusive);
+    public QueueRelationship exclusive(boolean exclusive) {
+        queue.exclusive(exclusive);
         return this;
     }
 
@@ -101,8 +99,8 @@ public final class QueueRelationship extends Relationship {
      * @param args Map<String, Object>
      * @return QueueRelationship
      */
-    public QueueRelationship setArgs(Map<String, Object> args) {
-        queue.setArgs(args);
+    public QueueRelationship args(Map<String, Object> args) {
+        queue.args(args);
         return this;
     }
 

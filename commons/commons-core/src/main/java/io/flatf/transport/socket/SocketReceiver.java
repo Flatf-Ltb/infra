@@ -6,7 +6,7 @@ import io.flatf.common.thread.Sleep;
 import io.flatf.common.thread.Threads;
 import io.flatf.transport.TransportComponent;
 import io.flatf.transport.api.Receiver;
-import io.flatf.transport.socket.configurator.SocketCfg;
+import io.flatf.transport.socket.configurator.SocketConfig;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 
@@ -18,7 +18,7 @@ import java.util.function.Consumer;
 
 public class SocketReceiver extends TransportComponent implements Receiver {
 
-    private final SocketCfg configurator;
+    private final SocketConfig configurator;
 
     private final Consumer<byte[]> callback;
 
@@ -33,7 +33,7 @@ public class SocketReceiver extends TransportComponent implements Receiver {
      * @param configurator SocketConfigurator
      * @param callback     Consumer<byte[]>
      */
-    public SocketReceiver(SocketCfg configurator, Consumer<byte[]> callback) {
+    public SocketReceiver(SocketConfig configurator, Consumer<byte[]> callback) {
         Validator.nonNull(configurator, "configurator");
         Validator.nonNull(callback, "callback");
         this.configurator = configurator;
@@ -122,7 +122,7 @@ public class SocketReceiver extends TransportComponent implements Receiver {
 
     public static void main(String[] args) {
 
-        SocketCfg configurator = SocketCfg.builder().host("192.168.1.138").port(7901).build();
+        SocketConfig configurator = SocketConfig.builder().host("192.168.1.138").port(7901).build();
 
         SocketReceiver receiver = new SocketReceiver(configurator, bytes -> System.out.println(new String(bytes)));
 

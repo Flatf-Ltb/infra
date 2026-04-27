@@ -19,7 +19,7 @@ import static io.flatf.common.collections.MutableLists.newFastList;
  */
 public final class ExchangeRelationship extends Relationship {
 
-    public final static ExchangeRelationship Anonymous = new ExchangeRelationship(AmqpExchange.Anonymous);
+    public final static ExchangeRelationship ANONYMOUS = new ExchangeRelationship(AmqpExchange.Anonymous);
 
     /**
      * exchange
@@ -80,7 +80,7 @@ public final class ExchangeRelationship extends Relationship {
      * @return the exchange name
      */
     public String getExchangeName() {
-        return exchange.getName();
+        return exchange.name();
     }
 
     /**
@@ -88,7 +88,7 @@ public final class ExchangeRelationship extends Relationship {
      * @return ExchangeRelationship
      */
     public ExchangeRelationship setDurable(boolean durable) {
-        exchange.setDurable(durable);
+        exchange.durable(durable);
         return this;
     }
 
@@ -97,7 +97,7 @@ public final class ExchangeRelationship extends Relationship {
      * @return ExchangeRelationship
      */
     public ExchangeRelationship setAutoDelete(boolean autoDelete) {
-        exchange.setAutoDelete(autoDelete);
+        exchange.autoDelete(autoDelete);
         return this;
     }
 
@@ -106,7 +106,7 @@ public final class ExchangeRelationship extends Relationship {
      * @return ExchangeRelationship
      */
     public ExchangeRelationship setInternal(boolean internal) {
-        exchange.setInternal(internal);
+        exchange.internal(internal);
         return this;
     }
 
@@ -115,7 +115,7 @@ public final class ExchangeRelationship extends Relationship {
      * @return ExchangeRelationship
      */
     public ExchangeRelationship setArgs(Map<String, Object> args) {
-        exchange.setArgs(args);
+        exchange.args(args);
         return this;
     }
 
@@ -138,7 +138,7 @@ public final class ExchangeRelationship extends Relationship {
             destExchanges.forEach(dest -> {
                 if (CollectionUtils.isNotEmpty(routingKeys))
                     routingKeys.forEach(routingKey ->
-                            bindings.add(new Binding(exchange, dest, routingKey)));
+                        bindings.add(new Binding(exchange, dest, routingKey)));
                 else
                     bindings.add(new Binding(exchange, dest));
             });
@@ -165,7 +165,7 @@ public final class ExchangeRelationship extends Relationship {
             destQueues.forEach(dest -> {
                 if (CollectionUtils.isNotEmpty(routingKeys))
                     routingKeys.forEach(routingKey ->
-                            bindings.add(new Binding(exchange, dest, routingKey)));
+                        bindings.add(new Binding(exchange, dest, routingKey)));
                 else
                     bindings.add(new Binding(exchange, dest));
             });

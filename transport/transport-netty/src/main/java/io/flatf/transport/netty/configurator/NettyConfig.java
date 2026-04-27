@@ -1,11 +1,11 @@
 package io.flatf.transport.netty.configurator;
 
 import io.flatf.serialization.json.JsonWriter;
-import io.flatf.transport.TransportCfg;
+import io.flatf.transport.TransportConfig;
 
 import java.util.concurrent.TimeUnit;
 
-public final class NettyCfg implements TransportCfg {
+public final class NettyConfig implements TransportConfig {
 
     private final String host;
     private final int port;
@@ -19,7 +19,7 @@ public final class NettyCfg implements TransportCfg {
 
     private final String connectionInfo;
 
-    private NettyCfg(Builder builder) {
+    private NettyConfig(Builder builder) {
         this.host = builder.host;
         this.port = builder.port;
         this.backlog = builder.backlog;
@@ -78,7 +78,7 @@ public final class NettyCfg implements TransportCfg {
     }
 
     @Override
-    public String getConnectionInfo() {
+    public String connectionInfo() {
         return connectionInfo;
     }
 
@@ -139,8 +139,8 @@ public final class NettyCfg implements TransportCfg {
             return this;
         }
 
-        public NettyCfg build() {
-            return new NettyCfg(this);
+        public NettyConfig build() {
+            return new NettyConfig(this);
         }
 
     }

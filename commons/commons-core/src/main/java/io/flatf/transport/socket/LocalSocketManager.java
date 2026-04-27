@@ -1,7 +1,7 @@
 package io.flatf.transport.socket;
 
 import io.flatf.common.lang.Validator;
-import io.flatf.transport.socket.configurator.SocketCfg;
+import io.flatf.transport.socket.configurator.SocketConfig;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,7 +24,7 @@ public class LocalSocketManager {
             return ServerSocketMap.get(socketName);
         else {
             Validator.atWithinRange(port, 7000, 8000, "port");
-            SocketTransceiver transceiver = new SocketTransceiver(SocketCfg.builder().port(port).build(),
+            SocketTransceiver transceiver = new SocketTransceiver(SocketConfig.builder().port(port).build(),
                     callback);
             ServerSocketMap.put(socketName, transceiver);
             return transceiver;

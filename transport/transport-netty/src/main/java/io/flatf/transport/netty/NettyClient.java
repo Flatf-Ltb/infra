@@ -2,7 +2,7 @@ package io.flatf.transport.netty;
 
 import io.flatf.common.log4j2.Log4j2LoggerFactory;
 import io.flatf.transport.api.TransportClient;
-import io.flatf.transport.netty.configurator.NettyCfg;
+import io.flatf.transport.netty.configurator.NettyConfig;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
@@ -22,7 +22,7 @@ public class NettyClient extends NettyTransport implements TransportClient {
      * @param configurator    NettyConfigurator
      * @param channelHandlers ChannelHandler[]
      */
-    public NettyClient(String tag, NettyCfg configurator, ChannelHandler... channelHandlers) {
+    public NettyClient(String tag, NettyConfig configurator, ChannelHandler... channelHandlers) {
         super(tag, configurator, channelHandlers);
     }
 
@@ -37,7 +37,7 @@ public class NettyClient extends NettyTransport implements TransportClient {
                     }
                 }).option(ChannelOption.SO_KEEPALIVE, configurator.keepAlive())
                 .option(ChannelOption.TCP_NODELAY, configurator.tcpNoDelay());
-        log.info("{} : Init-BootStrap.connect -> {}", tag, configurator.getConnectionInfo());
+        log.info("{} : Init-BootStrap.connect -> {}", tag, configurator.connectionInfo());
     }
 
     @Override

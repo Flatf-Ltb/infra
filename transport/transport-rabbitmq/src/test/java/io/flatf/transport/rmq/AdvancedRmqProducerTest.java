@@ -2,7 +2,7 @@ package io.flatf.transport.rmq;
 
 import org.junit.Test;
 
-public class AdvancedRmqPublisherTest {
+public class AdvancedRmqProducerTest {
 
 	@Test
 	public void test() {

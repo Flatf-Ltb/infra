@@ -9,7 +9,7 @@ import io.flatf.common.log4j2.Log4j2LoggerFactory;
 import io.flatf.common.serialization.specific.BytesDeserializer;
 import io.flatf.common.serialization.specific.BytesSerializer;
 import io.flatf.serialization.json.JsonWriter;
-import io.flatf.transport.rmq.config.RmqConnection;
+import io.flatf.transport.rmq.config.RmqConnectionConfig;
 import io.flatf.transport.rmq.declare.AmqpExchange;
 import io.flatf.transport.rmq.declare.QueueRelationship;
 import io.flatf.transport.rmq.exception.DeclareException;
@@ -23,11 +23,11 @@ import java.util.List;
 
 public class RmqBuffer<E> implements MultiConsumerQueue<E>, Closeable {
 
-    private static final Logger log = Log4j2LoggerFactory.getLogger(RmqBuffer.class);
+    private static final Logger LOG = Log4j2LoggerFactory.getLogger(RmqBuffer.class);
 
     @Getter
-    private final RmqConnection connection;
-    
+    private final RmqConnectionConfig connection;
+
     private final RmqChannel channel;
     private final String queueName;
     private final List<String> exchangeNames;
@@ -47,7 +47,7 @@ public class RmqBuffer<E> implements MultiConsumerQueue<E>, Closeable {
      * @return RmqBuffer<E>
      * @throws DeclareException de
      */
-    public static <E> RmqBuffer<E> newQueue(RmqConnection connection, String queueName,
+    public static <E> RmqBuffer<E> newQueue(RmqConnectionConfig connection, String queueName,
                                             BytesSerializer<E> serializer, BytesDeserializer<E> deserializer)
         throws DeclareException {
         return new RmqBuffer<>(connection, queueName, MutableLists.newFastList(), MutableLists.newFastList(),
@@ -65,7 +65,7 @@ public class RmqBuffer<E> implements MultiConsumerQueue<E>, Closeable {
      * @return RmqBuffer<E>
      * @throws DeclareException de
      */
-    public static <E> RmqBuffer<E> newQueue(RmqConnection connection, String queueName,
+    public static <E> RmqBuffer<E> newQueue(RmqConnectionConfig connection, String queueName,
                                             List<String> exchangeNames, List<String> routingKeys,
                                             BytesSerializer<E> serializer, BytesDeserializer<E> deserializer)
         throws DeclareException {
@@ -81,7 +81,7 @@ public class RmqBuffer<E> implements MultiConsumerQueue<E>, Closeable {
      * @param deserializer  BytesDeserializer<E>
      * @throws DeclareException de
      */
-    private RmqBuffer(RmqConnection connection, String queueName,
+    private RmqBuffer(RmqConnectionConfig connection, String queueName,
                       List<String> exchangeNames, List<String> routingKeys,
                       BytesSerializer<E> serializer, BytesDeserializer<E> deserializer)
         throws DeclareException {
@@ -92,7 +92,7 @@ public class RmqBuffer<E> implements MultiConsumerQueue<E>, Closeable {
         this.serializer = serializer;
         this.deserializer = deserializer;
         this.channel = RmqChannel.with(connection);
-        this.name = "rabbitmq-buffer::" + connection.getConnectionInfo() + "/" + queueName;
+        this.name = "rabbitmq-buffer::" + connection.connectionInfo() + "/" + queueName;
         declareQueue();
     }
 
@@ -118,7 +118,7 @@ public class RmqBuffer<E> implements MultiConsumerQueue<E>, Closeable {
             channel.internalChannel().basicPublish("", queueName, null, msg);
             return true;
         } catch (IOException ioe) {
-            log.error("enqueue basicPublish throw -> {}", ioe.getMessage(), ioe);
+            LOG.error("enqueue basicPublish throw -> {}", ioe.getMessage(), ioe);
             return false;
         }
     }
@@ -144,7 +144,7 @@ public class RmqBuffer<E> implements MultiConsumerQueue<E>, Closeable {
         if (body == null)
             return false;
         if (!function.apply(deserializer.deserialization(body))) {
-            log.error("PollFunction failure, no ack");
+            LOG.error("PollFunction failure, no ack");
             return false;
         }
         return basicAck(response.getEnvelope());
@@ -157,7 +157,7 @@ public class RmqBuffer<E> implements MultiConsumerQueue<E>, Closeable {
         try {
             return channel.internalChannel().basicGet(queueName, false);
         } catch (IOException ioe) {
-            log.error("poll basicGet throw -> {}", ioe.getMessage(), ioe);
+            LOG.error("poll basicGet throw -> {}", ioe.getMessage(), ioe);
             return null;
         }
     }
@@ -171,7 +171,7 @@ public class RmqBuffer<E> implements MultiConsumerQueue<E>, Closeable {
             channel.internalChannel().basicAck(envelope.getDeliveryTag(), false);
             return true;
         } catch (IOException ioe) {
-            log.error("poll basicAck throw -> {}", ioe.getMessage(), ioe);
+            LOG.error("poll basicAck throw -> {}", ioe.getMessage(), ioe);
             return false;
         }
     }
@@ -199,7 +199,7 @@ public class RmqBuffer<E> implements MultiConsumerQueue<E>, Closeable {
 
     public static void main(String[] args) {
 
-        RmqConnection connection = RmqConnection.with("127.0.0.1", 5672, "user", "password").build();
+        RmqConnectionConfig connection = RmqConnectionConfig.with("127.0.0.1", 5672, "user", "password").build();
 
         try (RmqBuffer<String> testQueue = newQueue(
             connection, "rmq_test",

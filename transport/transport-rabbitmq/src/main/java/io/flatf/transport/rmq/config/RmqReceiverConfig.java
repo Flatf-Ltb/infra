@@ -17,7 +17,7 @@ import static io.flatf.common.lang.Validator.nonNull;
  */
 @Getter
 @Accessors(fluent = true)
-public final class RmqConsumerCfg extends RmqCfg {
+public final class RmqReceiverConfig extends RmqConfig {
 
     // 接受者QueueDeclare
     private final QueueRelationship queue;
@@ -43,7 +43,7 @@ public final class RmqConsumerCfg extends RmqCfg {
     /**
      * @param builder Builder
      */
-    private RmqConsumerCfg(Builder builder) {
+    private RmqReceiverConfig(Builder builder) {
         super(builder.connection);
         this.queue = builder.queue;
         this.errMsgExchange = builder.errMsgExchange;
@@ -59,7 +59,7 @@ public final class RmqConsumerCfg extends RmqCfg {
      * @param queue         QueueRelationship
      * @return Builder
      */
-    public static Builder with(@Nonnull RmqConnection connection, @Nonnull QueueRelationship queue) {
+    public static Builder with(@Nonnull RmqConnectionConfig connection, @Nonnull QueueRelationship queue) {
         nonNull(connection, "connection");
         nonNull(queue, "queue");
         return new Builder(connection, queue);
@@ -79,7 +79,7 @@ public final class RmqConsumerCfg extends RmqCfg {
     public static class Builder {
 
         // 连接配置
-        private final RmqConnection connection;
+        private final RmqConnectionConfig connection;
         // 接受者QueueRelationship
         private final QueueRelationship queue;
         // 错误消息ExchangeRelationship
@@ -100,7 +100,7 @@ public final class RmqConsumerCfg extends RmqCfg {
         // 消费者参数, 默认为null
         private Map<String, Object> args = null;
 
-        private Builder(RmqConnection connection, QueueRelationship queue) {
+        private Builder(RmqConnectionConfig connection, QueueRelationship queue) {
             this.connection = connection;
             this.queue = queue;
         }
@@ -148,8 +148,8 @@ public final class RmqConsumerCfg extends RmqCfg {
             return this;
         }
 
-        public RmqConsumerCfg build() {
-            return new RmqConsumerCfg(this);
+        public RmqReceiverConfig build() {
+            return new RmqReceiverConfig(this);
         }
 
     }

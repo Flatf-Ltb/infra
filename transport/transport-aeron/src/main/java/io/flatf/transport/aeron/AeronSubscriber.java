@@ -27,7 +27,7 @@ public final class AeronSubscriber extends AeronComponent implements Subscriber 
     private final IdleStrategy idleStrategy;
     private final int fragmentLimit;
 
-    AeronSubscriber(@Nonnull AeronCfg cfg,
+    AeronSubscriber(@Nonnull AeronConfig cfg,
                     @Nonnull int[] streamIds,
                     @Nonnull BiConsumer<Integer, byte[]> consumer) {
         super(cfg);

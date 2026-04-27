@@ -1,15 +1,15 @@
 package io.flatf.transport.socket.configurator;
 
-import io.flatf.transport.TransportCfg;
+import io.flatf.transport.TransportConfig;
 
-public final class SocketCfg implements TransportCfg {
+public final class SocketConfig implements TransportConfig {
 
     private final String host;
     private final int port;
     private final long receiveInterval;
     private final int sendQueueSize;
 
-    private SocketCfg(Builder builder) {
+    private SocketConfig(Builder builder) {
         this.host = builder.host;
         this.port = builder.port;
         this.receiveInterval = builder.receiveInterval;
@@ -42,7 +42,7 @@ public final class SocketCfg implements TransportCfg {
     }
 
     @Override
-    public String getConnectionInfo() {
+    public String connectionInfo() {
         return "";
     }
 
@@ -76,8 +76,8 @@ public final class SocketCfg implements TransportCfg {
             return this;
         }
 
-        public SocketCfg build() {
-            return new SocketCfg(this);
+        public SocketConfig build() {
+            return new SocketConfig(this);
         }
     }
 

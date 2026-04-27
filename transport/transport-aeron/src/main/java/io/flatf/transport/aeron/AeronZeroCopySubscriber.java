@@ -28,7 +28,7 @@ public final class AeronZeroCopySubscriber extends AeronComponent implements Sub
     private final IdleStrategy idleStrategy;
     private final int fragmentLimit;
 
-    AeronZeroCopySubscriber(@Nonnull AeronCfg cfg,
+    AeronZeroCopySubscriber(@Nonnull AeronConfig cfg,
                             @Nonnull int[] streamIds,
                             @Nonnull IndexedMessageConsumer<AeronMessageView> consumer) {
         super(cfg);

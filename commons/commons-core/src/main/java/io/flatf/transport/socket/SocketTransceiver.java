@@ -3,7 +3,7 @@ package io.flatf.transport.socket;
 import io.flatf.common.collections.queue.Queue;
 import io.flatf.common.thread.Sleep;
 import io.flatf.common.thread.Threads;
-import io.flatf.transport.socket.configurator.SocketCfg;
+import io.flatf.transport.socket.configurator.SocketConfig;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 
 public final class SocketTransceiver extends BaseTransceiver<String> {
 
-    private final SocketCfg configurator;
+    private final SocketConfig configurator;
     private final Consumer<byte[]> callback;
 
     private Socket socket;
@@ -29,7 +29,7 @@ public final class SocketTransceiver extends BaseTransceiver<String> {
      * @param configurator SocketConfigurator
      * @param callback     Consumer<byte[]>
      */
-    public SocketTransceiver(SocketCfg configurator, Consumer<byte[]> callback) {
+    public SocketTransceiver(SocketConfig configurator, Consumer<byte[]> callback) {
         super();
         if (configurator == null || callback == null)
             throw new IllegalArgumentException("configurator or callback is null for init ");

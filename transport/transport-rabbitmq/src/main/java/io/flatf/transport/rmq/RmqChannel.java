@@ -1,7 +1,7 @@
 package io.flatf.transport.rmq;
 
 import com.rabbitmq.client.Channel;
-import io.flatf.transport.rmq.config.RmqConnection;
+import io.flatf.transport.rmq.config.RmqConnectionConfig;
 
 import java.time.ZonedDateTime;
 
@@ -19,7 +19,7 @@ public final class RmqChannel extends RmqTransport {
      * @return RmqChannel
      */
     public static RmqChannel with(String host, int port, String username, String password) {
-        return with(RmqConnection.with(host, port, username, password).build());
+        return with(RmqConnectionConfig.with(host, port, username, password).build());
     }
 
     /**
@@ -33,7 +33,7 @@ public final class RmqChannel extends RmqTransport {
      * @return RmqChannel
      */
     public static RmqChannel with(String host, int port, String username, String password, String virtualHost) {
-        return with(RmqConnection.with(host, port, username, password, virtualHost).build());
+        return with(RmqConnectionConfig.with(host, port, username, password, virtualHost).build());
     }
 
     /**
@@ -42,7 +42,7 @@ public final class RmqChannel extends RmqTransport {
      * @param connection io.flatf.transport.rmq.configurator.RmqConnection
      * @return RmqChannel
      */
-    public static RmqChannel with(RmqConnection connection) {
+    public static RmqChannel with(RmqConnectionConfig connection) {
         return new RmqChannel("RmqChannel-" + ZonedDateTime.now(SYS_DEFAULT), connection);
     }
 
@@ -60,7 +60,7 @@ public final class RmqChannel extends RmqTransport {
      * @param tag        String
      * @param connection RmqConnection
      */
-    private RmqChannel(String tag, RmqConnection connection) {
+    private RmqChannel(String tag, RmqConnectionConfig connection) {
         super(tag, connection);
         createConnection();
     }

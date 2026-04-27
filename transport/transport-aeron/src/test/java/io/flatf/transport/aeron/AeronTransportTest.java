@@ -18,14 +18,14 @@ class AeronTransportTest {
 
     @Test
     void ipcConfigRejectsInvalidArguments() {
-        assertThrows(IllegalArgumentException.class, () -> AeronCfg.ipc(0));
-        assertThrows(IllegalArgumentException.class, () -> AeronCfg.udp("127.0.0.1", 0, 1));
-        assertThrows(IllegalArgumentException.class, () -> AeronCfg.udp("127.0.0.1", 13000, -1));
+        assertThrows(IllegalArgumentException.class, () -> AeronConfig.ipc(0));
+        assertThrows(IllegalArgumentException.class, () -> AeronConfig.udp("127.0.0.1", 0, 1));
+        assertThrows(IllegalArgumentException.class, () -> AeronConfig.udp("127.0.0.1", 13000, -1));
     }
 
     @Test
     void publisherRejectsMismatchedTargetStream() {
-        AeronCfg cfg = AeronCfg.ipc(31001).withPublishRetryCount(1);
+        AeronConfig cfg = AeronConfig.ipc(31001).withPublishRetryCount(1);
         try (AeronPublisher<String> publisher = cfg.createPublisher(msg -> msg.getBytes(StandardCharsets.UTF_8))) {
             assertFalse(publisher.supportsTargetedPublish());
             assertThrows(IllegalArgumentException.class, () -> publisher.publish(31002, "payload"));
@@ -36,7 +36,7 @@ class AeronTransportTest {
 
     @Test
     void ipcPublishSubscribeRoundTrip() throws Exception {
-        AeronCfg cfg = AeronCfg.ipc(31011).withPublishRetryCount(200);
+        AeronConfig cfg = AeronConfig.ipc(31011).withPublishRetryCount(200);
         CountDownLatch latch = new CountDownLatch(1);
         AtomicReference<String> payloadRef = new AtomicReference<>();
         AtomicReference<Integer> streamRef = new AtomicReference<>();
@@ -66,7 +66,7 @@ class AeronTransportTest {
 
     @Test
     void ipcZeroCopyPublishSubscribeRoundTrip() throws Exception {
-        AeronCfg cfg = AeronCfg.ipc(31021).withPublishRetryCount(200);
+        AeronConfig cfg = AeronConfig.ipc(31021).withPublishRetryCount(200);
         CountDownLatch latch = new CountDownLatch(2);
         AtomicInteger messageIndex = new AtomicInteger();
         AtomicReference<String> firstPayload = new AtomicReference<>();

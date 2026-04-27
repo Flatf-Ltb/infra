@@ -19,7 +19,7 @@ import static io.flatf.common.lang.Validator.nonNull;
  * @author yellow013
  */
 @Accessors(fluent = true)
-public final class RmqPublisherCfg extends RmqCfg {
+public final class RmqPublisherConfig extends RmqConfig {
 
     // 发布者ExchangeDeclare
     @Getter
@@ -44,8 +44,8 @@ public final class RmqPublisherCfg extends RmqCfg {
     /**
      * @param builder Builder
      */
-    private RmqPublisherCfg(Builder builder) {
-        super(builder.connection);
+    private RmqPublisherConfig(Builder builder) {
+        super(builder.connectionConfig);
         this.exchange = builder.exchange;
         this.defaultRoutingKey = builder.defaultRoutingKey;
         this.defaultMsgProps = builder.defaultMsgProps;
@@ -64,7 +64,7 @@ public final class RmqPublisherCfg extends RmqCfg {
      */
     public static Builder configuration(@Nonnull String host, int port,
                                         @Nonnull String username, @Nonnull String password) {
-        return configuration(RmqConnection.with(host, port, username, password).build());
+        return configuration(RmqConnectionConfig.with(host, port, username, password).build());
     }
 
     /**
@@ -80,7 +80,7 @@ public final class RmqPublisherCfg extends RmqCfg {
     public static Builder configuration(@Nonnull String host, int port,
                                         @Nonnull String username, @Nonnull String password,
                                         @Nullable String virtualHost) {
-        return configuration(RmqConnection.with(host, port, username, password, virtualHost).build());
+        return configuration(RmqConnectionConfig.with(host, port, username, password, virtualHost).build());
     }
 
     /**
@@ -89,8 +89,8 @@ public final class RmqPublisherCfg extends RmqCfg {
      * @param connection RmqConnection
      * @return Builder
      */
-    public static Builder configuration(@Nonnull RmqConnection connection) {
-        return configuration(connection, ExchangeRelationship.Anonymous);
+    public static Builder configuration(@Nonnull RmqConnectionConfig connection) {
+        return configuration(connection, ExchangeRelationship.ANONYMOUS);
     }
 
     /**
@@ -106,7 +106,7 @@ public final class RmqPublisherCfg extends RmqCfg {
     public static Builder configuration(@Nonnull String host, int port,
                                         @Nonnull String username, @Nonnull String password,
                                         @Nonnull ExchangeRelationship publishExchange) {
-        return configuration(RmqConnection.with(host, port, username, password).build(), publishExchange);
+        return configuration(RmqConnectionConfig.with(host, port, username, password).build(), publishExchange);
     }
 
     /**
@@ -123,7 +123,7 @@ public final class RmqPublisherCfg extends RmqCfg {
     public static Builder configuration(@Nonnull String host, int port,
                                         @Nonnull String username, @Nonnull String password,
                                         @Nullable String virtualHost, @Nonnull ExchangeRelationship publishExchange) {
-        return configuration(RmqConnection.with(host, port, username, password, virtualHost).build(),
+        return configuration(RmqConnectionConfig.with(host, port, username, password, virtualHost).build(),
             publishExchange);
     }
 
@@ -134,7 +134,7 @@ public final class RmqPublisherCfg extends RmqCfg {
      * @param publishExchange ExchangeRelationship
      * @return Builder
      */
-    public static Builder configuration(@Nonnull RmqConnection connection,
+    public static Builder configuration(@Nonnull RmqConnectionConfig connection,
                                         @Nonnull ExchangeRelationship publishExchange) {
         return new Builder(nonNull(connection, "connection"),
             nonNull(publishExchange, "publishExchange"));
@@ -154,7 +154,7 @@ public final class RmqPublisherCfg extends RmqCfg {
     public static class Builder {
 
         // 连接配置
-        private final RmqConnection connection;
+        private final RmqConnectionConfig connectionConfig;
 
         // 消息发布Exchange和相关绑定
         private final ExchangeRelationship exchange;
@@ -172,11 +172,11 @@ public final class RmqPublisherCfg extends RmqCfg {
         private PublishConfirmOptions confirmOptions = PublishConfirmOptions.withDefault();
 
         /**
-         * @param connection      RmqConnection
+         * @param connectionConfig      RmqConnection
          * @param exchange ExchangeRelationship
          */
-        private Builder(RmqConnection connection, ExchangeRelationship exchange) {
-            this.connection = connection;
+        private Builder(RmqConnectionConfig connectionConfig, ExchangeRelationship exchange) {
+            this.connectionConfig = connectionConfig;
             this.exchange = exchange;
         }
 
@@ -210,8 +210,8 @@ public final class RmqPublisherCfg extends RmqCfg {
         /**
          * @return RmqPublisherConfig
          */
-        public RmqPublisherCfg build() {
-            return new RmqPublisherCfg(this);
+        public RmqPublisherConfig build() {
+            return new RmqPublisherConfig(this);
         }
 
     }
@@ -264,7 +264,7 @@ public final class RmqPublisherCfg extends RmqCfg {
 
     public static void main(String[] args) {
         System.out.println(configuration(
-            RmqConnection
+            RmqConnectionConfig
                 .with("localhost", 5672, "user0", "password0")
                 .build(),
             ExchangeRelationship

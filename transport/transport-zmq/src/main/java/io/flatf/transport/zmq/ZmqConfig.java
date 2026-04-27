@@ -11,7 +11,7 @@ import io.flatf.common.serialization.specific.JsonSerializable;
 import io.flatf.common.util.StringSupport;
 import io.flatf.serialization.json.JsonReader;
 import io.flatf.serialization.json.JsonWriter;
-import io.flatf.transport.TransportCfg;
+import io.flatf.transport.TransportConfig;
 import io.flatf.transport.attr.TcpKeepAlive;
 import io.flatf.transport.attr.Topics;
 import org.slf4j.Logger;
@@ -35,16 +35,16 @@ import static io.flatf.transport.zmq.ZmqConfigOption.PORT;
 import static io.flatf.transport.zmq.ZmqConfigOption.PROTOCOL;
 
 @OnlyOverrideEquals
-public final class ZmqCfg implements TransportCfg,
-        JsonSerializable, JsonDeserializable<ZmqCfg> {
+public final class ZmqConfig implements TransportConfig,
+        JsonSerializable, JsonDeserializable<ZmqConfig> {
 
-    private static final Logger log = getLogger(ZmqCfg.class);
+    private static final Logger log = getLogger(ZmqConfig.class);
 
     /**
      * @param properties Config
      * @return ZmqConfigurator
      */
-    public static ZmqCfg config(@Nonnull Properties properties) {
+    public static ZmqConfig config(@Nonnull Properties properties) {
         return config("", properties);
     }
 
@@ -53,11 +53,11 @@ public final class ZmqCfg implements TransportCfg,
      * @param properties Properties
      * @return ZmqConfigurator
      */
-    public static ZmqCfg config(String module, @Nonnull Properties properties) {
+    public static ZmqConfig config(String module, @Nonnull Properties properties) {
         nonNull(properties, "properties");
         var wrapper = new ConfigWrapper<ZmqConfigOption>(module, properties);
         var protocol = ZmqProtocol.of(wrapper.getStringOrThrows(PROTOCOL));
-        ZmqCfg conf;
+        ZmqConfig conf;
         switch (protocol) {
             // 使用tcp协议
             case TCP -> {
@@ -66,10 +66,10 @@ public final class ZmqCfg implements TransportCfg,
                     var tcpAddr = wrapper.getStringOrThrows(ADDR);
                     Validator.isValid(tcpAddr, IpAddressValidator::isIpAddress,
                             new IpAddressIllegalException(tcpAddr));
-                    conf = new ZmqCfg(ZmqAddr.tcp(tcpAddr, port));
+                    conf = new ZmqConfig(ZmqAddr.tcp(tcpAddr, port));
                 } else {
                     // 没有addr配置项, 使用本地地址
-                    conf = new ZmqCfg(ZmqAddr.tcp(port));
+                    conf = new ZmqConfig(ZmqAddr.tcp(port));
                 }
             }
             // 使用ipc或inproc协议
@@ -80,7 +80,7 @@ public final class ZmqCfg implements TransportCfg,
                     case INPROC -> ZmqAddr.inproc(localAddr);
                     default -> null;
                 };
-                conf = new ZmqCfg(addr);
+                conf = new ZmqConfig(addr);
             }
             default -> throw new UnsupportedOperationException(StringSupport.toString(protocol));
         }
@@ -95,8 +95,8 @@ public final class ZmqCfg implements TransportCfg,
      * @param addr ZmqAddr
      * @return ZmqConfigurator
      */
-    public static ZmqCfg addr(@Nonnull ZmqAddr addr) {
-        return new ZmqCfg(addr);
+    public static ZmqConfig addr(@Nonnull ZmqAddr addr) {
+        return new ZmqConfig(addr);
     }
 
     /**
@@ -105,7 +105,7 @@ public final class ZmqCfg implements TransportCfg,
      * @param port int
      * @return ZmqConfigurator
      */
-    public static ZmqCfg tcp(int port) {
+    public static ZmqConfig tcp(int port) {
         return tcp("*", port);
     }
 
@@ -116,8 +116,8 @@ public final class ZmqCfg implements TransportCfg,
      * @param port int
      * @return ZmqConfigurator
      */
-    public static ZmqCfg tcp(@Nonnull String addr, int port) {
-        return new ZmqCfg(ZmqAddr.tcp(addr, port));
+    public static ZmqConfig tcp(@Nonnull String addr, int port) {
+        return new ZmqConfig(ZmqAddr.tcp(addr, port));
     }
 
     /**
@@ -126,8 +126,8 @@ public final class ZmqCfg implements TransportCfg,
      * @param addr ZmqConfigurator
      * @return String
      */
-    public static ZmqCfg ipc(@Nonnull String addr) {
-        return new ZmqCfg(ZmqAddr.ipc(addr));
+    public static ZmqConfig ipc(@Nonnull String addr) {
+        return new ZmqConfig(ZmqAddr.ipc(addr));
     }
 
     /**
@@ -136,8 +136,8 @@ public final class ZmqCfg implements TransportCfg,
      * @param addr String
      * @return ZmqConfigurator
      */
-    public static ZmqCfg inproc(@Nonnull String addr) {
-        return new ZmqCfg(ZmqAddr.inproc(addr));
+    public static ZmqConfig inproc(@Nonnull String addr) {
+        return new ZmqConfig(ZmqAddr.inproc(addr));
     }
 
     private final ZmqAddr addr;
@@ -151,7 +151,7 @@ public final class ZmqCfg implements TransportCfg,
     /**
      * @param addr ZmqAddr
      */
-    private ZmqCfg(ZmqAddr addr) {
+    private ZmqConfig(ZmqAddr addr) {
         this.addr = addr;
     }
 
@@ -172,7 +172,7 @@ public final class ZmqCfg implements TransportCfg,
     }
 
     @Override
-    public String getConnectionInfo() {
+    public String connectionInfo() {
         return addr.toString();
     }
 
@@ -180,7 +180,7 @@ public final class ZmqCfg implements TransportCfg,
      * @param ioThreads int
      * @return ZmqConfigurator
      */
-    public ZmqCfg ioThreads(int ioThreads) {
+    public ZmqConfig ioThreads(int ioThreads) {
         greaterThan(ioThreads, 1, "ioThreads");
         this.ioThreads = Math.min(ioThreads, availableProcessors());
         return this;
@@ -192,7 +192,7 @@ public final class ZmqCfg implements TransportCfg,
      * @param highWaterMark int
      * @return ZmqConfigurator
      */
-    public ZmqCfg highWaterMark(int highWaterMark) {
+    public ZmqConfig highWaterMark(int highWaterMark) {
         this.highWaterMark = highWaterMark;
         return this;
     }
@@ -201,7 +201,7 @@ public final class ZmqCfg implements TransportCfg,
      * @param tcpKeepAlive TcpKeepAlive
      * @return ZmqConfigurator
      */
-    public ZmqCfg tcpKeepAlive(@Nonnull TcpKeepAlive tcpKeepAlive) {
+    public ZmqConfig tcpKeepAlive(@Nonnull TcpKeepAlive tcpKeepAlive) {
         nonNull(tcpKeepAlive, "tcpKeepAlive");
         this.tcpKeepAlive = tcpKeepAlive;
         return this;
@@ -335,7 +335,7 @@ public final class ZmqCfg implements TransportCfg,
 
     @Override
     public boolean equals(@Nullable Object obj) {
-        if (obj instanceof ZmqCfg o) {
+        if (obj instanceof ZmqConfig o) {
             if (!this.addr.equals(o.getAddr()))
                 return false;
             if (this.ioThreads != o.getIoThreads())
@@ -364,21 +364,21 @@ public final class ZmqCfg implements TransportCfg,
 
     @Nonnull
     @Override
-    public ZmqCfg fromJson(@Nonnull String json) {
+    public ZmqConfig fromJson(@Nonnull String json) {
         Map<String, Object> map = JsonReader.toMap(json);
         var protocol = ZmqProtocol.of((String) map.get("protocol"));
         String addr = (String) map.get("addr");
         int ioThreads = (int) map.get("ioThreads");
         var tcpKeepAlive = JsonReader.toObject((String) map.get("tcpKeepAlive"), TcpKeepAlive.class);
         assert tcpKeepAlive != null;
-        return new ZmqCfg(protocol.addr(addr)).ioThreads(ioThreads).tcpKeepAlive(tcpKeepAlive);
+        return new ZmqConfig(protocol.addr(addr)).ioThreads(ioThreads).tcpKeepAlive(tcpKeepAlive);
     }
 
     public static void main(String[] args) {
-        ZmqCfg configurator = ZmqCfg.tcp("192.168.1.1", 5551)
+        ZmqConfig configurator = ZmqConfig.tcp("192.168.1.1", 5551)
                 .ioThreads(3).tcpKeepAlive(TcpKeepAlive.sysDefault());
         System.out.println(configurator);
-        System.out.println(ZmqCfg.getZmqVersion());
+        System.out.println(ZmqConfig.getZmqVersion());
         System.out.println(IpAddressValidator.isIPv4("192.168.1.1"));
     }
 

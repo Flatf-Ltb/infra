@@ -9,8 +9,8 @@ import io.flatf.common.datetime.DateTimeUtil;
 import io.flatf.common.lang.Validator;
 import io.flatf.common.log4j2.Log4j2LoggerFactory;
 import io.flatf.common.serialization.specific.BytesDeserializer;
-import io.flatf.transport.api.Subscriber;
-import io.flatf.transport.rmq.config.RmqConsumerCfg;
+import io.flatf.transport.api.Receiver;
+import io.flatf.transport.rmq.config.RmqReceiverConfig;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.eclipse.collections.api.list.MutableList;
 import org.slf4j.Logger;
@@ -35,9 +35,9 @@ import static io.flatf.common.util.StringSupport.nonEmpty;
  * <p>
  * 处理批量数据, 手动ACK
  */
-public class RmqBatchReceiver<T> extends RmqTransport implements Subscriber, Runnable {
+public class RmqBatchConsumer<T> extends RmqTransport implements Receiver, Runnable {
 
-    private static final Logger log = Log4j2LoggerFactory.getLogger(RmqBatchReceiver.class);
+    private static final Logger LOG = Log4j2LoggerFactory.getLogger(RmqBatchConsumer.class);
 
     // 接收者名称
     private String receiverName;
@@ -48,7 +48,7 @@ public class RmqBatchReceiver<T> extends RmqTransport implements Subscriber, Run
     // 队列持久化
     private boolean durable = true;
 
-    public RmqBatchReceiver<T> setDurable(boolean durable) {
+    public RmqBatchConsumer<T> setDurable(boolean durable) {
         this.durable = durable;
         return this;
     }
@@ -56,7 +56,7 @@ public class RmqBatchReceiver<T> extends RmqTransport implements Subscriber, Run
     // 连接独占此队列
     private boolean exclusive = false;
 
-    public RmqBatchReceiver<T> setExclusive(boolean exclusive) {
+    public RmqBatchConsumer<T> setExclusive(boolean exclusive) {
         this.exclusive = exclusive;
         return this;
     }
@@ -64,41 +64,41 @@ public class RmqBatchReceiver<T> extends RmqTransport implements Subscriber, Run
     // channel关闭后自动删除队列
     private boolean autoDelete = false;
 
-    public RmqBatchReceiver<T> setAutoDelete(boolean autoDelete) {
+    public RmqBatchConsumer<T> setAutoDelete(boolean autoDelete) {
         this.autoDelete = autoDelete;
         return this;
     }
 
     private final BatchProcessConsumer<T> consumer;
 
-    public RmqBatchReceiver(String tag, @Nonnull RmqConsumerCfg cfg, long autoFlushInterval,
+    public RmqBatchConsumer(String tag, @Nonnull RmqReceiverConfig config, long autoFlushInterval,
                             BytesDeserializer<T> deserializer, BatchHandler<T> batchHandler, RefreshNowEvent<T> refreshNowEvent) {
-        super(nonEmpty(tag) ? tag : "batch-recv-" + DateTimeUtil.datetimeOfMillisecond(), cfg.getConnection());
-        this.receiveQueue = cfg.queue().getQueueName();
+        super(nonEmpty(tag) ? tag : "batch-recv-" + DateTimeUtil.datetimeOfMillisecond(), config.getConnectionConfig());
+        this.receiveQueue = config.queue().queueName();
         createConnection();
         queueDeclare();
-        this.consumer = new BatchProcessConsumer<>(channel, cfg.ackOptions().qos(), autoFlushInterval,
+        this.consumer = new BatchProcessConsumer<>(channel, config.ackOptions().qos(), autoFlushInterval,
             batchHandler, deserializer, refreshNowEvent, null);
     }
 
-    public RmqBatchReceiver(String tag, @Nonnull RmqConsumerCfg configurator, long autoFlushInterval,
+    public RmqBatchConsumer(String tag, @Nonnull RmqReceiverConfig config, long autoFlushInterval,
                             BytesDeserializer<T> deserializer, BatchHandler<T> batchHandler, RefreshNowEvent<T> refreshNowEvent,
                             Predicate<T> filter) {
-        super(nonEmpty(tag) ? tag : "batch-receiver-" + DateTimeUtil.datetimeOfMillisecond(),
-            configurator.getConnection());
-        this.receiveQueue = configurator.queue().getQueueName();
+        super(nonEmpty(tag) ? tag : "batch-recv-" + DateTimeUtil.datetimeOfMillisecond(),
+            config.getConnectionConfig());
+        this.receiveQueue = config.queue().queueName();
         createConnection();
         queueDeclare();
-        this.consumer = new BatchProcessConsumer<>(super.channel, configurator.ackOptions().qos(),
+        this.consumer = new BatchProcessConsumer<>(super.channel, config.ackOptions().qos(),
             autoFlushInterval, batchHandler, deserializer, refreshNowEvent, filter);
     }
 
     private void queueDeclare() {
-        this.receiverName = "receiver::" + rmqConnection.getConfigInfo() + "$" + receiveQueue;
+        this.receiverName = "batch-recv::" + connectionConfig.getConfigInfo() + "$" + receiveQueue;
         try {
             channel.queueDeclare(receiveQueue, durable, exclusive, autoDelete, null);
         } catch (IOException e) {
-            log.error(
+            LOG.error(
                 "Function channel.queueDeclare(queue==[{}], durable==[{}], exclusive==[{}], autoDelete==[{}], arguments==null) IOException message -> {}",
                 receiveQueue, durable, exclusive, autoDelete, e.getMessage(), e);
             closeIgnoreException();
@@ -107,15 +107,15 @@ public class RmqBatchReceiver<T> extends RmqTransport implements Subscriber, Run
 
     @Override
     public void run() {
-        subscribe();
+        receive();
     }
 
     @Override
-    public void subscribe() {
+    public void receive() {
         try {
             channel.basicConsume(receiveQueue, false, tag, consumer);
         } catch (IOException e) {
-            log.error("basicConsume error : {}", e.getMessage(), e);
+            LOG.error("basicConsume error : {}", e.getMessage(), e);
         }
     }
 
@@ -126,7 +126,7 @@ public class RmqBatchReceiver<T> extends RmqTransport implements Subscriber, Run
 
     @Override
     public boolean closeIgnoreException() {
-        log.info("Call method RabbitMqReceiver.destroy()");
+        LOG.info("Call method RabbitMqReceiver.destroy()");
         closeConnection();
         return true;
     }
@@ -202,21 +202,22 @@ public class RmqBatchReceiver<T> extends RmqTransport implements Subscriber, Run
             this.batchHandler = Validator.nonNull(batchHandler, "batchHandler");
             this.deserializer = Validator.nonNull(deserializer, "deserializer");
             this.prefetchCount = prefetchCount;
-            if (millisecond > 0) {
+            if (millisecond > 0)
                 this.millisecond = millisecond;
-            } else {
+            else
                 log.warn("Use default millisecond: {}", this.millisecond);
-            }
             init();
         }
 
-        public BatchProcessConsumer(Channel channel, BytesDeserializer<T> serializable, BatchHandler<T> batchHandler) {
+        public BatchProcessConsumer(Channel channel,
+                                    BytesDeserializer<T> deserializer,
+                                    BatchHandler<T> batchHandler) {
             super(channel);
             Validator.nonNull(batchHandler, "qosBatchHandler");
-            Validator.nonNull(serializable, "deserializer");
+            Validator.nonNull(deserializer, "deserializer");
             this.channel = channel;
             this.batchHandler = batchHandler;
-            this.deserializer = serializable;
+            this.deserializer = deserializer;
             init();
         }
 
@@ -231,7 +232,7 @@ public class RmqBatchReceiver<T> extends RmqTransport implements Subscriber, Run
             bufferList = MutableLists.newFastList();
 
             lock = new ReentrantLock();
-            ThreadFactory namedThreadFactory = new BasicThreadFactory.Builder()
+            ThreadFactory namedThreadFactory = BasicThreadFactory.builder()
                 .namingPattern("BatchHandlerAutoFlush-pool-%d").build();
             schedule = new ScheduledThreadPoolExecutor(1, namedThreadFactory);
             automaticFlush();
@@ -243,9 +244,8 @@ public class RmqBatchReceiver<T> extends RmqTransport implements Subscriber, Run
             // 序列化
             T t = deserializer.deserialization(body);
             // 过滤器
-            if (filter != null && !filter.test(t)) {
+            if (filter != null && !filter.test(t))
                 return;
-            }
             lock.lock();
             try {
                 save(t, envelope.getDeliveryTag());

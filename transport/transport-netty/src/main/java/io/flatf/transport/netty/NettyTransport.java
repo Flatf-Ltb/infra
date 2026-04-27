@@ -4,7 +4,7 @@ import io.flatf.common.annotation.AbstractFunction;
 import io.flatf.common.lang.Validator;
 import io.flatf.transport.TransportComponent;
 import io.flatf.transport.api.Transport;
-import io.flatf.transport.netty.configurator.NettyCfg;
+import io.flatf.transport.netty.configurator.NettyConfig;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -14,7 +14,7 @@ import static io.flatf.common.sys.CurrentRuntime.availableProcessors;
 public abstract class NettyTransport extends TransportComponent implements Transport {
 
     protected final String tag;
-    protected final NettyCfg configurator;
+    protected final NettyConfig configurator;
 
     protected final ChannelHandler[] handlers;
     protected final EventLoopGroup workerGroup;
@@ -24,7 +24,7 @@ public abstract class NettyTransport extends TransportComponent implements Trans
      * @param configurator NettyConfigurator
      * @param handlers     ChannelHandler[]
      */
-    protected NettyTransport(String tag, NettyCfg configurator, ChannelHandler... handlers) {
+    protected NettyTransport(String tag, NettyConfig configurator, ChannelHandler... handlers) {
         Validator.nonNull(configurator, "configurator");
         Validator.requiredLength(handlers, 1, "handlers");
         this.tag = tag;

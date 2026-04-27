@@ -21,7 +21,7 @@ public class ZmqReceiver extends ZmqComponent implements Receiver, Closeable {
 
     private final Function<byte[], byte[]> handler;
 
-    ZmqReceiver(@Nonnull ZmqCfg configurator,
+    ZmqReceiver(@Nonnull ZmqConfig configurator,
                 @Nonnull Function<byte[], byte[]> handler) {
         super(configurator);
         nonNull(handler, "handler");
@@ -72,7 +72,7 @@ public class ZmqReceiver extends ZmqComponent implements Receiver, Closeable {
     }
 
     public static void main(String[] args) {
-        try (ZmqReceiver receiver = ZmqCfg.tcp(5551).createReceiver((byte[] recvMsg) -> {
+        try (ZmqReceiver receiver = ZmqConfig.tcp(5551).createReceiver((byte[] recvMsg) -> {
             System.out.println(new String(recvMsg));
             return null;
         })) {

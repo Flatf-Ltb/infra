@@ -2,7 +2,7 @@ package io.flatf.transport.netty;
 
 import io.flatf.common.log4j2.Log4j2LoggerFactory;
 import io.flatf.transport.api.TransportServer;
-import io.flatf.transport.netty.configurator.NettyCfg;
+import io.flatf.transport.netty.configurator.NettyConfig;
 import io.flatf.transport.netty.handler.GeneralNettyHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
@@ -28,7 +28,7 @@ public class NettyServer extends NettyTransport implements TransportServer {
      * @param configurator NettyConfigurator
      * @param handlers     ChannelHandler[]
      */
-    public NettyServer(String tag, NettyCfg configurator, ChannelHandler... handlers) {
+    public NettyServer(String tag, NettyConfig configurator, ChannelHandler... handlers) {
         super(tag, configurator, handlers);
     }
 
@@ -45,7 +45,7 @@ public class NettyServer extends NettyTransport implements TransportServer {
                 }).option(ChannelOption.SO_BACKLOG, configurator.backlog())
                 .childOption(ChannelOption.SO_KEEPALIVE, configurator.keepAlive())
                 .childOption(ChannelOption.TCP_NODELAY, configurator.tcpNoDelay());
-        log.info("{} : Init-ServerBootStrap.bind -> {}", tag, configurator.getConnectionInfo());
+        log.info("{} : Init-ServerBootStrap.bind -> {}", tag, configurator.connectionInfo());
     }
 
     @Override
@@ -83,7 +83,7 @@ public class NettyServer extends NettyTransport implements TransportServer {
 
     public static void main(String[] args) throws Exception {
 
-        NettyCfg configurator = NettyCfg.builder("192.168.1.138", 7901).build();
+        NettyConfig configurator = NettyConfig.builder("192.168.1.138", 7901).build();
 
         try (NettyServer nettyServer = new NettyServer("LocalTest", configurator, new GeneralNettyHandler() {
 

@@ -5,7 +5,7 @@ import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
 import io.flatf.common.datetime.DateTimeUtil;
 import io.flatf.common.lang.Validator;
-import io.flatf.transport.rmq.config.RmqConnection;
+import io.flatf.transport.rmq.config.RmqConnectionConfig;
 import io.flatf.transport.rmq.declare.AmqpExchange;
 import io.flatf.transport.rmq.declare.AmqpQueue;
 import io.flatf.transport.rmq.exception.DeclareException;
@@ -26,7 +26,7 @@ public final class RmqOperator extends RmqTransport {
      * @return RmqOperator
      */
     public static RmqOperator with(String host, int port, String username, String password) {
-        return with(RmqConnection.with(host, port, username, password).build());
+        return with(RmqConnectionConfig.with(host, port, username, password).build());
     }
 
     /**
@@ -40,7 +40,7 @@ public final class RmqOperator extends RmqTransport {
      * @return RmqOperator
      */
     public static RmqOperator with(String host, int port, String username, String password, String virtualHost) {
-        return with(RmqConnection.with(host, port, username, password, virtualHost).build());
+        return with(RmqConnectionConfig.with(host, port, username, password, virtualHost).build());
     }
 
     /**
@@ -49,7 +49,7 @@ public final class RmqOperator extends RmqTransport {
      * @param connection RmqConnection
      * @return RmqOperator
      */
-    public static RmqOperator with(RmqConnection connection) {
+    public static RmqOperator with(RmqConnectionConfig connection) {
         return new RmqOperator(connection);
     }
 
@@ -63,7 +63,7 @@ public final class RmqOperator extends RmqTransport {
         return new RmqOperator(channel);
     }
 
-    private RmqOperator(RmqConnection connection) {
+    private RmqOperator(RmqConnectionConfig connection) {
         super("declarator-" + DateTimeUtil.datetimeOfMillisecond(), connection);
         createConnection();
     }
@@ -92,8 +92,8 @@ public final class RmqOperator extends RmqTransport {
         } catch (Exception e) {
             throw DeclareException.becauseOf(e);
         }
-        return declareQueue(queue.getName(), queue.isDurable(), queue.isExclusive(), queue.isAutoDelete(),
-                queue.getArgs());
+        return declareQueue(queue.name(), queue.durable(), queue.exclusive(), queue.autoDelete(),
+            queue.args());
     }
 
     /**
@@ -130,13 +130,13 @@ public final class RmqOperator extends RmqTransport {
         } catch (Exception e) {
             throw DeclareException.becauseOf(e);
         }
-        return switch (exchange.getType()) {
-            case Direct -> declareDirectExchange(exchange.getName(), exchange.isDurable(), exchange.isAutoDelete(),
-                    exchange.isInternal(), exchange.getArgs());
-            case Fanout -> declareFanoutExchange(exchange.getName(), exchange.isDurable(), exchange.isAutoDelete(),
-                    exchange.isInternal(), exchange.getArgs());
-            case Topic -> declareTopicExchange(exchange.getName(), exchange.isDurable(), exchange.isAutoDelete(),
-                    exchange.isInternal(), exchange.getArgs());
+        return switch (exchange.type()) {
+            case Direct -> declareDirectExchange(exchange.name(), exchange.durable(), exchange.autoDelete(),
+                exchange.internal(), exchange.args());
+            case Fanout -> declareFanoutExchange(exchange.name(), exchange.durable(), exchange.autoDelete(),
+                exchange.internal(), exchange.args());
+            case Topic -> declareTopicExchange(exchange.name(), exchange.durable(), exchange.autoDelete(),
+                exchange.internal(), exchange.args());
             default -> false;
         };
     }
@@ -291,7 +291,7 @@ public final class RmqOperator extends RmqTransport {
      * @throws DeclareException de
      */
     public boolean bindExchange(String destExchange, String sourceExchange, String routingKey)
-            throws DeclareException {
+        throws DeclareException {
         try {
             Validator.nonEmpty(destExchange, "destExchange");
             Validator.nonEmpty(sourceExchange, "sourceExchange");

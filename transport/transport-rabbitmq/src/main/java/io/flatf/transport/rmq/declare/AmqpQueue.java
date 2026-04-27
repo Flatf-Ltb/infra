@@ -3,10 +3,16 @@ package io.flatf.transport.rmq.declare;
 import io.flatf.common.collections.MapUtil;
 import io.flatf.common.lang.Validator;
 import io.flatf.serialization.json.JsonWriter;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
 
+@Getter
+@Setter
+@Accessors(chain = true, fluent = true)
 public final class AmqpQueue {
 
     // 队列名称
@@ -39,46 +45,6 @@ public final class AmqpQueue {
         return new AmqpQueue(name);
     }
 
-    public AmqpQueue setDurable(boolean durable) {
-        this.durable = durable;
-        return this;
-    }
-
-    public AmqpQueue setExclusive(boolean exclusive) {
-        this.exclusive = exclusive;
-        return this;
-    }
-
-    public AmqpQueue setAutoDelete(boolean autoDelete) {
-        this.autoDelete = autoDelete;
-        return this;
-    }
-
-    public AmqpQueue setArgs(Map<String, Object> args) {
-        this.args = args;
-        return this;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public boolean isDurable() {
-        return durable;
-    }
-
-    public boolean isExclusive() {
-        return exclusive;
-    }
-
-    public boolean isAutoDelete() {
-        return autoDelete;
-    }
-
-    public Map<String, Object> getArgs() {
-        return args;
-    }
-
     @Override
     public String toString() {
         return JsonWriter.toJsonHasNulls(this);
@@ -88,10 +54,10 @@ public final class AmqpQueue {
         if (another == null)
             return false;
         return name.equals(another.name)
-                && durable == another.durable
-                && exclusive == another.exclusive
-                && autoDelete == another.autoDelete
-                && MapUtil.isEquals(args, another.args);
+               && durable == another.durable
+               && exclusive == another.exclusive
+               && autoDelete == another.autoDelete
+               && MapUtil.isEquals(args, another.args);
     }
 
 }

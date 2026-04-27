@@ -10,8 +10,8 @@ import io.flatf.common.util.StringSupport;
 import io.flatf.transport.api.Publisher;
 import io.flatf.transport.api.Sender;
 import io.flatf.transport.exception.PublishFailedException;
-import io.flatf.transport.rmq.config.RmqConnection;
-import io.flatf.transport.rmq.config.RmqPublisherCfg;
+import io.flatf.transport.rmq.config.RmqConnectionConfig;
+import io.flatf.transport.rmq.config.RmqPublisherConfig;
 import io.flatf.transport.rmq.declare.ExchangeRelationship;
 import io.flatf.transport.rmq.exception.DeclareException;
 import io.flatf.transport.rmq.exception.DeclareRuntimeException;
@@ -29,12 +29,12 @@ import static io.flatf.common.datetime.DateTimeUtil.datetimeOfMillisecond;
 import static io.flatf.common.util.StringSupport.nonEmpty;
 
 @ThreadSafe
-public class RmqPublisher extends RmqTransport implements Publisher<String, byte[]>, Sender<byte[]> {
+public class RmqProducer extends RmqTransport implements Publisher<String, byte[]>, Sender<byte[]> {
 
-    private static final Logger log = Log4j2LoggerFactory.getLogger(RmqPublisher.class);
+    private static final Logger LOG = Log4j2LoggerFactory.getLogger(RmqProducer.class);
 
     // 发布消息使用的[ExchangeDefinition]
-    private final ExchangeRelationship publishExchange;
+    private final ExchangeRelationship usedExchange;
     // 发布消息使用的[Exchange]
     private final String exchangeName;
 
@@ -56,7 +56,7 @@ public class RmqPublisher extends RmqTransport implements Publisher<String, byte
     /**
      * @param cfg RmqPublisherConfig
      */
-    public RmqPublisher(@Nonnull RmqPublisherCfg cfg) {
+    public RmqProducer(@Nonnull RmqPublisherConfig cfg) {
         this(null, cfg);
     }
 
@@ -64,11 +64,11 @@ public class RmqPublisher extends RmqTransport implements Publisher<String, byte
      * @param tag String
      * @param cfg RmqPublisherConfig
      */
-    public RmqPublisher(@Nullable String tag, @Nonnull RmqPublisherCfg cfg) {
-        super(nonEmpty(tag) ? tag : "publisher-" + datetimeOfMillisecond(), cfg.getConnection());
+    public RmqProducer(@Nullable String tag, @Nonnull RmqPublisherConfig cfg) {
+        super(nonEmpty(tag) ? tag : "publisher-" + datetimeOfMillisecond(), cfg.getConnectionConfig());
         Validator.nonNull(cfg.exchange(), "exchangeRelation");
-        this.publishExchange = cfg.exchange();
-        this.exchangeName = publishExchange.getExchangeName();
+        this.usedExchange = cfg.exchange();
+        this.exchangeName = usedExchange.getExchangeName();
         this.defaultRoutingKey = cfg.defaultRoutingKey();
         this.defaultMsgProps = cfg.defaultMsgProps();
         this.msgPropsSupplier = cfg.msgPropsSupplier();
@@ -76,23 +76,23 @@ public class RmqPublisher extends RmqTransport implements Publisher<String, byte
         this.confirmTimeout = cfg.confirmOptions().confirmTimeout();
         this.confirmRetry = cfg.confirmOptions().confirmRetry();
         this.hasPropsSupplier = msgPropsSupplier != null;
-        this.publisherName = "publisher::" + rmqConnection.getConnectionInfo() + "$" + exchangeName;
+        this.publisherName = "publisher::" + connectionConfig.connectionInfo() + "$" + exchangeName;
         createConnection();
         declare();
     }
 
     private void declare() throws DeclareRuntimeException {
         try {
-            if (publishExchange == ExchangeRelationship.Anonymous)
-                log.warn(
+            if (usedExchange == ExchangeRelationship.ANONYMOUS)
+                LOG.warn(
                     "Publisher -> {} use anonymous exchange, Please specify [queue name] as the [routing key] when publish",
                     tag);
             else
-                this.publishExchange.declare(RmqOperator.with(channel));
+                this.usedExchange.declare(RmqOperator.with(channel));
         } catch (DeclareException e) {
             // 在定义Exchange和进行绑定时抛出任何异常都需要终止程序
-            log.error("Exchange declare throw exception -> connection configurator info : {}, " + "error message : {}",
-                rmqConnection.getConfigInfo(), e.getMessage(), e);
+            LOG.error("Exchange declare throw exception -> connection configurator info : {}, " + "error message : {}",
+                connectionConfig.getConfigInfo(), e.getMessage(), e);
             closeIgnoreException();
             throw new DeclareRuntimeException(e);
         }
@@ -125,21 +125,21 @@ public class RmqPublisher extends RmqTransport implements Publisher<String, byte
         int retry = 0;
         // 调用isConnected(), 检查channel和connection是否打开, 如果没有打开, 先销毁连接, 再重新创建连接.
         while (!isConnected()) {
-            log.error("Detect connection isConnected() == false, retry {}", (++retry));
+            LOG.error("Detect connection isConnected() == false, retry {}", (++retry));
             closeIgnoreException();
-            Sleep.millis(rmqConnection.getRecoveryInterval());
+            Sleep.millis(connectionConfig.recoveryInterval());
             createConnection();
         }
         if (confirm) {
             try {
                 confirmPublish(target, msg, props);
             } catch (IOException e) {
-                log.error("Func publish isConfirm==[true] throw IOException -> {}, msg==[{}]", e.getMessage(),
+                LOG.error("Func publish isConfirm==[true] throw IOException -> {}, msg==[{}]", e.getMessage(),
                     StringSupport.toString(msg), e);
                 closeIgnoreException();
                 throw new PublishFailedException(e);
             } catch (NoAckException e) {
-                log.error("Func publish isConfirm==[true] throw NoConfirmException -> {}, msg==[{}]", e.getMessage(),
+                LOG.error("Func publish isConfirm==[true] throw NoConfirmException -> {}, msg==[{}]", e.getMessage(),
                     StringSupport.toString(msg), e);
                 throw new PublishFailedException(e);
             }
@@ -147,7 +147,7 @@ public class RmqPublisher extends RmqTransport implements Publisher<String, byte
             try {
                 basicPublish(target, msg, props);
             } catch (IOException e) {
-                log.error("Func publish isConfirm==[false] throw IOException -> {}, msg==[{}]", e.getMessage(),
+                LOG.error("Func publish isConfirm==[false] throw IOException -> {}, msg==[{}]", e.getMessage(),
                     StringSupport.toString(msg), e);
                 closeIgnoreException();
                 throw new PublishFailedException(e);
@@ -184,16 +184,16 @@ public class RmqPublisher extends RmqTransport implements Publisher<String, byte
             basicPublish(routingKey, msg, props);
             if (channel.waitForConfirms(confirmTimeout))
                 return;
-            log.error("Call func channel.waitForConfirms(confirmTimeout==[{}]) retry==[{}]", confirmTimeout, retry);
+            LOG.error("Call func channel.waitForConfirms(confirmTimeout==[{}]) retry==[{}]", confirmTimeout, retry);
             if (++retry == confirmRetry)
                 throw new NoAckException(exchangeName, routingKey, retry, confirmTimeout);
             confirmPublish0(routingKey, msg, props, retry);
         } catch (IOException e) {
-            log.error("Func channel.confirmSelect() throw IOException from publisherName -> {}, routingKey -> {}",
+            LOG.error("Func channel.confirmSelect() throw IOException from publisherName -> {}, routingKey -> {}",
                 publisherName, routingKey, e);
             throw e;
         } catch (InterruptedException | TimeoutException e) {
-            log.error("Func channel.waitForConfirms() throw {} from publisherName -> {}, routingKey -> {}",
+            LOG.error("Func channel.waitForConfirms() throw {} from publisherName -> {}, routingKey -> {}",
                 e.getClass().getSimpleName(), publisherName, routingKey, e);
         }
     }
@@ -218,7 +218,7 @@ public class RmqPublisher extends RmqTransport implements Publisher<String, byte
         } catch (IOException e) {
             StringBuilder sb = new StringBuilder(240);
             props.appendPropertyDebugStringTo(sb);
-            log.error("Func channel.basicPublish(exchange==[{}], routingKey==[{}], properties==[{}], msg==[...]) "
+            LOG.error("Func channel.basicPublish(exchange==[{}], routingKey==[{}], properties==[{}], msg==[...]) "
                       + "throw IOException -> {}", exchangeName, routingKey, sb, e.getMessage(), e);
             throw e;
         }
@@ -226,7 +226,7 @@ public class RmqPublisher extends RmqTransport implements Publisher<String, byte
 
     @Override
     public boolean closeIgnoreException() {
-        log.info("Call func closeIgnoreException() from Publisher name==[{}]", publisherName);
+        LOG.info("Call func closeIgnoreException() from Publisher name==[{}]", publisherName);
         return super.closeIgnoreException();
     }
 
@@ -242,12 +242,12 @@ public class RmqPublisher extends RmqTransport implements Publisher<String, byte
 
     public static void main(String[] args) {
 
-        RmqConnection connection = RmqConnection.with("127.0.0.1", 5672, "guest", "guest").build();
+        RmqConnectionConfig connection = RmqConnectionConfig.with("127.0.0.1", 5672, "guest", "guest").build();
 
         ExchangeRelationship fanoutExchange = ExchangeRelationship.fanout("fanout-test");
 
-        try (RmqPublisher publisher = new RmqPublisher(
-            RmqPublisherCfg.configuration(connection, fanoutExchange).build())) {
+        try (RmqProducer publisher = new RmqProducer(
+            RmqPublisherConfig.configuration(connection, fanoutExchange).build())) {
             Threads.startNewThread(() -> {
                 int count = 0;
                 while (true) {

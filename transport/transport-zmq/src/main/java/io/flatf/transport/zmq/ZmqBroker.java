@@ -4,7 +4,7 @@ import org.zeromq.SocketType;
 
 public class ZmqBroker extends ZmqComponent {
 
-    ZmqBroker(ZmqCfg configurator) {
+    ZmqBroker(ZmqConfig configurator) {
         super(configurator);
     }
 

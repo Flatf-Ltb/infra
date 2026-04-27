@@ -11,8 +11,8 @@ import io.flatf.common.thread.Threads;
 import io.flatf.transport.api.Publisher;
 import io.flatf.transport.exception.InitializeFailureException;
 import io.flatf.transport.exception.PublishFailedException;
-import io.flatf.transport.rmq.config.RmqConnection;
-import io.flatf.transport.rmq.config.RmqPublisherCfg;
+import io.flatf.transport.rmq.config.RmqConnectionConfig;
+import io.flatf.transport.rmq.config.RmqPublisherConfig;
 import io.flatf.transport.rmq.declare.ExchangeRelationship;
 import io.flatf.transport.rmq.exception.DeclareException;
 import io.flatf.transport.rmq.exception.DeclareRuntimeException;
@@ -36,12 +36,12 @@ import static io.flatf.common.util.StringSupport.nonEmpty;
  * 添加消息序列化器
  */
 @ThreadSafe
-public class AdvancedRmqPublisher<T> extends RmqTransport implements Publisher<String, T> {
+public class AdvancedRmqProducer<T> extends RmqTransport implements Publisher<String, T> {
 
-    private static final Logger LOGGER = Log4j2LoggerFactory.getLogger(AdvancedRmqPublisher.class);
+    private static final Logger LOG = Log4j2LoggerFactory.getLogger(AdvancedRmqProducer.class);
 
     // 发布消息使用的[ExchangeDeclare]
-    private final ExchangeRelationship publishExchange;
+    private final ExchangeRelationship usedExchange;
 
     // 发布消息使用的[Exchange]
     private final String exchangeName;
@@ -77,11 +77,11 @@ public class AdvancedRmqPublisher<T> extends RmqTransport implements Publisher<S
      * @param <T>        T
      * @param config     RmqPublisherConfig
      * @param serializer BytesSerializer<T>
-     * @return AdvancedRmqPublisher<T>
+     * @return AdvancedRmqProducer<T>
      */
-    public static <T> AdvancedRmqPublisher<T> create(@Nonnull RmqPublisherCfg config,
-                                                     @Nonnull BytesSerializer<T> serializer) {
-        return new AdvancedRmqPublisher<>(null, config, serializer, null, null);
+    public static <T> AdvancedRmqProducer<T> create(@Nonnull RmqPublisherConfig config,
+                                                    @Nonnull BytesSerializer<T> serializer) {
+        return new AdvancedRmqProducer<>(null, config, serializer, null, null);
     }
 
     /**
@@ -89,11 +89,11 @@ public class AdvancedRmqPublisher<T> extends RmqTransport implements Publisher<S
      * @param tag        String
      * @param config     RmqPublisherConfig
      * @param serializer BytesSerializer<T>
-     * @return AdvancedRmqPublisher<T>
+     * @return AdvancedRmqProducer<T>
      */
-    public static <T> AdvancedRmqPublisher<T> create(@Nullable String tag, @Nonnull RmqPublisherCfg config,
-                                                     @Nonnull BytesSerializer<T> serializer) {
-        return new AdvancedRmqPublisher<>(tag, config, serializer, null, null);
+    public static <T> AdvancedRmqProducer<T> create(@Nullable String tag, @Nonnull RmqPublisherConfig config,
+                                                    @Nonnull BytesSerializer<T> serializer) {
+        return new AdvancedRmqProducer<>(tag, config, serializer, null, null);
     }
 
     /**
@@ -103,30 +103,30 @@ public class AdvancedRmqPublisher<T> extends RmqTransport implements Publisher<S
      * @param serializer    BytesSerializer<T>
      * @param ackCallback   AckCallback
      * @param noAckCallback NoAckCallback
-     * @return AdvancedRmqPublisher<T>
+     * @return AdvancedRmqProducer<T>
      */
-    public static <T> AdvancedRmqPublisher<T> create(@Nullable String tag, @Nonnull RmqPublisherCfg config,
-                                                     @Nonnull BytesSerializer<T> serializer,
-                                                     @Nonnull AckCallback ackCallback,
-                                                     @Nonnull NoAckCallback noAckCallback) {
-        return new AdvancedRmqPublisher<>(tag, config, serializer, ackCallback, noAckCallback);
+    public static <T> AdvancedRmqProducer<T> create(@Nullable String tag, @Nonnull RmqPublisherConfig config,
+                                                    @Nonnull BytesSerializer<T> serializer,
+                                                    @Nonnull AckCallback ackCallback,
+                                                    @Nonnull NoAckCallback noAckCallback) {
+        return new AdvancedRmqProducer<>(tag, config, serializer, ackCallback, noAckCallback);
     }
 
     /**
      * @param config RmqPublisherConfig
-     * @return AdvancedRmqPublisher<byte [ ]>
+     * @return AdvancedRmqProducer<byte[]>
      */
-    public static AdvancedRmqPublisher<byte[]> createWithBytes(@Nonnull RmqPublisherCfg config) {
+    public static AdvancedRmqProducer<byte[]> createWithBytes(@Nonnull RmqPublisherConfig config) {
         return createWithBytes(null, config, null, null);
     }
 
     /**
      * @param tag    String
      * @param config RmqPublisherConfig
-     * @return AdvancedRmqPublisher<byte [ ]>
+     * @return AdvancedRmqProducer<byte[]>
      */
-    public static AdvancedRmqPublisher<byte[]> createWithBytes(@Nullable String tag,
-                                                               @Nonnull RmqPublisherCfg config) {
+    public static AdvancedRmqProducer<byte[]> createWithBytes(@Nullable String tag,
+                                                              @Nonnull RmqPublisherConfig config) {
         return createWithBytes(tag, config, null, null);
     }
 
@@ -135,40 +135,40 @@ public class AdvancedRmqPublisher<T> extends RmqTransport implements Publisher<S
      * @param config        RmqPublisherConfig
      * @param ackCallback   AckCallback
      * @param noAckCallback NoAckCallback
-     * @return AdvancedRmqPublisher<byte [ ]>
+     * @return AdvancedRmqProducer<byte[]>
      */
-    public static AdvancedRmqPublisher<byte[]> createWithBytes(@Nullable String tag,
-                                                               @Nonnull RmqPublisherCfg config,
-                                                               @Nullable AckCallback ackCallback,
-                                                               @Nullable NoAckCallback noAckCallback) {
-        return new AdvancedRmqPublisher<>(tag, config, msg -> msg, ackCallback, noAckCallback);
+    public static AdvancedRmqProducer<byte[]> createWithBytes(@Nullable String tag,
+                                                              @Nonnull RmqPublisherConfig config,
+                                                              @Nullable AckCallback ackCallback,
+                                                              @Nullable NoAckCallback noAckCallback) {
+        return new AdvancedRmqProducer<>(tag, config, msg -> msg, ackCallback, noAckCallback);
     }
 
     /**
      * @param config RmqPublisherConfig
-     * @return AdvancedRmqPublisher<String>
+     * @return AdvancedRmqProducer<String>
      */
-    public static AdvancedRmqPublisher<String> createWithString(@Nonnull RmqPublisherCfg config) {
+    public static AdvancedRmqProducer<String> createWithString(@Nonnull RmqPublisherConfig config) {
         return createWithString(null, config, Charsets.UTF8, null, null);
     }
 
     /**
      * @param config  RmqPublisherConfig
      * @param charset Charset
-     * @return AdvancedRmqPublisher<String>
+     * @return AdvancedRmqProducer<String>
      */
-    public static AdvancedRmqPublisher<String> createWithString(@Nonnull RmqPublisherCfg config,
-                                                                @Nonnull Charset charset) {
+    public static AdvancedRmqProducer<String> createWithString(@Nonnull RmqPublisherConfig config,
+                                                               @Nonnull Charset charset) {
         return createWithString(null, config, charset, null, null);
     }
 
     /**
      * @param tag    String
      * @param config RmqPublisherConfig
-     * @return AdvancedRmqPublisher<String>
+     * @return AdvancedRmqProducer<String>
      */
-    public static AdvancedRmqPublisher<String> createWithString(@Nullable String tag,
-                                                                @Nonnull RmqPublisherCfg config) {
+    public static AdvancedRmqProducer<String> createWithString(@Nullable String tag,
+                                                               @Nonnull RmqPublisherConfig config) {
         return createWithString(tag, config, Charsets.UTF8, null, null);
     }
 
@@ -176,10 +176,10 @@ public class AdvancedRmqPublisher<T> extends RmqTransport implements Publisher<S
      * @param tag     String
      * @param config  RmqPublisherConfig
      * @param charset Charset
-     * @return AdvancedRmqPublisher<String>
+     * @return AdvancedRmqProducer<String>
      */
-    public static AdvancedRmqPublisher<String> createWithString(@Nullable String tag,
-                                                                @Nonnull RmqPublisherCfg config, @Nonnull Charset charset) {
+    public static AdvancedRmqProducer<String> createWithString(@Nullable String tag,
+                                                               @Nonnull RmqPublisherConfig config, @Nonnull Charset charset) {
         return createWithString(tag, config, charset, null, null);
     }
 
@@ -189,14 +189,14 @@ public class AdvancedRmqPublisher<T> extends RmqTransport implements Publisher<S
      * @param charset       Charset
      * @param ackCallback   AckCallback
      * @param noAckCallback NoAckCallback
-     * @return AdvancedRmqPublisher<String>
+     * @return AdvancedRmqProducer<String>
      */
-    public static AdvancedRmqPublisher<String> createWithString(@Nullable String tag,
-                                                                @Nonnull RmqPublisherCfg config,
-                                                                @Nonnull Charset charset,
-                                                                @Nullable AckCallback ackCallback,
-                                                                @Nullable NoAckCallback noAckCallback) {
-        return new AdvancedRmqPublisher<>(tag, config, msg -> msg != null ? msg.getBytes(charset) : null, ackCallback, noAckCallback);
+    public static AdvancedRmqProducer<String> createWithString(@Nullable String tag,
+                                                               @Nonnull RmqPublisherConfig config,
+                                                               @Nonnull Charset charset,
+                                                               @Nullable AckCallback ackCallback,
+                                                               @Nullable NoAckCallback noAckCallback) {
+        return new AdvancedRmqProducer<>(tag, config, msg -> msg != null ? msg.getBytes(charset) : null, ackCallback, noAckCallback);
     }
 
     /**
@@ -206,13 +206,13 @@ public class AdvancedRmqPublisher<T> extends RmqTransport implements Publisher<S
      * @param ackCallback   ACK成功回调
      * @param noAckCallback ACK未成功回调
      */
-    private AdvancedRmqPublisher(@Nullable String tag, @Nonnull RmqPublisherCfg config,
-                                 @Nonnull BytesSerializer<T> serializer, @Nullable AckCallback ackCallback,
-                                 @Nullable NoAckCallback noAckCallback) {
-        super(nonEmpty(tag) ? tag : "adv-pub-" + datetimeOfMillisecond(), config.getConnection());
+    private AdvancedRmqProducer(@Nullable String tag, @Nonnull RmqPublisherConfig config,
+                                @Nonnull BytesSerializer<T> serializer, @Nullable AckCallback ackCallback,
+                                @Nullable NoAckCallback noAckCallback) {
+        super(nonEmpty(tag) ? tag : "adv-pub-" + datetimeOfMillisecond(), config.getConnectionConfig());
         Validator.nonNull(config.exchange(), "exchange");
-        this.publishExchange = config.exchange();
-        this.exchangeName = publishExchange.getExchangeName();
+        this.usedExchange = config.exchange();
+        this.exchangeName = usedExchange.getExchangeName();
         this.defaultRoutingKey = config.defaultRoutingKey();
         this.defaultMsgProps = config.defaultMsgProps();
         this.msgPropsSupplier = config.msgPropsSupplier();
@@ -221,7 +221,7 @@ public class AdvancedRmqPublisher<T> extends RmqTransport implements Publisher<S
         this.confirmRetry = config.confirmOptions().confirmRetry();
         this.serializer = serializer;
         this.hasPropsSupplier = msgPropsSupplier != null;
-        this.publisherName = "publisher::[" + rmqConnection.getConnectionInfo() + "$" + exchangeName + "]";
+        this.publisherName = "publisher::[" + connectionConfig.connectionInfo() + "$" + exchangeName + "]";
         createConnection();
         declareExchange();
         // 如果设置为需要应答确认, 则进行相关设置
@@ -237,21 +237,21 @@ public class AdvancedRmqPublisher<T> extends RmqTransport implements Publisher<S
                     if (hasAckCallback)
                         ackCallback.handle(deliveryTag, multiple);
                     else
-                        LOGGER.warn("Undefined AckCallback function. Publisher -> {}", publisherName);
+                        LOG.warn("Undefined AckCallback function. Publisher -> {}", publisherName);
                 },
                 // NoAck Callback
                 (deliveryTag, multiple) -> {
                     if (hasNoAckCallback)
                         noAckCallback.handle(deliveryTag, multiple);
                     else
-                        LOGGER.warn("Undefined NoAckCallback function. Publisher -> {}", publisherName);
+                        LOG.warn("Undefined NoAckCallback function. Publisher -> {}", publisherName);
                 });
             try {
                 // Enables publisher acknowledgements on this channel.
                 channel.confirmSelect();
             } catch (IOException ioe) {
-                LOGGER.error("Enables publisher acknowledgements failure, publisherName -> {}, connectionInfo -> {}",
-                    publisherName, rmqConnection.getConnectionInfo(), ioe);
+                LOG.error("Enables publisher acknowledgements failure, publisherName -> {}, connectionInfo -> {}",
+                    publisherName, connectionConfig.connectionInfo(), ioe);
                 throw new InitializeFailureException(
                     "Enables publisher acknowledgements failure, From publisher -> " + publisherName, ioe);
             }
@@ -266,16 +266,16 @@ public class AdvancedRmqPublisher<T> extends RmqTransport implements Publisher<S
      */
     private void declareExchange() throws DeclareRuntimeException {
         try {
-            if (publishExchange == ExchangeRelationship.Anonymous) {
-                LOGGER.warn("Publisher -> {} use anonymous exchange, Please specify [queue name] "
-                            + "as the [routing key] when publish", tag);
+            if (usedExchange == ExchangeRelationship.ANONYMOUS) {
+                LOG.warn("Publisher -> {} use anonymous exchange, Please specify [queue name] "
+                         + "as the [routing key] when publish", tag);
             } else {
-                this.publishExchange.declare(RmqOperator.with(channel));
+                this.usedExchange.declare(RmqOperator.with(channel));
             }
         } catch (DeclareException e) {
             // 在定义Exchange和进行绑定时抛出任何异常都需要终止程序
-            LOGGER.error("Exchange declare throw exception -> connection configurator info : {}, " + "error message : {}",
-                rmqConnection.getConfigInfo(), e.getMessage(), e);
+            LOG.error("Exchange declare throw exception -> connection configurator info : {}, " + "error message : {}",
+                connectionConfig.getConfigInfo(), e.getMessage(), e);
             closeIgnoreException();
             throw new DeclareRuntimeException(e);
         }
@@ -304,21 +304,21 @@ public class AdvancedRmqPublisher<T> extends RmqTransport implements Publisher<S
         int retry = 0;
         // 调用isConnected(), 检查channel和connection是否打开, 如果没有打开, 先销毁连接, 再重新创建连接.
         while (!isConnected()) {
-            LOGGER.error("Detect connection isConnected() == false, retry {}", (++retry));
+            LOG.error("Detect connection isConnected() == false, retry {}", (++retry));
             closeIgnoreException();
-            Sleep.millis(rmqConnection.getRecoveryInterval());
+            Sleep.millis(connectionConfig.recoveryInterval());
             createConnection();
         }
         if (confirm) {
             try {
                 confirmPublish(target, msg, props);
             } catch (IOException e) {
-                LOGGER.error("Function publish throw IOException -> {}, isConfirm==[true], msg==[{}]", e.getMessage(), msg,
+                LOG.error("Function publish throw IOException -> {}, isConfirm==[true], msg==[{}]", e.getMessage(), msg,
                     e);
                 closeIgnoreException();
                 throw new PublishFailedException(e);
             } catch (MsgConfirmFailureException e) {
-                LOGGER.error("Function publish throw NoConfirmException -> {}, isConfirm==[true], msg==[{}]",
+                LOG.error("Function publish throw NoConfirmException -> {}, isConfirm==[true], msg==[{}]",
                     e.getMessage(), msg, e);
                 throw new PublishFailedException(e);
             }
@@ -326,7 +326,7 @@ public class AdvancedRmqPublisher<T> extends RmqTransport implements Publisher<S
             try {
                 basicPublish(target, msg, props);
             } catch (IOException e) {
-                LOGGER.error("Function publish throw IOException -> {}, isConfirm==[false], msg==[{}]", e.getMessage(),
+                LOG.error("Function publish throw IOException -> {}, isConfirm==[false], msg==[{}]", e.getMessage(),
                     msg, e);
                 closeIgnoreException();
                 throw new PublishFailedException(e);
@@ -364,17 +364,17 @@ public class AdvancedRmqPublisher<T> extends RmqTransport implements Publisher<S
             if (channel.waitForConfirms(confirmTimeout)) {
                 return;
             }
-            LOGGER.error("Call method channel.waitForConfirms(confirmTimeout==[{}]) retry==[{}]", confirmTimeout, retry);
+            LOG.error("Call method channel.waitForConfirms(confirmTimeout==[{}]) retry==[{}]", confirmTimeout, retry);
             if (++retry == confirmRetry) {
                 throw new MsgConfirmFailureException(exchangeName, routingKey, retry, confirmTimeout);
             }
             confirmPublish0(routingKey, msg, props, retry);
         } catch (IOException e) {
-            LOGGER.error("Function basicPublish() throw IOException from publisherName -> {}, routingKey -> {}",
+            LOG.error("Function basicPublish() throw IOException from publisherName -> {}, routingKey -> {}",
                 publisherName, routingKey, e);
             throw e;
         } catch (InterruptedException | TimeoutException e) {
-            LOGGER.error("Function channel.waitForConfirms() throw {} from publisherName -> {}, routingKey -> {}",
+            LOG.error("Function channel.waitForConfirms() throw {} from publisherName -> {}, routingKey -> {}",
                 e.getClass().getSimpleName(), publisherName, routingKey, e);
         }
     }
@@ -403,7 +403,7 @@ public class AdvancedRmqPublisher<T> extends RmqTransport implements Publisher<S
         } catch (IOException ioe) {
             StringBuilder properties = new StringBuilder(500);
             props.appendPropertyDebugStringTo(properties);
-            LOGGER.error(
+            LOG.error(
                 "Function channel.basicPublish() throw IOException, exchange==[{}], routingKey==[{}], properties==[{}] -> {}",
                 exchangeName, routingKey, properties, ioe.getMessage(), ioe);
             throw ioe;
@@ -412,7 +412,7 @@ public class AdvancedRmqPublisher<T> extends RmqTransport implements Publisher<S
 
     @Override
     public boolean closeIgnoreException() {
-        LOGGER.info("Call method destroy() from Publisher name==[{}]", publisherName);
+        LOG.info("Call method destroy() from Publisher name==[{}]", publisherName);
         return super.closeIgnoreException();
     }
 
@@ -438,12 +438,12 @@ public class AdvancedRmqPublisher<T> extends RmqTransport implements Publisher<S
 
     public static void main(String[] args) {
 
-        RmqConnection connection = RmqConnection.with("127.0.0.1", 5672, "guest", "guest").build();
+        RmqConnectionConfig connection = RmqConnectionConfig.with("127.0.0.1", 5672, "guest", "guest").build();
 
         ExchangeRelationship fanout = ExchangeRelationship.fanout("fanout-test");
 
-        try (AdvancedRmqPublisher<String> publisher = AdvancedRmqPublisher
-            .createWithString(RmqPublisherCfg.configuration(connection, fanout).build())) {
+        try (AdvancedRmqProducer<String> publisher = AdvancedRmqProducer
+            .createWithString(RmqPublisherConfig.configuration(connection, fanout).build())) {
             Threads.startNewThread(() -> {
                 int count = 0;
                 while (true) {

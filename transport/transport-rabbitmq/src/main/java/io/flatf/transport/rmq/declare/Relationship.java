@@ -35,7 +35,7 @@ public abstract class Relationship {
      * @throws DeclareException e
      */
     private void declareBinding(RmqOperator operator, Binding binding) throws DeclareException {
-        AmqpExchange source = binding.source;
+        var source = binding.source;
         try {
             operator.declareExchange(source);
         } catch (DeclareException declareException) {
@@ -45,7 +45,7 @@ public abstract class Relationship {
         String routingKey = binding.routingKey;
         switch (binding.destType) {
             case Exchange -> {
-                AmqpExchange destExchange = binding.destExchange;
+                var destExchange = binding.destExchange;
                 try {
                     operator.declareExchange(destExchange);
                 } catch (DeclareException e) {
@@ -53,15 +53,15 @@ public abstract class Relationship {
                     throw e;
                 }
                 try {
-                    operator.bindExchange(destExchange.getName(), source.getName(), routingKey);
+                    operator.bindExchange(destExchange.name(), source.name(), routingKey);
                 } catch (DeclareException e) {
                     log.error("Declare bind exchange failure -> destExchange==[{}], source==[{}], routingKey==[{}]",
-                            destExchange, source, routingKey, e);
+                        destExchange, source, routingKey, e);
                     throw e;
                 }
             }
             case Queue -> {
-                AmqpQueue destQueue = binding.destQueue;
+                var destQueue = binding.destQueue;
                 try {
                     operator.declareQueue(destQueue);
                 } catch (DeclareException e) {
@@ -69,10 +69,10 @@ public abstract class Relationship {
                     throw e;
                 }
                 try {
-                    operator.bindQueue(destQueue.getName(), source.getName(), routingKey);
+                    operator.bindQueue(destQueue.name(), source.name(), routingKey);
                 } catch (DeclareException e) {
                     log.error("Declare bind queue failure -> destQueue==[{}], source==[{}], routingKey==[{}]", destQueue,
-                            source, routingKey, e);
+                        source, routingKey, e);
                     throw e;
                 }
             }

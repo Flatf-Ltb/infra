@@ -5,7 +5,7 @@ import io.flatf.common.config.ConfigWrapper;
 import io.flatf.common.lang.Validator;
 import io.flatf.common.util.StringSupport;
 import io.flatf.serialization.json.JsonWriter;
-import io.flatf.transport.TransportCfg;
+import io.flatf.transport.TransportConfig;
 import io.flatf.transport.rmq.RmqTransport.ShutdownSignalHandler;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +16,8 @@ import javax.annotation.Nonnull;
 import javax.net.ssl.SSLContext;
 import java.util.Properties;
 
-public final class RmqConnection implements TransportCfg {
+@Accessors(fluent = true)
+public final class RmqConnectionConfig implements TransportConfig {
 
     // 连接地址
     @Getter
@@ -74,7 +75,7 @@ public final class RmqConnection implements TransportCfg {
     @Getter
     private final String connectionInfo;
 
-    private RmqConnection(Builder builder) {
+    private RmqConnectionConfig(Builder builder) {
         this.host = builder.host;
         this.port = builder.port;
         this.username = builder.username;
@@ -234,15 +235,15 @@ public final class RmqConnection implements TransportCfg {
                 this.virtualHost = virtualHost;
         }
 
-        public RmqConnection build() {
-            return new RmqConnection(this);
+        public RmqConnectionConfig build() {
+            return new RmqConnectionConfig(this);
         }
 
     }
 
     public static void main(String[] args) {
 
-        RmqConnection configuration = with("localhost", 5672, "admin", "admin", "report").build();
+        RmqConnectionConfig configuration = with("localhost", 5672, "admin", "admin", "report").build();
         System.out.println(configuration);
         System.out.println(configuration.getConfigInfo());
 

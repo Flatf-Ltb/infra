@@ -2,7 +2,9 @@ package io.flatf.transport.rmq.config;
 
 import io.flatf.common.config.ConfigOption;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public enum RmqConfigOption implements ConfigOption {
 
     HOST("rmq.host", "rabbitmq.host"),
@@ -20,10 +22,5 @@ public enum RmqConfigOption implements ConfigOption {
 
     @Getter
     private final String otherName;
-
-    RmqConfigOption(String configName, String otherName) {
-        this.configName = configName;
-        this.otherName = otherName;
-    }
 
 }
