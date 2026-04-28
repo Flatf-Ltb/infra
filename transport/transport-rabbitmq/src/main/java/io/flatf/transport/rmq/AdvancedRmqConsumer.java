@@ -13,7 +13,7 @@ import io.flatf.transport.api.Receiver;
 import io.flatf.transport.exception.ConnectionBreakException;
 import io.flatf.transport.exception.ConnectionFailedException;
 import io.flatf.transport.exception.ReceiverStartException;
-import io.flatf.transport.rmq.config.RmqReceiverConfig;
+import io.flatf.transport.rmq.config.RmqConsumerConfig;
 import io.flatf.transport.rmq.declare.ExchangeRelationship;
 import io.flatf.transport.rmq.declare.QueueRelationship;
 import io.flatf.transport.rmq.exception.DeclareException;
@@ -107,7 +107,7 @@ public class AdvancedRmqConsumer<T> extends RmqTransport implements Receiver, Ru
      * @param processor Processor<byte[]>
      * @return AdvancedRmqConsumer<byte[]>
      */
-    public static AdvancedRmqConsumer<byte[]> create(@Nonnull RmqReceiverConfig config,
+    public static AdvancedRmqConsumer<byte[]> create(@Nonnull RmqConsumerConfig config,
                                                      @Nonnull Processor<byte[]> processor) {
         return create(null, config, processor);
     }
@@ -119,7 +119,7 @@ public class AdvancedRmqConsumer<T> extends RmqTransport implements Receiver, Ru
      * @return AdvancedRmqConsumer<byte[]>
      */
     public static AdvancedRmqConsumer<byte[]> create(String tag,
-                                                     @Nonnull RmqReceiverConfig config,
+                                                     @Nonnull RmqConsumerConfig config,
                                                      @Nonnull Processor<byte[]> processor) {
         return create(tag, config, (msg, reuse) -> msg, processor);
     }
@@ -133,7 +133,7 @@ public class AdvancedRmqConsumer<T> extends RmqTransport implements Receiver, Ru
      * @return AdvancedRmqConsumer<T>
      */
     public static <T> AdvancedRmqConsumer<T> create(String tag,
-                                                    @Nonnull RmqReceiverConfig config,
+                                                    @Nonnull RmqConsumerConfig config,
                                                     @Nonnull BytesDeserializer<T> deserializer,
                                                     @Nonnull Processor<T> processor) {
         nonNull(config, "config");
@@ -148,7 +148,7 @@ public class AdvancedRmqConsumer<T> extends RmqTransport implements Receiver, Ru
      * @param ackConsumer SelfAckConsumer<byte[]>
      * @return AdvancedRmqConsumer<byte[]>
      */
-    public static AdvancedRmqConsumer<byte[]> createWithSelfAck(@Nonnull RmqReceiverConfig config,
+    public static AdvancedRmqConsumer<byte[]> createWithSelfAck(@Nonnull RmqConsumerConfig config,
                                                                 @Nonnull SelfAckConsumer<byte[]> ackConsumer) {
         nonNull(config, "config");
         nonNull(ackConsumer, "ackConsumer");
@@ -163,7 +163,7 @@ public class AdvancedRmqConsumer<T> extends RmqTransport implements Receiver, Ru
      * @return AdvancedRmqConsumer<byte[]>
      */
     public static AdvancedRmqConsumer<byte[]> createWithSelfAck(String tag,
-                                                                @Nonnull RmqReceiverConfig config,
+                                                                @Nonnull RmqConsumerConfig config,
                                                                 @Nonnull SelfAckConsumer<byte[]> ackConsumer) {
         nonNull(config, "config");
         nonNull(ackConsumer, "ackConsumer");
@@ -180,7 +180,7 @@ public class AdvancedRmqConsumer<T> extends RmqTransport implements Receiver, Ru
      * @return AdvancedRmqConsumer<T>
      */
     public static <T> AdvancedRmqConsumer<T> createWithSelfAck(String tag,
-                                                               @Nonnull RmqReceiverConfig config,
+                                                               @Nonnull RmqConsumerConfig config,
                                                                @Nonnull BytesDeserializer<T> deserializer,
                                                                @Nonnull SelfAckConsumer<T> ackConsumer) {
         nonNull(config, "config");
@@ -197,7 +197,7 @@ public class AdvancedRmqConsumer<T> extends RmqTransport implements Receiver, Ru
      * @param selfAckConsumer  SelfAckConsumer<T>
      */
     private AdvancedRmqConsumer(String tag,
-                                @Nonnull RmqReceiverConfig config,
+                                @Nonnull RmqConsumerConfig config,
                                 @Nonnull BytesDeserializer<T> deserializer,
                                 @Nullable Processor<T> processor,
                                 @Nullable SelfAckConsumer<T> selfAckConsumer)

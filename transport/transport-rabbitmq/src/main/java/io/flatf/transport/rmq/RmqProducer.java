@@ -11,7 +11,7 @@ import io.flatf.transport.api.Publisher;
 import io.flatf.transport.api.Sender;
 import io.flatf.transport.exception.PublishFailedException;
 import io.flatf.transport.rmq.config.RmqConnectionConfig;
-import io.flatf.transport.rmq.config.RmqPublisherConfig;
+import io.flatf.transport.rmq.config.RmqProducerConfig;
 import io.flatf.transport.rmq.declare.ExchangeRelationship;
 import io.flatf.transport.rmq.exception.DeclareException;
 import io.flatf.transport.rmq.exception.DeclareRuntimeException;
@@ -56,7 +56,7 @@ public class RmqProducer extends RmqTransport implements Publisher<String, byte[
     /**
      * @param cfg RmqPublisherConfig
      */
-    public RmqProducer(@Nonnull RmqPublisherConfig cfg) {
+    public RmqProducer(@Nonnull RmqProducerConfig cfg) {
         this(null, cfg);
     }
 
@@ -64,7 +64,7 @@ public class RmqProducer extends RmqTransport implements Publisher<String, byte[
      * @param tag String
      * @param cfg RmqPublisherConfig
      */
-    public RmqProducer(@Nullable String tag, @Nonnull RmqPublisherConfig cfg) {
+    public RmqProducer(@Nullable String tag, @Nonnull RmqProducerConfig cfg) {
         super(nonEmpty(tag) ? tag : "publisher-" + datetimeOfMillisecond(), cfg.getConnectionConfig());
         Validator.nonNull(cfg.exchange(), "exchangeRelation");
         this.usedExchange = cfg.exchange();
@@ -247,7 +247,7 @@ public class RmqProducer extends RmqTransport implements Publisher<String, byte[
         ExchangeRelationship fanoutExchange = ExchangeRelationship.fanout("fanout-test");
 
         try (RmqProducer publisher = new RmqProducer(
-            RmqPublisherConfig.configuration(connection, fanoutExchange).build())) {
+            RmqProducerConfig.with(connection, fanoutExchange).build())) {
             Threads.startNewThread(() -> {
                 int count = 0;
                 while (true) {

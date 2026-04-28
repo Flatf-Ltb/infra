@@ -12,7 +12,7 @@ import io.flatf.transport.api.Publisher;
 import io.flatf.transport.exception.InitializeFailureException;
 import io.flatf.transport.exception.PublishFailedException;
 import io.flatf.transport.rmq.config.RmqConnectionConfig;
-import io.flatf.transport.rmq.config.RmqPublisherConfig;
+import io.flatf.transport.rmq.config.RmqProducerConfig;
 import io.flatf.transport.rmq.declare.ExchangeRelationship;
 import io.flatf.transport.rmq.exception.DeclareException;
 import io.flatf.transport.rmq.exception.DeclareRuntimeException;
@@ -79,7 +79,7 @@ public class AdvancedRmqProducer<T> extends RmqTransport implements Publisher<St
      * @param serializer BytesSerializer<T>
      * @return AdvancedRmqProducer<T>
      */
-    public static <T> AdvancedRmqProducer<T> create(@Nonnull RmqPublisherConfig config,
+    public static <T> AdvancedRmqProducer<T> create(@Nonnull RmqProducerConfig config,
                                                     @Nonnull BytesSerializer<T> serializer) {
         return new AdvancedRmqProducer<>(null, config, serializer, null, null);
     }
@@ -91,7 +91,7 @@ public class AdvancedRmqProducer<T> extends RmqTransport implements Publisher<St
      * @param serializer BytesSerializer<T>
      * @return AdvancedRmqProducer<T>
      */
-    public static <T> AdvancedRmqProducer<T> create(@Nullable String tag, @Nonnull RmqPublisherConfig config,
+    public static <T> AdvancedRmqProducer<T> create(@Nullable String tag, @Nonnull RmqProducerConfig config,
                                                     @Nonnull BytesSerializer<T> serializer) {
         return new AdvancedRmqProducer<>(tag, config, serializer, null, null);
     }
@@ -105,7 +105,7 @@ public class AdvancedRmqProducer<T> extends RmqTransport implements Publisher<St
      * @param noAckCallback NoAckCallback
      * @return AdvancedRmqProducer<T>
      */
-    public static <T> AdvancedRmqProducer<T> create(@Nullable String tag, @Nonnull RmqPublisherConfig config,
+    public static <T> AdvancedRmqProducer<T> create(@Nullable String tag, @Nonnull RmqProducerConfig config,
                                                     @Nonnull BytesSerializer<T> serializer,
                                                     @Nonnull AckCallback ackCallback,
                                                     @Nonnull NoAckCallback noAckCallback) {
@@ -116,7 +116,7 @@ public class AdvancedRmqProducer<T> extends RmqTransport implements Publisher<St
      * @param config RmqPublisherConfig
      * @return AdvancedRmqProducer<byte[]>
      */
-    public static AdvancedRmqProducer<byte[]> createWithBytes(@Nonnull RmqPublisherConfig config) {
+    public static AdvancedRmqProducer<byte[]> createWithBytes(@Nonnull RmqProducerConfig config) {
         return createWithBytes(null, config, null, null);
     }
 
@@ -126,7 +126,7 @@ public class AdvancedRmqProducer<T> extends RmqTransport implements Publisher<St
      * @return AdvancedRmqProducer<byte[]>
      */
     public static AdvancedRmqProducer<byte[]> createWithBytes(@Nullable String tag,
-                                                              @Nonnull RmqPublisherConfig config) {
+                                                              @Nonnull RmqProducerConfig config) {
         return createWithBytes(tag, config, null, null);
     }
 
@@ -138,7 +138,7 @@ public class AdvancedRmqProducer<T> extends RmqTransport implements Publisher<St
      * @return AdvancedRmqProducer<byte[]>
      */
     public static AdvancedRmqProducer<byte[]> createWithBytes(@Nullable String tag,
-                                                              @Nonnull RmqPublisherConfig config,
+                                                              @Nonnull RmqProducerConfig config,
                                                               @Nullable AckCallback ackCallback,
                                                               @Nullable NoAckCallback noAckCallback) {
         return new AdvancedRmqProducer<>(tag, config, msg -> msg, ackCallback, noAckCallback);
@@ -148,7 +148,7 @@ public class AdvancedRmqProducer<T> extends RmqTransport implements Publisher<St
      * @param config RmqPublisherConfig
      * @return AdvancedRmqProducer<String>
      */
-    public static AdvancedRmqProducer<String> createWithString(@Nonnull RmqPublisherConfig config) {
+    public static AdvancedRmqProducer<String> createWithString(@Nonnull RmqProducerConfig config) {
         return createWithString(null, config, Charsets.UTF8, null, null);
     }
 
@@ -157,7 +157,7 @@ public class AdvancedRmqProducer<T> extends RmqTransport implements Publisher<St
      * @param charset Charset
      * @return AdvancedRmqProducer<String>
      */
-    public static AdvancedRmqProducer<String> createWithString(@Nonnull RmqPublisherConfig config,
+    public static AdvancedRmqProducer<String> createWithString(@Nonnull RmqProducerConfig config,
                                                                @Nonnull Charset charset) {
         return createWithString(null, config, charset, null, null);
     }
@@ -168,7 +168,7 @@ public class AdvancedRmqProducer<T> extends RmqTransport implements Publisher<St
      * @return AdvancedRmqProducer<String>
      */
     public static AdvancedRmqProducer<String> createWithString(@Nullable String tag,
-                                                               @Nonnull RmqPublisherConfig config) {
+                                                               @Nonnull RmqProducerConfig config) {
         return createWithString(tag, config, Charsets.UTF8, null, null);
     }
 
@@ -179,7 +179,7 @@ public class AdvancedRmqProducer<T> extends RmqTransport implements Publisher<St
      * @return AdvancedRmqProducer<String>
      */
     public static AdvancedRmqProducer<String> createWithString(@Nullable String tag,
-                                                               @Nonnull RmqPublisherConfig config, @Nonnull Charset charset) {
+                                                               @Nonnull RmqProducerConfig config, @Nonnull Charset charset) {
         return createWithString(tag, config, charset, null, null);
     }
 
@@ -192,7 +192,7 @@ public class AdvancedRmqProducer<T> extends RmqTransport implements Publisher<St
      * @return AdvancedRmqProducer<String>
      */
     public static AdvancedRmqProducer<String> createWithString(@Nullable String tag,
-                                                               @Nonnull RmqPublisherConfig config,
+                                                               @Nonnull RmqProducerConfig config,
                                                                @Nonnull Charset charset,
                                                                @Nullable AckCallback ackCallback,
                                                                @Nullable NoAckCallback noAckCallback) {
@@ -206,7 +206,7 @@ public class AdvancedRmqProducer<T> extends RmqTransport implements Publisher<St
      * @param ackCallback   ACK成功回调
      * @param noAckCallback ACK未成功回调
      */
-    private AdvancedRmqProducer(@Nullable String tag, @Nonnull RmqPublisherConfig config,
+    private AdvancedRmqProducer(@Nullable String tag, @Nonnull RmqProducerConfig config,
                                 @Nonnull BytesSerializer<T> serializer, @Nullable AckCallback ackCallback,
                                 @Nullable NoAckCallback noAckCallback) {
         super(nonEmpty(tag) ? tag : "adv-pub-" + datetimeOfMillisecond(), config.getConnectionConfig());
@@ -443,7 +443,7 @@ public class AdvancedRmqProducer<T> extends RmqTransport implements Publisher<St
         ExchangeRelationship fanout = ExchangeRelationship.fanout("fanout-test");
 
         try (AdvancedRmqProducer<String> publisher = AdvancedRmqProducer
-            .createWithString(RmqPublisherConfig.configuration(connection, fanout).build())) {
+            .createWithString(RmqProducerConfig.with(connection, fanout).build())) {
             Threads.startNewThread(() -> {
                 int count = 0;
                 while (true) {

@@ -32,18 +32,19 @@ public final class RmqChannel extends RmqTransport {
      * @param virtualHost String
      * @return RmqChannel
      */
-    public static RmqChannel with(String host, int port, String username, String password, String virtualHost) {
+    public static RmqChannel with(String host, int port,
+                                  String username, String password, String virtualHost) {
         return with(RmqConnectionConfig.with(host, port, username, password, virtualHost).build());
     }
 
     /**
      * Create GeneralChannel of RmqConnection
      *
-     * @param connection io.flatf.transport.rmq.configurator.RmqConnection
+     * @param connectionConfig RmqConnectionConfig
      * @return RmqChannel
      */
-    public static RmqChannel with(RmqConnectionConfig connection) {
-        return new RmqChannel("RmqChannel-" + ZonedDateTime.now(SYS_DEFAULT), connection);
+    public static RmqChannel with(RmqConnectionConfig connectionConfig) {
+        return new RmqChannel("RmqChannel-" + ZonedDateTime.now(SYS_DEFAULT), connectionConfig);
     }
 
     /**
@@ -58,10 +59,10 @@ public final class RmqChannel extends RmqTransport {
 
     /**
      * @param tag        String
-     * @param connection RmqConnection
+     * @param connectionConfig RmqConnectionConfig
      */
-    private RmqChannel(String tag, RmqConnectionConfig connection) {
-        super(tag, connection);
+    private RmqChannel(String tag, RmqConnectionConfig connectionConfig) {
+        super(tag, connectionConfig);
         createConnection();
     }
 

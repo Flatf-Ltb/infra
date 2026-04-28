@@ -2,8 +2,6 @@ package io.flatf.transport.rmq.config;
 
 import com.rabbitmq.client.ConnectionFactory;
 import io.flatf.common.config.ConfigWrapper;
-import io.flatf.common.lang.Validator;
-import io.flatf.common.util.StringSupport;
 import io.flatf.serialization.json.JsonWriter;
 import io.flatf.transport.TransportConfig;
 import io.flatf.transport.rmq.RmqTransport.ShutdownSignalHandler;
@@ -15,6 +13,10 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.net.ssl.SSLContext;
 import java.util.Properties;
+
+import static io.flatf.common.lang.Validator.atWithinRange;
+import static io.flatf.common.lang.Validator.nonNull;
+import static io.flatf.common.util.StringSupport.nonEmpty;
 
 @Accessors(fluent = true)
 public final class RmqConnectionConfig implements TransportConfig {
@@ -135,9 +137,9 @@ public final class RmqConnectionConfig implements TransportConfig {
     public static Builder with(@Nonnull String module, @Nonnull Properties properties) {
         ConfigWrapper<RmqConfigOption> wrapper = new ConfigWrapper<>(module, properties);
         return new Builder(wrapper.getString(RmqConfigOption.HOST),
-                wrapper.getInt(RmqConfigOption.PORT),
-                wrapper.getString(RmqConfigOption.USERNAME),
-                wrapper.getString(RmqConfigOption.PASSWORD));
+            wrapper.getInt(RmqConfigOption.PORT),
+            wrapper.getString(RmqConfigOption.USERNAME),
+            wrapper.getString(RmqConfigOption.PASSWORD));
     }
 
     @Override
@@ -158,7 +160,7 @@ public final class RmqConnectionConfig implements TransportConfig {
      * @return ConnectionFactory
      */
     public ConnectionFactory createConnectionFactory() {
-        ConnectionFactory factory = new ConnectionFactory();
+        var factory = new ConnectionFactory();
         factory.setHost(host);
         factory.setPort(port);
         factory.setUsername(username);
@@ -223,15 +225,15 @@ public final class RmqConnectionConfig implements TransportConfig {
         }
 
         private Builder(String host, int port, String username, String password, String virtualHost) {
-            Validator.nonNull(host, "host");
-            Validator.atWithinRange(port, 4096, 65536, "port");
-            Validator.nonNull(username, "username");
-            Validator.nonNull(password, "password");
+            nonNull(host, "host");
+            atWithinRange(port, 4096, 65536, "port");
+            nonNull(username, "username");
+            nonNull(password, "password");
             this.host = host;
             this.port = port;
             this.username = username;
             this.password = password;
-            if (StringSupport.nonEmpty(virtualHost) && !virtualHost.equals("/"))
+            if (nonEmpty(virtualHost) && !virtualHost.equals("/"))
                 this.virtualHost = virtualHost;
         }
 

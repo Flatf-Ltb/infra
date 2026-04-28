@@ -10,7 +10,7 @@ import io.flatf.common.lang.Validator;
 import io.flatf.common.log4j2.Log4j2LoggerFactory;
 import io.flatf.common.serialization.specific.BytesDeserializer;
 import io.flatf.transport.api.Receiver;
-import io.flatf.transport.rmq.config.RmqReceiverConfig;
+import io.flatf.transport.rmq.config.RmqConsumerConfig;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.eclipse.collections.api.list.MutableList;
 import org.slf4j.Logger;
@@ -71,7 +71,7 @@ public class RmqBatchConsumer<T> extends RmqTransport implements Receiver, Runna
 
     private final BatchProcessConsumer<T> consumer;
 
-    public RmqBatchConsumer(String tag, @Nonnull RmqReceiverConfig config, long autoFlushInterval,
+    public RmqBatchConsumer(String tag, @Nonnull RmqConsumerConfig config, long autoFlushInterval,
                             BytesDeserializer<T> deserializer, BatchHandler<T> batchHandler, RefreshNowEvent<T> refreshNowEvent) {
         super(nonEmpty(tag) ? tag : "batch-recv-" + DateTimeUtil.datetimeOfMillisecond(), config.getConnectionConfig());
         this.receiveQueue = config.queue().queueName();
@@ -81,7 +81,7 @@ public class RmqBatchConsumer<T> extends RmqTransport implements Receiver, Runna
             batchHandler, deserializer, refreshNowEvent, null);
     }
 
-    public RmqBatchConsumer(String tag, @Nonnull RmqReceiverConfig config, long autoFlushInterval,
+    public RmqBatchConsumer(String tag, @Nonnull RmqConsumerConfig config, long autoFlushInterval,
                             BytesDeserializer<T> deserializer, BatchHandler<T> batchHandler, RefreshNowEvent<T> refreshNowEvent,
                             Predicate<T> filter) {
         super(nonEmpty(tag) ? tag : "batch-recv-" + DateTimeUtil.datetimeOfMillisecond(),

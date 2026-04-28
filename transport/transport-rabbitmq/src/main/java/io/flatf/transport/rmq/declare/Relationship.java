@@ -24,9 +24,8 @@ public abstract class Relationship {
     public void declare(@Nonnull RmqOperator operator) throws DeclareException {
         Validator.nonNull(operator, "operator");
         declare0(operator);
-        for (Binding binding : bindings) {
+        for (Binding binding : bindings)
             declareBinding(operator, binding);
-        }
     }
 
     /**
@@ -76,8 +75,7 @@ public abstract class Relationship {
                     throw e;
                 }
             }
-            default -> {
-            }
+            default -> log.error("Unknown destType -> {}", binding.destType);
         }
     }
 

@@ -1,7 +1,7 @@
 package io.flatf.transport.rmq;
 
 import io.flatf.transport.rmq.config.RmqConnectionConfig;
-import io.flatf.transport.rmq.config.RmqPublisherConfig;
+import io.flatf.transport.rmq.config.RmqProducerConfig;
 import io.flatf.transport.rmq.declare.AmqpQueue;
 import io.flatf.transport.rmq.declare.ExchangeRelationship;
 
@@ -15,8 +15,8 @@ public class RmqPublisherTest {
 
 		RmqConnectionConfig connection = RmqConnectionConfig.with("10.0.64.201", 5672, "root", "root2018").build();
 
-		RmqPublisherConfig configurator = RmqPublisherConfig
-				.configuration(connection, ExchangeRelationship.fanout("TEST_DIR")
+		RmqProducerConfig configurator = RmqProducerConfig
+				.with(connection, ExchangeRelationship.fanout("TEST_DIR")
 						.bindingQueues(List.of(AmqpQueue.named("TEST_D1")), Arrays.asList("K1", "K2")))
 				.defaultRoutingKey("K1").build();
 

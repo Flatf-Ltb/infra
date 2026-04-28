@@ -19,7 +19,7 @@ import static io.flatf.common.lang.Validator.nonNull;
  * @author yellow013
  */
 @Accessors(fluent = true)
-public final class RmqPublisherConfig extends RmqConfig {
+public final class RmqProducerConfig extends RmqConfig {
 
     // 发布者ExchangeDeclare
     @Getter
@@ -44,7 +44,7 @@ public final class RmqPublisherConfig extends RmqConfig {
     /**
      * @param builder Builder
      */
-    private RmqPublisherConfig(Builder builder) {
+    private RmqProducerConfig(Builder builder) {
         super(builder.connectionConfig);
         this.exchange = builder.exchange;
         this.defaultRoutingKey = builder.defaultRoutingKey;
@@ -62,9 +62,9 @@ public final class RmqPublisherConfig extends RmqConfig {
      * @param password String
      * @return Builder
      */
-    public static Builder configuration(@Nonnull String host, int port,
-                                        @Nonnull String username, @Nonnull String password) {
-        return configuration(RmqConnectionConfig.with(host, port, username, password).build());
+    public static Builder with(@Nonnull String host, int port,
+                               @Nonnull String username, @Nonnull String password) {
+        return with(RmqConnectionConfig.with(host, port, username, password).build());
     }
 
     /**
@@ -77,10 +77,10 @@ public final class RmqPublisherConfig extends RmqConfig {
      * @param virtualHost String
      * @return Builder
      */
-    public static Builder configuration(@Nonnull String host, int port,
-                                        @Nonnull String username, @Nonnull String password,
-                                        @Nullable String virtualHost) {
-        return configuration(RmqConnectionConfig.with(host, port, username, password, virtualHost).build());
+    public static Builder with(@Nonnull String host, int port,
+                               @Nonnull String username, @Nonnull String password,
+                               @Nullable String virtualHost) {
+        return with(RmqConnectionConfig.with(host, port, username, password, virtualHost).build());
     }
 
     /**
@@ -89,8 +89,8 @@ public final class RmqPublisherConfig extends RmqConfig {
      * @param connection RmqConnection
      * @return Builder
      */
-    public static Builder configuration(@Nonnull RmqConnectionConfig connection) {
-        return configuration(connection, ExchangeRelationship.ANONYMOUS);
+    public static Builder with(@Nonnull RmqConnectionConfig connection) {
+        return with(connection, ExchangeRelationship.ANONYMOUS);
     }
 
     /**
@@ -103,10 +103,10 @@ public final class RmqPublisherConfig extends RmqConfig {
      * @param publishExchange ExchangeRelationship
      * @return Builder
      */
-    public static Builder configuration(@Nonnull String host, int port,
-                                        @Nonnull String username, @Nonnull String password,
-                                        @Nonnull ExchangeRelationship publishExchange) {
-        return configuration(RmqConnectionConfig.with(host, port, username, password).build(), publishExchange);
+    public static Builder with(@Nonnull String host, int port,
+                               @Nonnull String username, @Nonnull String password,
+                               @Nonnull ExchangeRelationship publishExchange) {
+        return with(RmqConnectionConfig.with(host, port, username, password).build(), publishExchange);
     }
 
     /**
@@ -120,23 +120,23 @@ public final class RmqPublisherConfig extends RmqConfig {
      * @param publishExchange ExchangeRelationship
      * @return Builder
      */
-    public static Builder configuration(@Nonnull String host, int port,
-                                        @Nonnull String username, @Nonnull String password,
-                                        @Nullable String virtualHost, @Nonnull ExchangeRelationship publishExchange) {
-        return configuration(RmqConnectionConfig.with(host, port, username, password, virtualHost).build(),
+    public static Builder with(@Nonnull String host, int port,
+                               @Nonnull String username, @Nonnull String password,
+                               @Nullable String virtualHost, @Nonnull ExchangeRelationship publishExchange) {
+        return with(RmqConnectionConfig.with(host, port, username, password, virtualHost).build(),
             publishExchange);
     }
 
     /**
      * Use Specified Exchange
      *
-     * @param connection      RmqConnection
-     * @param publishExchange ExchangeRelationship
+     * @param connectionConfig  RmqConnectionConfig
+     * @param publishExchange   ExchangeRelationship
      * @return Builder
      */
-    public static Builder configuration(@Nonnull RmqConnectionConfig connection,
-                                        @Nonnull ExchangeRelationship publishExchange) {
-        return new Builder(nonNull(connection, "connection"),
+    public static Builder with(@Nonnull RmqConnectionConfig connectionConfig,
+                               @Nonnull ExchangeRelationship publishExchange) {
+        return new Builder(nonNull(connectionConfig, "connectionConfig"),
             nonNull(publishExchange, "publishExchange"));
     }
 
@@ -210,8 +210,8 @@ public final class RmqPublisherConfig extends RmqConfig {
         /**
          * @return RmqPublisherConfig
          */
-        public RmqPublisherConfig build() {
-            return new RmqPublisherConfig(this);
+        public RmqProducerConfig build() {
+            return new RmqProducerConfig(this);
         }
 
     }
@@ -263,7 +263,7 @@ public final class RmqPublisherConfig extends RmqConfig {
     }
 
     public static void main(String[] args) {
-        System.out.println(configuration(
+        System.out.println(with(
             RmqConnectionConfig
                 .with("localhost", 5672, "user0", "password0")
                 .build(),

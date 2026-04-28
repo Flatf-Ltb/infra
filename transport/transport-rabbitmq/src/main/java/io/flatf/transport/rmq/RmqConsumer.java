@@ -13,7 +13,7 @@ import io.flatf.transport.exception.ConnectionBreakException;
 import io.flatf.transport.exception.ConnectionFailedException;
 import io.flatf.transport.exception.ReceiverStartException;
 import io.flatf.transport.rmq.config.RmqConnectionConfig;
-import io.flatf.transport.rmq.config.RmqReceiverConfig;
+import io.flatf.transport.rmq.config.RmqConsumerConfig;
 import io.flatf.transport.rmq.declare.ExchangeRelationship;
 import io.flatf.transport.rmq.declare.QueueRelationship;
 import io.flatf.transport.rmq.exception.DeclareException;
@@ -95,7 +95,7 @@ public class RmqConsumer<T> extends RmqTransport implements Receiver, Runnable {
      * @param processor Consumer<byte[]>
      * @return RmqConsumer<byte[]>
      */
-    public static RmqConsumer<byte[]> create(@Nonnull RmqReceiverConfig config,
+    public static RmqConsumer<byte[]> create(@Nonnull RmqConsumerConfig config,
                                              @Nonnull Processor<byte[]> processor) {
         return create(null, config, processor);
     }
@@ -107,7 +107,7 @@ public class RmqConsumer<T> extends RmqTransport implements Receiver, Runnable {
      * @return RmqConsumer<byte[]>
      */
     public static RmqConsumer<byte[]> create(@Nullable String tag,
-                                             @Nonnull RmqReceiverConfig config,
+                                             @Nonnull RmqConsumerConfig config,
                                              @Nonnull Processor<byte[]> processor) {
         return create(tag, config, msg -> msg, processor);
     }
@@ -119,7 +119,7 @@ public class RmqConsumer<T> extends RmqTransport implements Receiver, Runnable {
      * @param processor    Processor<T>
      * @return RmqConsumer<T>
      */
-    public static <T> RmqConsumer<T> create(@Nonnull RmqReceiverConfig config,
+    public static <T> RmqConsumer<T> create(@Nonnull RmqConsumerConfig config,
                                             @Nonnull Function<byte[], T> deserializer,
                                             @Nonnull Processor<T> processor) {
         return create(null, config, deserializer, processor);
@@ -134,7 +134,7 @@ public class RmqConsumer<T> extends RmqTransport implements Receiver, Runnable {
      * @return RmqConsumer<T>
      */
     public static <T> RmqConsumer<T> create(@Nullable String tag,
-                                            @Nonnull RmqReceiverConfig config,
+                                            @Nonnull RmqConsumerConfig config,
                                             @Nonnull Function<byte[], T> deserializer,
                                             @Nonnull Processor<T> processor) {
         return new RmqConsumer<>(tag, config, deserializer, processor);
@@ -146,7 +146,7 @@ public class RmqConsumer<T> extends RmqTransport implements Receiver, Runnable {
      * @param deserializer Function<byte[], T>
      * @param processor     Consumer<T>
      */
-    private RmqConsumer(@Nullable String tag, @Nonnull RmqReceiverConfig cfg,
+    private RmqConsumer(@Nullable String tag, @Nonnull RmqConsumerConfig cfg,
                         @Nonnull Function<byte[], T> deserializer,
                         @Nonnull Processor<T> processor)
         throws ConnectionFailedException {
@@ -388,7 +388,7 @@ public class RmqConsumer<T> extends RmqTransport implements Receiver, Runnable {
     public static void main(String[] args) {
         try (RmqConsumer<byte[]> receiver = RmqConsumer
             .create("test",
-                RmqReceiverConfig.with(RmqConnectionConfig.with("127.0.0.1", 5672, "user", "u_pass").build(),
+                RmqConsumerConfig.with(RmqConnectionConfig.with("127.0.0.1", 5672, "user", "u_pass").build(),
                     QueueRelationship.named("TEST")).build(),
                 msg -> System.out.println(new String(msg, UTF8)))) {
             receiver.receive();

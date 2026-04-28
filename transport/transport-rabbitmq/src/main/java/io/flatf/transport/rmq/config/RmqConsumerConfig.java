@@ -17,7 +17,7 @@ import static io.flatf.common.lang.Validator.nonNull;
  */
 @Getter
 @Accessors(fluent = true)
-public final class RmqReceiverConfig extends RmqConfig {
+public final class RmqConsumerConfig extends RmqConfig {
 
     // 接受者QueueDeclare
     private final QueueRelationship queue;
@@ -43,8 +43,8 @@ public final class RmqReceiverConfig extends RmqConfig {
     /**
      * @param builder Builder
      */
-    private RmqReceiverConfig(Builder builder) {
-        super(builder.connection);
+    private RmqConsumerConfig(Builder builder) {
+        super(builder.connectionConfig);
         this.queue = builder.queue;
         this.errMsgExchange = builder.errMsgExchange;
         this.errMsgRoutingKey = builder.errMsgRoutingKey;
@@ -79,7 +79,7 @@ public final class RmqReceiverConfig extends RmqConfig {
     public static class Builder {
 
         // 连接配置
-        private final RmqConnectionConfig connection;
+        private final RmqConnectionConfig connectionConfig;
         // 接受者QueueRelationship
         private final QueueRelationship queue;
         // 错误消息ExchangeRelationship
@@ -100,8 +100,8 @@ public final class RmqReceiverConfig extends RmqConfig {
         // 消费者参数, 默认为null
         private Map<String, Object> args = null;
 
-        private Builder(RmqConnectionConfig connection, QueueRelationship queue) {
-            this.connection = connection;
+        private Builder(RmqConnectionConfig connectionConfig, QueueRelationship queue) {
+            this.connectionConfig = connectionConfig;
             this.queue = queue;
         }
 
@@ -148,8 +148,8 @@ public final class RmqReceiverConfig extends RmqConfig {
             return this;
         }
 
-        public RmqReceiverConfig build() {
-            return new RmqReceiverConfig(this);
+        public RmqConsumerConfig build() {
+            return new RmqConsumerConfig(this);
         }
 
     }

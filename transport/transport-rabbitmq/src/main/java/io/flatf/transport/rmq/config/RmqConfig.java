@@ -5,7 +5,7 @@ import lombok.Getter;
 /**
  * @author yellow013
  */
-public sealed abstract class RmqConfig permits RmqPublisherConfig, RmqReceiverConfig {
+public sealed abstract class RmqConfig permits RmqProducerConfig, RmqConsumerConfig {
 
     /**
      * 连接配置信息
