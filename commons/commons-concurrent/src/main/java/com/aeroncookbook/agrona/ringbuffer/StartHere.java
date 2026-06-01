@@ -16,8 +16,8 @@
 
 package com.aeroncookbook.agrona.ringbuffer;
 
-import io.flatf.common.log4j2.Log4j2Configurator;
-import io.flatf.common.log4j2.Log4j2LoggerFactory;
+import io.flatf.foundation.common.log4j2.Log4j2Configurator;
+import io.flatf.foundation.common.log4j2.Log4j2LoggerFactory;
 import org.agrona.concurrent.AgentRunner;
 import org.agrona.concurrent.BusySpinIdleStrategy;
 import org.agrona.concurrent.IdleStrategy;

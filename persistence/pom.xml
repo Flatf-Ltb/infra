@@ -5,7 +5,7 @@
     <!-- This is persistence pom.xml -->
     <parent>
         <groupId>io.flatf</groupId>
-        <artifactId>basic</artifactId>
+        <artifactId>foundation</artifactId>
         <version>1.0.1</version>
     </parent>
 

@@ -1,10 +1,10 @@
 package io.netty.study.slidingwindow.server;
 
-import io.flatf.common.collections.window.DuplicateKeyException;
-import io.flatf.common.collections.window.OfferTimeoutException;
-import io.flatf.common.collections.window.Window;
-import io.flatf.common.collections.window.WindowFuture;
-import io.flatf.serialization.json.JsonReader;
+import io.flatf.foundation.common.collections.window.DuplicateKeyException;
+import io.flatf.foundation.common.collections.window.OfferTimeoutException;
+import io.flatf.foundation.common.collections.window.Window;
+import io.flatf.foundation.common.collections.window.WindowFuture;
+import io.flatf.foundation.serialization.json.JsonReader;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;

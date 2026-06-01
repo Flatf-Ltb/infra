@@ -1,6 +1,6 @@
 package io.netty.study.slidingwindow.pojo;
 
-import io.flatf.serialization.json.JsonWriter;
+import io.flatf.foundation.serialization.json.JsonWriter;
 
 /**
  * @author pancm
