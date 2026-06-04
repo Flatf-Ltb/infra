@@ -1,7 +1,7 @@
 package io.flatf.infra.transport.zmq;
 
-import io.flatf.foundation.transport.api.Subscriber;
-import io.flatf.foundation.transport.attr.Topics;
+import io.flatf.infra.api.Subscriber;
+import io.flatf.infra.attr.Topics;
 import io.flatf.infra.transport.zmq.exception.ZmqConnectionException;
 import org.slf4j.Logger;
 import org.zeromq.SocketType;

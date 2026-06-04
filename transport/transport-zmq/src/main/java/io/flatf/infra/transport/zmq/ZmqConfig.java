@@ -11,9 +11,9 @@ import io.flatf.common.serialization.specific.JsonSerializable;
 import io.flatf.common.util.StringSupport;
 import io.flatf.infra.serialization.json.JsonReader;
 import io.flatf.infra.serialization.json.JsonWriter;
-import io.flatf.foundation.transport.TransportConfig;
-import io.flatf.foundation.transport.attr.TcpKeepAlive;
-import io.flatf.foundation.transport.attr.Topics;
+import io.flatf.infra.TransportConfig;
+import io.flatf.infra.attr.TcpKeepAlive;
+import io.flatf.infra.attr.Topics;
 import org.slf4j.Logger;
 import org.zeromq.ZMQ;
 

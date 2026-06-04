@@ -9,7 +9,7 @@ import io.flatf.common.datetime.DateTimeUtil;
 import io.flatf.common.lang.Validator;
 import io.flatf.common.log4j2.Log4j2LoggerFactory;
 import io.flatf.common.serialization.specific.BytesDeserializer;
-import io.flatf.foundation.transport.api.Receiver;
+import io.flatf.infra.api.Receiver;
 import io.flatf.infra.transport.rmq.config.RmqConsumerConfig;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.eclipse.collections.api.list.MutableList;

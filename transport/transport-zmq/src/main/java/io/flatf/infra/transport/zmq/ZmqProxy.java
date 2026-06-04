@@ -1,7 +1,7 @@
 package io.flatf.infra.transport.zmq;
 
 import io.flatf.common.log4j2.Log4j2LoggerFactory;
-import io.flatf.foundation.transport.TransportComponent;
+import io.flatf.infra.TransportComponent;
 import io.flatf.infra.transport.zmq.exception.ZmqProxyException;
 import org.slf4j.Logger;
 import org.zeromq.ZMQ;

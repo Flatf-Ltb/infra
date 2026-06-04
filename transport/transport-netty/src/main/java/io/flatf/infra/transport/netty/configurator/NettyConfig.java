@@ -1,7 +1,7 @@
 package io.flatf.infra.transport.netty.configurator;
 
 import io.flatf.infra.serialization.json.JsonWriter;
-import io.flatf.foundation.transport.TransportConfig;
+import io.flatf.infra.TransportConfig;
 
 import java.util.concurrent.TimeUnit;
 

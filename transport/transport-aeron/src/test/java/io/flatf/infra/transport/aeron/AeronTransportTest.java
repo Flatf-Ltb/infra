@@ -1,6 +1,6 @@
 package io.flatf.infra.transport.aeron;
 
-import io.flatf.foundation.transport.api.Transport;
+import io.flatf.infra.api.Transport;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
