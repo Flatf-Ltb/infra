@@ -4,22 +4,21 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.flatf</groupId>
-    <artifactId>foundation</artifactId>
+    <artifactId>infra</artifactId>
     <version>1.0.1</version>
 
     <inceptionYear>2015</inceptionYear>
-    <url>https://github.com/yellow013/foundation.git</url>
+    <url>https://github.com/Flatf-Ltb/infra.git</url>
     <developers>
         <developer>
             <name>yellow013</name>
         </developer>
     </developers>
 
-    <name>foundation</name>
+    <name>infra</name>
     <packaging>pom</packaging>
 
     <modules>
-        <module>commons</module>
         <module>libraries</module>
         <module>persistence</module>
         <module>serialization</module>

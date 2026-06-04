@@ -30,8 +30,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import io.flatf.foundation.common.log4j2.Log4j2Configurator;
-import io.flatf.foundation.common.log4j2.Log4j2Configurator.LogLevel;
+import io.flatf.common.log4j2.Log4j2Configurator;
+import io.flatf.common.log4j2.Log4j2Configurator.LogLevel;
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.core.io.AbstractReferenceCounted;
 import net.openhft.chronicle.core.threads.EventLoop;

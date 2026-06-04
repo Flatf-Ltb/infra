@@ -1,4 +1,4 @@
-@namespace ( "io.flatf.foundation.serialization.avro.msg" )
+@namespace ( "io.flatf.infra.serialization.avro.msg" )
 protocol UselessProtocol {
 	
 	enum ContentType {
