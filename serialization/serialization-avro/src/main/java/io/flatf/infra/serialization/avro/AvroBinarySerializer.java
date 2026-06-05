@@ -2,7 +2,7 @@ package io.flatf.infra.serialization.avro;
 
 import io.flatf.common.annotation.thread.ThreadSafeField;
 import io.flatf.common.log4j2.Log4j2LoggerFactory;
-import io.flatf.common.serialization.specific.ByteBufferSerializer;
+import io.flatf.infra.serialization.specific.ByteBufferSerializer;
 import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.EncoderFactory;

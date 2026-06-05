@@ -2,7 +2,7 @@ package io.flatf.infra.serialization.avro;
 
 import io.flatf.common.concurrent.map.NonBlockingMaps;
 import io.flatf.common.log4j2.Log4j2LoggerFactory;
-import io.flatf.common.serialization.specific.BytesDeserializer;
+import io.flatf.infra.serialization.specific.BytesDeserializer;
 import org.apache.avro.specific.SpecificRecord;
 import org.jctools.maps.NonBlockingHashMapLong;
 import org.slf4j.Logger;

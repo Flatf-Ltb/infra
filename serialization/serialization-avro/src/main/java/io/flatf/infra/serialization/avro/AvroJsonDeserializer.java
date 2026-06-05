@@ -1,7 +1,7 @@
 package io.flatf.infra.serialization.avro;
 
 import io.flatf.common.log4j2.Log4j2LoggerFactory;
-import io.flatf.common.serialization.specific.JsonDeserializer;
+import io.flatf.infra.serialization.specific.JsonDeserializer;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.io.JsonDecoder;

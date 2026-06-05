@@ -2,7 +2,7 @@ package io.flatf.infra.serialization.fory;
 
 import io.flatf.common.epoch.EpochUnit;
 import io.flatf.common.sequence.OrderedObject;
-import io.flatf.common.serialization.ContentType;
+import io.flatf.infra.serialization.ContentType;
 import org.apache.fory.Fory;
 
 import javax.annotation.Nonnull;

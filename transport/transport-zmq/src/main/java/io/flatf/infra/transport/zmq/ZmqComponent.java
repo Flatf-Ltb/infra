@@ -2,9 +2,9 @@ package io.flatf.infra.transport.zmq;
 
 import io.flatf.common.annotation.AbstractFunction;
 import io.flatf.common.util.StringSupport;
-import io.flatf.infra.TransportComponent;
-import io.flatf.infra.api.Transport;
-import io.flatf.infra.attr.TcpKeepAlive;
+import io.flatf.infra.transport.TransportComponent;
+import io.flatf.infra.transport.api.Transport;
+import io.flatf.infra.transport.attr.TcpKeepAlive;
 import org.slf4j.Logger;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;

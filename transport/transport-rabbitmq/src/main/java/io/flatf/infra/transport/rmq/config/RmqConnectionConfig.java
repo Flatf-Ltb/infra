@@ -3,7 +3,7 @@ package io.flatf.infra.transport.rmq.config;
 import com.rabbitmq.client.ConnectionFactory;
 import io.flatf.common.config.ConfigWrapper;
 import io.flatf.infra.serialization.json.JsonWriter;
-import io.flatf.infra.TransportConfig;
+import io.flatf.infra.transport.TransportConfig;
 import io.flatf.infra.transport.rmq.RmqTransport.ShutdownSignalHandler;
 import lombok.Getter;
 import lombok.Setter;

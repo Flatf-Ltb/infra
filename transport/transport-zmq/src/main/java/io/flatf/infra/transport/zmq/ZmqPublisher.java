@@ -1,9 +1,9 @@
 package io.flatf.infra.transport.zmq;
 
-import io.flatf.common.serialization.specific.BytesSerializer;
+import io.flatf.infra.serialization.specific.BytesSerializer;
 import io.flatf.common.thread.Sleep;
-import io.flatf.infra.api.Publisher;
-import io.flatf.infra.exception.PublishFailedException;
+import io.flatf.infra.transport.api.Publisher;
+import io.flatf.infra.transport.exception.PublishFailedException;
 import io.flatf.infra.transport.zmq.exception.ZmqBindException;
 import org.slf4j.Logger;
 import org.zeromq.SocketType;

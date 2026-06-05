@@ -1,7 +1,7 @@
 package io.flatf.infra.transport.netty;
 
 import io.flatf.common.log4j2.Log4j2LoggerFactory;
-import io.flatf.infra.api.TransportClient;
+import io.flatf.infra.transport.api.TransportClient;
 import io.flatf.infra.transport.netty.configurator.NettyConfig;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelHandler;

@@ -2,7 +2,7 @@ package io.flatf.infra.transport.zmq;
 
 import io.flatf.common.thread.Sleep;
 import io.flatf.common.thread.Threads;
-import io.flatf.infra.api.Receiver;
+import io.flatf.infra.transport.api.Receiver;
 import io.flatf.infra.transport.zmq.exception.ZmqBindException;
 import org.slf4j.Logger;
 import org.zeromq.SocketType;

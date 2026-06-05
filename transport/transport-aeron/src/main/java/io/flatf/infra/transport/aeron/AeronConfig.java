@@ -2,9 +2,9 @@ package io.flatf.infra.transport.aeron;
 
 import io.aeron.Aeron;
 import io.aeron.driver.MediaDriver;
-import io.flatf.common.serialization.specific.BytesSerializer;
-import io.flatf.infra.TransportConfig;
-import io.flatf.infra.api.IndexedMessageConsumer;
+import io.flatf.infra.serialization.specific.BytesSerializer;
+import io.flatf.infra.transport.TransportConfig;
+import io.flatf.infra.transport.api.IndexedMessageConsumer;
 import org.agrona.CloseHelper;
 import org.agrona.concurrent.BackoffIdleStrategy;
 import org.agrona.concurrent.IdleStrategy;

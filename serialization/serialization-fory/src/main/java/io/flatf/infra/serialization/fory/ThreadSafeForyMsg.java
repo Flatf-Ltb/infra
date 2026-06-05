@@ -2,9 +2,9 @@ package io.flatf.infra.serialization.fory;
 
 import io.flatf.common.epoch.EpochUnit;
 import io.flatf.common.sequence.OrderedObject;
-import io.flatf.common.serialization.ContentType;
-import io.flatf.common.serialization.specific.BytesDeserializable;
-import io.flatf.common.serialization.specific.BytesSerializable;
+import io.flatf.infra.serialization.ContentType;
+import io.flatf.infra.serialization.specific.BytesDeserializable;
+import io.flatf.infra.serialization.specific.BytesSerializable;
 import org.apache.fory.Fory;
 import org.apache.fory.ThreadLocalFory;
 import org.apache.fory.ThreadSafeFory;

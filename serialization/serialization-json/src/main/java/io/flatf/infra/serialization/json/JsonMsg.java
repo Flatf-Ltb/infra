@@ -1,8 +1,8 @@
 package io.flatf.infra.serialization.json;
 
 import io.flatf.common.epoch.EpochUnit;
-import io.flatf.common.serialization.ContentType;
-import io.flatf.common.serialization.specific.JsonSerializable;
+import io.flatf.infra.serialization.ContentType;
+import io.flatf.infra.serialization.specific.JsonSerializable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;

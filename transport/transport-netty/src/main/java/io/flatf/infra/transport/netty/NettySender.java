@@ -2,8 +2,8 @@ package io.flatf.infra.transport.netty;
 
 import io.flatf.common.log4j2.Log4j2LoggerFactory;
 import io.flatf.common.sequence.SysNanoSequence;
-import io.flatf.infra.TransportComponent;
-import io.flatf.infra.api.Sender;
+import io.flatf.infra.transport.TransportComponent;
+import io.flatf.infra.transport.api.Sender;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;

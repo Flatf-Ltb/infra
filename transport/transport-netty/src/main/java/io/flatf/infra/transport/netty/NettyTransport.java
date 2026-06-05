@@ -2,8 +2,8 @@ package io.flatf.infra.transport.netty;
 
 import io.flatf.common.annotation.AbstractFunction;
 import io.flatf.common.lang.Validator;
-import io.flatf.infra.TransportComponent;
-import io.flatf.infra.api.Transport;
+import io.flatf.infra.transport.TransportComponent;
+import io.flatf.infra.transport.api.Transport;
 import io.flatf.infra.transport.netty.configurator.NettyConfig;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.EventLoopGroup;

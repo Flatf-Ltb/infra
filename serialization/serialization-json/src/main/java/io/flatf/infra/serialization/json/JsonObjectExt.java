@@ -2,7 +2,7 @@ package io.flatf.infra.serialization.json;
 
 import com.alibaba.fastjson2.JSONObject;
 import io.flatf.common.epoch.EpochUnit;
-import io.flatf.common.serialization.specific.JsonSerializable;
+import io.flatf.infra.serialization.specific.JsonSerializable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;

@@ -1,7 +1,7 @@
 package io.flatf.infra.serialization.json;
 
 
-import io.flatf.common.serialization.specific.JsonSerializable;
+import io.flatf.infra.serialization.specific.JsonSerializable;
 
 import javax.annotation.Nonnull;
 

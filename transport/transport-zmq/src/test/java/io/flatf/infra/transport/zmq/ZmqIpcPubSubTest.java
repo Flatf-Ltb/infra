@@ -2,8 +2,8 @@ package io.flatf.infra.transport.zmq;
 
 import io.flatf.common.thread.Sleep;
 import io.flatf.common.thread.Threads;
-import io.flatf.infra.api.Subscriber;
-import io.flatf.infra.attr.Topics;
+import io.flatf.infra.transport.api.Subscriber;
+import io.flatf.infra.transport.attr.Topics;
 import org.junit.Test;
 
 import java.io.IOException;

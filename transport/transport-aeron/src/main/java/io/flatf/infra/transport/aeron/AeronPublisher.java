@@ -2,9 +2,9 @@ package io.flatf.infra.transport.aeron;
 
 import io.aeron.ExclusivePublication;
 import io.aeron.Publication;
-import io.flatf.common.serialization.specific.BytesSerializer;
-import io.flatf.infra.api.Publisher;
-import io.flatf.infra.exception.PublishFailedException;
+import io.flatf.infra.serialization.specific.BytesSerializer;
+import io.flatf.infra.transport.api.Publisher;
+import io.flatf.infra.transport.exception.PublishFailedException;
 import org.agrona.CloseHelper;
 import org.agrona.ExpandableArrayBuffer;
 import org.slf4j.Logger;

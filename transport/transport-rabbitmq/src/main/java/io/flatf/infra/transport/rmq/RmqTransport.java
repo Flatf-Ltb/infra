@@ -11,9 +11,9 @@ import io.flatf.common.lang.Validator;
 import io.flatf.common.log4j2.Log4j2LoggerFactory;
 import io.flatf.common.thread.Sleep;
 import io.flatf.common.util.StringSupport;
-import io.flatf.infra.TransportComponent;
-import io.flatf.infra.api.Transport;
-import io.flatf.infra.exception.ConnectionFailedException;
+import io.flatf.infra.transport.TransportComponent;
+import io.flatf.infra.transport.api.Transport;
+import io.flatf.infra.transport.exception.ConnectionFailedException;
 import io.flatf.infra.transport.rmq.config.RmqConnectionConfig;
 import org.slf4j.Logger;
 

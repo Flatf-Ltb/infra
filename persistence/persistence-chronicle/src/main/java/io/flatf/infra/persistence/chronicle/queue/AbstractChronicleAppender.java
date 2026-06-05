@@ -2,7 +2,7 @@ package io.flatf.infra.persistence.chronicle.queue;
 
 import io.flatf.common.annotation.AbstractFunction;
 import io.flatf.common.annotation.thread.OnlyAllowSingleThreadAccess;
-import io.flatf.common.serialization.api.Serializer;
+import io.flatf.infra.serialization.api.Serializer;
 import io.flatf.infra.persistence.chronicle.exception.ChronicleAppendException;
 import net.openhft.chronicle.queue.ExcerptAppender;
 import org.slf4j.Logger;

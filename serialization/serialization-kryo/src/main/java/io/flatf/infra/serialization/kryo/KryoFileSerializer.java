@@ -1,6 +1,6 @@
 package io.flatf.infra.serialization.kryo;
 
-import io.flatf.common.serialization.specific.FileSerializer;
+import io.flatf.infra.serialization.specific.FileSerializer;
 
 import javax.annotation.Nonnull;
 import java.io.File;

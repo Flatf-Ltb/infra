@@ -2,7 +2,7 @@ package io.flatf.infra.persistence.chronicle.queue.multitype;
 
 import io.flatf.common.annotation.AbstractFunction;
 import io.flatf.common.codec.Envelope;
-import io.flatf.common.serialization.api.Serializer;
+import io.flatf.infra.serialization.api.Serializer;
 import io.flatf.infra.persistence.chronicle.exception.ChronicleAppendException;
 import io.flatf.infra.persistence.chronicle.queue.AbstractChronicleAppender;
 import net.openhft.chronicle.queue.ExcerptAppender;

@@ -1,8 +1,8 @@
 package io.flatf.infra.transport.aeron;
 
 import io.aeron.Aeron;
-import io.flatf.infra.TransportComponent;
-import io.flatf.infra.api.Transport;
+import io.flatf.infra.transport.TransportComponent;
+import io.flatf.infra.transport.api.Transport;
 import org.agrona.CloseHelper;
 import org.slf4j.Logger;
 

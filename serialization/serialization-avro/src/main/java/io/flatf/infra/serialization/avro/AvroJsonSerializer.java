@@ -2,7 +2,7 @@ package io.flatf.infra.serialization.avro;
 
 import io.flatf.common.character.Charsets;
 import io.flatf.common.log4j2.Log4j2LoggerFactory;
-import io.flatf.common.serialization.specific.JsonSerializer;
+import io.flatf.infra.serialization.specific.JsonSerializer;
 import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.io.JsonEncoder;

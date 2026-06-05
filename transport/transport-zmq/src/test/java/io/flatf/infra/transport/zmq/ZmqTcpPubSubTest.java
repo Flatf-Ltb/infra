@@ -3,7 +3,7 @@ package io.flatf.infra.transport.zmq;
 import io.flatf.common.log4j2.Log4j2Configurator;
 import io.flatf.common.thread.Sleep;
 import io.flatf.common.thread.Threads;
-import io.flatf.infra.attr.Topics;
+import io.flatf.infra.transport.attr.Topics;
 import org.junit.Test;
 
 import java.io.IOException;
