@@ -22,10 +22,9 @@ public final class ForyKeeper {
      * @return Fory
      */
     public static Fory newInstance(Language lang, Class<?>... classes) {
-        var fory = Fory.builder()
-                .withLanguage(lang)
-                .requireClassRegistration(true)
-                .build();
+        var fory = Fory.builder().withLanguage(lang)
+            .requireClassRegistration(true)
+            .build();
         for (var clazz : classes)
             fory.register(clazz);
         return fory;
