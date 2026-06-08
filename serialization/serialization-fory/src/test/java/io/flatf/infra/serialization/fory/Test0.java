@@ -26,12 +26,12 @@ public class Test0 extends TestCase {
         // Registering types can reduce class name serialization overhead, but not mandatory.
         // If class registration enabled, all custom types must be registered.
         fory.register(TestObject.class);
-        byte[] bytes = fory.serializeJavaObject(object);
+        byte[] bytes = fory.serialize(object);
 
         System.out.println(bytes.length);
         System.out.println(new String(bytes));
 
-        TestObject object1 = fory.deserializeJavaObject(bytes, TestObject.class);
+        TestObject object1 = fory.deserialize(bytes, TestObject.class);
 
 
         System.out.println(object);
