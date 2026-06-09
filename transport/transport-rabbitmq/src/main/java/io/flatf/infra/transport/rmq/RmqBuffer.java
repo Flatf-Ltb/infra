@@ -6,9 +6,9 @@ import io.flatf.common.character.Charsets;
 import io.flatf.common.collections.MutableLists;
 import io.flatf.common.concurrent.queue.MultiConsumerQueue;
 import io.flatf.common.log4j2.Log4j2LoggerFactory;
+import io.flatf.infra.serialization.json.JsonWriter;
 import io.flatf.infra.serialization.specific.BytesDeserializer;
 import io.flatf.infra.serialization.specific.BytesSerializer;
-import io.flatf.infra.serialization.json.JsonWriter;
 import io.flatf.infra.transport.rmq.config.RmqConnectionConfig;
 import io.flatf.infra.transport.rmq.declare.AmqpExchange;
 import io.flatf.infra.transport.rmq.declare.QueueRelationship;
@@ -118,7 +118,7 @@ public class RmqBuffer<E> implements MultiConsumerQueue<E>, Closeable {
             channel.internalChannel().basicPublish("", queueName, null, msg);
             return true;
         } catch (IOException ioe) {
-            LOG.error("enqueue basicPublish throw -> {}", ioe.getMessage(), ioe);
+            LOG.error("enqueue basic publish throw -> {}", ioe.getMessage(), ioe);
             return false;
         }
     }
@@ -157,7 +157,7 @@ public class RmqBuffer<E> implements MultiConsumerQueue<E>, Closeable {
         try {
             return channel.internalChannel().basicGet(queueName, false);
         } catch (IOException ioe) {
-            LOG.error("poll basicGet throw -> {}", ioe.getMessage(), ioe);
+            LOG.error("poll basic get throw -> {}", ioe.getMessage(), ioe);
             return null;
         }
     }
@@ -171,7 +171,7 @@ public class RmqBuffer<E> implements MultiConsumerQueue<E>, Closeable {
             channel.internalChannel().basicAck(envelope.getDeliveryTag(), false);
             return true;
         } catch (IOException ioe) {
-            LOG.error("poll basicAck throw -> {}", ioe.getMessage(), ioe);
+            LOG.error("poll basic ack throw -> {}", ioe.getMessage(), ioe);
             return false;
         }
     }
@@ -199,19 +199,18 @@ public class RmqBuffer<E> implements MultiConsumerQueue<E>, Closeable {
 
     public static void main(String[] args) {
 
-        RmqConnectionConfig connection = RmqConnectionConfig.with("127.0.0.1", 5672, "user", "password").build();
+        RmqConnectionConfig connection = RmqConnectionConfig
+            .with("127.0.0.1", 5672, "user", "password").build();
 
         try (RmqBuffer<String> testQueue = newQueue(
             connection, "rmq_test",
             str -> JsonWriter.toJson(str).getBytes(Charsets.UTF8),
             (bytes, reuse) -> new String(bytes, Charsets.UTF8))) {
-
             testQueue.pollAndApply(str -> {
                 System.out.println(str);
                 return true;
             });
-        } catch (DeclareException | IOException e) {
-            e.printStackTrace();
+        } catch (DeclareException | IOException ignored) {
         }
 
     }
