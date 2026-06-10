@@ -20,7 +20,6 @@ public class JsonObjectExt implements JsonSerializable {
     @Setter
     private EpochUnit epochUnit;
 
-
     private JSONObject object;
 
     public <T> T getWith(Class<T> clazz) {
