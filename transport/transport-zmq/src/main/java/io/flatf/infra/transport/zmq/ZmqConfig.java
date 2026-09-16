@@ -23,6 +23,7 @@ import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Properties;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static io.flatf.common.lang.Validator.greaterThan;
@@ -231,6 +232,41 @@ public final class ZmqConfig implements TransportConfig,
     public ZmqReceiver createReceiver(@Nonnull Function<byte[], byte[]> handler) {
         nonNull(handler, "handler");
         return new ZmqReceiver(this, handler);
+    }
+
+    /**
+     * 创建异步请求端（DEALER，connect）。与 {@link #createAsyncServer} 配对，
+     * 用于需要"发送方能知道消息有没有发出去"的命令通道。
+     *
+     * @param replyConsumer 应答回调，在客户端自有的轮询线程上执行
+     * @return ZmqAsyncClient
+     */
+    public ZmqAsyncClient createAsyncClient(@Nonnull Consumer<byte[]> replyConsumer) {
+        return createAsyncClient(null, replyConsumer);
+    }
+
+    /**
+     * 创建异步请求端（DEALER，connect）。
+     *
+     * @param identity      套接字身份，null 或空则由 ZMQ 自动分配
+     * @param replyConsumer 应答回调，在客户端自有的轮询线程上执行
+     * @return ZmqAsyncClient
+     */
+    public ZmqAsyncClient createAsyncClient(@Nullable String identity,
+                                            @Nonnull Consumer<byte[]> replyConsumer) {
+        nonNull(replyConsumer, "replyConsumer");
+        return new ZmqAsyncClient(this, identity, replyConsumer);
+    }
+
+    /**
+     * 创建异步应答端（ROUTER，bind）。与 {@link #createAsyncClient} 配对。
+     *
+     * @param handler 请求处理回调，在服务端自有的轮询线程上执行
+     * @return ZmqAsyncServer
+     */
+    public ZmqAsyncServer createAsyncServer(@Nonnull Consumer<ZmqAsyncServer.Exchange> handler) {
+        nonNull(handler, "handler");
+        return new ZmqAsyncServer(this, handler);
     }
 
     /**

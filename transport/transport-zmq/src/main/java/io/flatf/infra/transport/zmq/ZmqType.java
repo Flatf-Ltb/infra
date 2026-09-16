@@ -14,4 +14,14 @@ public enum ZmqType {
 
     Z_RECEIVER,
 
+    /**
+     * DEALER，异步请求端。见 {@link ZmqAsyncClient}。
+     */
+    Z_ASYNC_CLIENT,
+
+    /**
+     * ROUTER，异步应答端。见 {@link ZmqAsyncServer}。
+     */
+    Z_ASYNC_SERVER,
+
 }
