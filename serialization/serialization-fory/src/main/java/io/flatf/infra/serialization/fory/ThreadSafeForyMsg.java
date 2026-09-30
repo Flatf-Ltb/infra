@@ -18,8 +18,7 @@ import javax.annotation.concurrent.ThreadSafe;
  */
 @Getter
 @ThreadSafe
-public final class ThreadSafeForyMsg
-    implements OrderedObject<ThreadSafeForyMsg>,
+public final class ThreadSafeForyMsg implements OrderedObject<ThreadSafeForyMsg>,
     BytesSerializable, BytesDeserializable<ThreadSafeForyMsg> {
 
     private static final ThreadSafeFory THREAD_SAFE_FORY = Fory.builder()
