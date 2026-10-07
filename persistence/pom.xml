@@ -14,7 +14,23 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>persistence-chronicle</module>
+        <!--
+            旧条目（按约定注释保留）: <module>persistence-chronicle</module>
+            2026-10-07 退出构建。三条理由:
+            1. 全仓零引用 —— rapid 的 core/engine/platform/adapter/gateway 没有任何一处
+               import net.openhft 或 io.flatf.infra.persistence.chronicle; rapid/pom.xml 里
+               只在 dependencyManagement 锁了版本, 没有模块真的 declare 它。
+            2. 依赖是 EA 版本 —— chronicle-queue 5.27ea11 / chronicle-map 3.27ea2。
+               EA artifact 不保证留在 Maven Central, 也不保证 API 稳定到 GA,
+               不适合长期挂在一个要跑真钱的系统的构建里。
+            3. src/main/java 里混着上游 demo 代码（net.openhft.chronicle.queue.simple.*,
+               town.lost.oms.*, town.lost.processor.events.*）, 与 vendored ta4j 同类问题。
+
+            能力缺口（可持久化可重放的事件日志）是真实的, 但载体未定:
+            transport-aeron 已依赖 aeron-all + aeron-cluster 1.50.4, 而 Aeron 的 Archive
+            与 Cluster 都在 Apache 2.0 范围内; Chronicle 的跨主机复制在 Enterprise 墙内。
+            目录与源码保留不删, 按工作区约定由属主决定后续归档方式。
+        -->
         <module>persistence-h2</module>
         <module>persistence-rocksdb</module>
         <module>persistence-sqlite</module>
@@ -111,7 +127,7 @@
             <dependency>
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
-                <version>2.14.4</version>
+                <version>2.15.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -28,27 +28,23 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>1.18.44</version>
+                <version>1.18.48</version>
             </dependency>
-
             <dependency>
                 <groupId>io.flatf</groupId>
                 <artifactId>commons-concurrent</artifactId>
                 <version>${project.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>io.flatf</groupId>
                 <artifactId>serialization-sbe</artifactId>
                 <version>${project.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>io.flatf</groupId>
                 <artifactId>serialization-avro</artifactId>
                 <version>${project.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>io.flatf</groupId>
                 <artifactId>serialization-json</artifactId>

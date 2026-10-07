@@ -57,6 +57,12 @@ public final class OptionalExtrasEncoder
         return this;
     }
 
+    public OptionalExtrasEncoder setRaw(final short value)
+    {
+        buffer.putByte(offset, (byte)value);
+        return this;
+    }
+
     public OptionalExtrasEncoder sunRoof(final boolean value)
     {
         byte bits = buffer.getByte(offset);
