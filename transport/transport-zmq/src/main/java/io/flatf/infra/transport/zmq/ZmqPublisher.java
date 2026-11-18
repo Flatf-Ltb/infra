@@ -12,6 +12,7 @@ import org.zeromq.ZMQ;
 import javax.annotation.Nonnull;
 import java.io.Closeable;
 import java.util.Random;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static io.flatf.common.lang.Validator.nonNull;
 import static io.flatf.common.log4j2.Log4j2LoggerFactory.getLogger;
@@ -24,6 +25,10 @@ public final class ZmqPublisher<T> extends ZmqComponent implements Publisher<byt
     private final byte[] sendMore;
 
     private final BytesSerializer<T> serializer;
+
+    // 串行化所有套接字访问: 一条消息是 sendMore + send 两帧, 多线程同时发送时帧会串到别的消息上;
+    // close 也须持锁, 不能在另一线程发送到一半时关闭套接字
+    private final ReentrantLock socketLock = new ReentrantLock();
 
     /**
      * @param configurator ZmqConfigurator
@@ -38,6 +43,8 @@ public final class ZmqPublisher<T> extends ZmqComponent implements Publisher<byt
         nonNull(serializer, "serializer");
         this.sendMore = topic.getBytes(ZMQ.CHARSET);
         this.serializer = serializer;
+        // HWM 须在 bind 之前设置才对之后的连接生效; 此前从未设置, 实际用的是 jeromq 默认的 1000 (2026-11-18)
+        socket.setSndHWM(configurator.getHighWaterMark());
         var addr = configurator.getAddr().fullUri();
         if (socket.bind(addr))
             log.info("ZmqPublisher bound addr -> {}", addr);
@@ -71,14 +78,39 @@ public final class ZmqPublisher<T> extends ZmqComponent implements Publisher<byt
 
     @Override
     public void publish(@Nonnull byte[] target, @Nonnull T msg) throws PublishFailedException {
-        if (isRunning.get()) {
-            byte[] bytes = serializer.serialize(msg);
-            if (bytes != null && bytes.length > 0) {
+        // 2026-11-18: 原实现不加锁, 多线程发送时两帧会串到别的消息上 (PLAN_命令通道PUB-SUB与适配器租约 §8.3)
+        // if (isRunning.get()) {
+        //     byte[] bytes = serializer.serialize(msg);
+        //     if (bytes != null && bytes.length > 0) {
+        //         socket.sendMore(target);
+        //         socket.send(bytes, ZMQ.NOBLOCK);
+        //     }
+        // } else
+        //     log.warn("ZmqPublisher -> [{}] already closed", name);
+        byte[] bytes = serializer.serialize(msg);
+        if (bytes == null || bytes.length == 0)
+            return;
+        socketLock.lock();
+        try {
+            if (isRunning.get()) {
                 socket.sendMore(target);
                 socket.send(bytes, ZMQ.NOBLOCK);
+                return;
             }
-        } else
-            log.warn("ZmqPublisher -> [{}] already closed", name);
+        } finally {
+            socketLock.unlock();
+        }
+        log.warn("ZmqPublisher -> [{}] already closed", name);
+    }
+
+    @Override
+    public boolean closeIgnoreException() {
+        socketLock.lock();
+        try {
+            return super.closeIgnoreException();
+        } finally {
+            socketLock.unlock();
+        }
     }
 
     public static void main(String[] args) throws Exception {

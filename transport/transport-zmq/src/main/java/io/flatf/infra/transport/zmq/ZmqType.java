@@ -24,4 +24,9 @@ public enum ZmqType {
      */
     Z_ASYNC_SERVER,
 
+    /**
+     * XPUB，能看到订阅变化的发布端。见 {@link ZmqXPublisher}。
+     */
+    Z_XPUBLISHER,
+
 }

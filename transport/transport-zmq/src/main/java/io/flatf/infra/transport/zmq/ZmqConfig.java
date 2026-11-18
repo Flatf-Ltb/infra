@@ -360,6 +360,24 @@ public final class ZmqConfig implements TransportConfig,
         return new ZmqPublisher<>(this, topic, serializer);
     }
 
+    /**
+     * 创建能看到订阅变化的发布端（XPUB，bind）。须调用 {@link ZmqXPublisher#start()} 才开始报告订阅变化。
+     *
+     * @param <T>        T type
+     * @param topic      默认主题
+     * @param serializer BytesSerializer<T>
+     * @param listener   订阅变化回调，在发布端自有的轮询线程上执行
+     * @return ZmqXPublisher
+     */
+    public <T> ZmqXPublisher<T> createXPublisher(@Nonnull String topic,
+                                                 @Nonnull BytesSerializer<T> serializer,
+                                                 @Nonnull ZmqXPublisher.SubscriptionListener listener) {
+        nonNull(topic, "topic");
+        nonNull(serializer, "serializer");
+        nonNull(listener, "listener");
+        return new ZmqXPublisher<>(this, topic, serializer, listener);
+    }
+
     private transient String toStringCache;
 
     @Override
