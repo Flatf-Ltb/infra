@@ -1,6 +1,6 @@
 # Infra
 Created: 2020-01-03 15:50 (JST)
-Last updated: 2026-06-04 18:43 (JST)
+Last updated: 2026-11-25 10:06 (JST)
 
 `infra` is the shared infrastructure library repository for the Flatf workspace. It contains
 persistence, serialization, transport, and integration helper modules used by trading services,
@@ -33,7 +33,8 @@ The root `pom.xml` currently aggregates these modules:
 
 ### persistence
 
-- `persistence-chronicle`: Chronicle Queue and Chronicle Map persistence integration.
+- `persistence-chronicle`: not built since 2026-10-07; its sources were archived to
+  `persistence/persistence-chronicle/legacy-src/` (see the README there).
 - `persistence-h2`: H2 embedded relational persistence support.
 - `persistence-rocksdb`: RocksDB local key-value persistence support.
 - `persistence-sqlite`: SQLite embedded persistence support.
@@ -53,7 +54,8 @@ The root `pom.xml` currently aggregates these modules:
 - `transport-netty`: Netty transport support.
 - `transport-rabbitmq`: RabbitMQ transport support.
 - `transport-rsocket`: RSocket transport support.
-- `transport-socket`: socket transport support.
+- `transport-socket`: socket transport support. The directory exists but is not listed in
+  `transport/pom.xml`, so it is not built.
 - `transport-ws`: WebSocket transport support.
 - `transport-zmq`: ZeroMQ transport support.
 
@@ -67,8 +69,8 @@ The root `pom.xml` currently aggregates these modules:
 - Do not reintroduce a local `commons/` source tree under this repository.
 
 Infra-owned Java packages use the `io.flatf.infra.*` namespace. Imports from `repos/commons` still
-use the current commons package namespaces, including `io.flatf.common.*` and shared
-transport base abstractions such as `io.flatf.foundation.transport.api.*`.
+use the current commons package namespaces: `io.flatf.common.*`, and the shared transport API
+contracts under `io.flatf.infra.api.*` (which live in `commons-core`).
 
 ## Build
 
