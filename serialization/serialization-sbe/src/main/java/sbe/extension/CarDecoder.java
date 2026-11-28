@@ -533,7 +533,7 @@ public final class CarDecoder
 
     public OptionalExtrasDecoder extras()
     {
-        extras.wrap(buffer, offset + 34);
+        extras.wrap(buffer, offset + 34, parentMessage.actingVersion);
         return extras;
     }
 

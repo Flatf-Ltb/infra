@@ -51,6 +51,16 @@ public final class OptionalExtrasDecoder
         return SCHEMA_VERSION;
     }
 
+    private int actingVersion = SCHEMA_VERSION;
+
+    public OptionalExtrasDecoder wrap(final DirectBuffer buffer, final int offset, final int actingVersion)
+    {
+        wrap(buffer, offset);
+        this.actingVersion = actingVersion;
+
+        return this;
+    }
+
     public boolean isEmpty()
     {
         return 0 == buffer.getByte(offset);
