@@ -26,7 +26,7 @@ import static io.flatf.common.log4j2.Log4j2LoggerFactory.getLogger;
  * -XX:+UseNUMA could increase performance
  * </pre>
  */
-abstract class ZmqComponent extends TransportComponent implements Transport, Closeable {
+public abstract class ZmqComponent extends TransportComponent implements Transport, Closeable {
 
     private static final Logger log = getLogger(ZmqComponent.class);
 

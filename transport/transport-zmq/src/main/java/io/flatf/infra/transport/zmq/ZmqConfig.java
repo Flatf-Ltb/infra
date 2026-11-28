@@ -5,12 +5,12 @@ import io.flatf.common.config.ConfigWrapper;
 import io.flatf.common.lang.Validator;
 import io.flatf.common.net.IpAddressIllegalException;
 import io.flatf.common.net.IpAddressValidator;
-import io.flatf.infra.serialization.specific.BytesSerializer;
-import io.flatf.infra.serialization.specific.JsonDeserializable;
-import io.flatf.infra.serialization.specific.JsonSerializable;
 import io.flatf.common.util.StringSupport;
 import io.flatf.infra.serialization.json.JsonReader;
 import io.flatf.infra.serialization.json.JsonWriter;
+import io.flatf.infra.serialization.specific.BytesSerializer;
+import io.flatf.infra.serialization.specific.JsonDeserializable;
+import io.flatf.infra.serialization.specific.JsonSerializable;
 import io.flatf.infra.transport.TransportConfig;
 import io.flatf.infra.transport.attr.TcpKeepAlive;
 import io.flatf.infra.transport.attr.Topics;
@@ -36,8 +36,7 @@ import static io.flatf.infra.transport.zmq.ZmqConfigOption.PORT;
 import static io.flatf.infra.transport.zmq.ZmqConfigOption.PROTOCOL;
 
 @OnlyOverrideEquals
-public final class ZmqConfig implements TransportConfig,
-        JsonSerializable, JsonDeserializable<ZmqConfig> {
+public final class ZmqConfig implements TransportConfig, JsonSerializable, JsonDeserializable<ZmqConfig> {
 
     private static final Logger log = getLogger(ZmqConfig.class);
 
@@ -66,7 +65,7 @@ public final class ZmqConfig implements TransportConfig,
                 if (wrapper.hasOption(ADDR)) {
                     var tcpAddr = wrapper.getStringOrThrows(ADDR);
                     Validator.isValid(tcpAddr, IpAddressValidator::isIpAddress,
-                            new IpAddressIllegalException(tcpAddr));
+                        new IpAddressIllegalException(tcpAddr));
                     conf = new ZmqConfig(ZmqAddr.tcp(tcpAddr, port));
                 } else {
                     // 没有addr配置项, 使用本地地址
@@ -430,7 +429,7 @@ public final class ZmqConfig implements TransportConfig,
 
     public static void main(String[] args) {
         ZmqConfig configurator = ZmqConfig.tcp("192.168.1.1", 5551)
-                .ioThreads(3).tcpKeepAlive(TcpKeepAlive.sysDefault());
+            .ioThreads(3).tcpKeepAlive(TcpKeepAlive.sysDefault());
         System.out.println(configurator);
         System.out.println(ZmqConfig.getZmqVersion());
         System.out.println(IpAddressValidator.isIPv4("192.168.1.1"));
